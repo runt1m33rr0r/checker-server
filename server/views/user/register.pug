@@ -1,0 +1,19 @@
+extends ../base/base
+
+block content
+    form(action="/register" method="post")
+        div
+            div(class="mdc-form-field")
+                div(class="mdc-textfield" data-mdc-auto-init="MDCTextfield")
+                    input(id="firstname" type="text" class="mdc-textfield__input" name="username")
+                    label(for="firstname" class="mdc-textfield__label") Username
+
+            div(class="mdc-form-field")
+                div(class="mdc-textfield" data-mdc-auto-init="MDCTextfield")
+                    input(id="password" type="password" class="mdc-textfield__input" name="password")
+                    label(for="password" class="mdc-textfield__label") Password
+
+        button(
+            type="submit"
+            class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple-surface"
+            data-mdc-auto-init="MDCRipple") Sign up!

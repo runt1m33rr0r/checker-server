@@ -1,0 +1,15 @@
+doctype
+html(class="mdc-typography")
+    head
+        title System
+        meta(charset="utf-8")
+
+        link(rel="stylesheet", href="/material/dist/material-components-web.min.css")
+        block styles
+        block head_scripts
+    body
+        block content
+
+        script(src="/material/dist/material-components-web.min.js")
+        script window.mdc.autoInit();
+        block bottom_scripts
