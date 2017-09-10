@@ -10,7 +10,7 @@ function init(app, data) {
             .then((user) => {
                 if (!user) {
                     return done(null, false, {
-                        message: 'Incorrect username.',
+                        message: 'Неправилни данни!',
                     });
                 }
 
@@ -20,7 +20,7 @@ function init(app, data) {
                     user.hashedPass,
                     encryption)) {
                     return done(null, false, {
-                        message: 'Incorrect password.',
+                        message: 'Неправилни данни!',
                     });
                 }
 
@@ -50,7 +50,10 @@ function init(app, data) {
     app.use(passport.session());
 
     app.use((req, res, next) => {
-        res.locals.user = req.user;
+        if (req.user) {
+            const username = req.user.username;
+            res.locals.user = { username };
+        }
         next();
     });
 }

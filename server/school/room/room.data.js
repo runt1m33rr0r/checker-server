@@ -13,7 +13,7 @@ class RoomData extends BaseData {
             .then((room) => {
                 if (room) {
                     return Promise.reject({
-                        message: 'Such room already exists!',
+                        message: 'Същата стая е вече въведена!',
                     });
                 }
 

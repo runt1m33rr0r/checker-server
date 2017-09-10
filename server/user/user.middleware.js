@@ -4,7 +4,7 @@ function init() {
     return {
         isAuthenticated(req, res, next) {
             if (!req.isAuthenticated()) {
-                return res.status(403).send('unauthorized');
+                return res.redirect('/unauthorized');
             }
             next();
         },
@@ -15,22 +15,26 @@ function init() {
                     return next();
                 }
 
-                res.status(403).send('unauthorized');
+                res.redirect('/unauthorized');
             };
         },
         loginLocal(req, res) {
             if (req.user) {
-                return res.send('Already logged in!');
+                return res.redirect('/unauthorized');
             }
 
             passport.authenticate('local', (error, user, info) => {
                 if (error || !user) {
-                    return res.send(info.message);
+                    return res.render('base/error', {
+                        error: {
+                            message: info.message,
+                        },
+                    });
                 }
 
                 req.logIn(user, (err) => {
                     if (err) {
-                        return res.send(error);
+                        return res.render('base/error', { error: err });
                     }
 
                     return res.redirect('/');
@@ -39,7 +43,7 @@ function init() {
         },
         logoutUser(req, res) {
             if (!req.user) {
-                return res.send('Not logged in!');
+                return res.redirect('/unauthorized');
             }
 
             req.logout();

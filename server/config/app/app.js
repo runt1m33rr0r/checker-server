@@ -15,11 +15,13 @@ function setupStatics(app) {
         __dirname,
         '../../../node_modules/normalize.css'
     );
+    const jqueryPath = path.join(__dirname, '../../../node_modules/jquery');
     const staticsPath = path.join(__dirname, '../../../public');
 
-    app.use('/material', express.static(materialPath));
-    app.use('/normalize', express.static(normalizePath));
+    app.use('/public', express.static(materialPath));
+    app.use('/public', express.static(normalizePath));
     app.use('/public', express.static(staticsPath));
+    app.use('/public', express.static(jqueryPath));
 }
 
 function init(db) {

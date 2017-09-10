@@ -7,7 +7,7 @@ class User {
             username.length < 5 ||
             username.length > 15 ||
             username !== username.toLowerCase()) {
-            throw new Error('Invalid username!');
+            throw new Error('Invalid credentials!');
         }
 
         if (!roles || !Array.isArray(roles) || roles.length === 0) {
@@ -22,11 +22,11 @@ class User {
         }
 
         if (!salt || typeof salt !== 'string') {
-            throw new Error('Invalid password!');
+            throw new Error('Invalid credentials!');
         }
 
         if (!hashedPass || typeof hashedPass !== 'string') {
-            throw new Error('Invalid password!');
+            throw new Error('Invalid credentials!');
         }
 
         this.username = username;

@@ -5,12 +5,13 @@ function init({ app, controllers, middlewares }) {
         '/users/search',
         middlewares.user.isInRole(roleTypes.Normal),
         controllers.user.searchUser);
-    app.get('/register', controllers.user.getRegisterPage);
-    app.get('/login', controllers.user.getLoginPage);
+    app.get('/users/register', controllers.user.getRegisterPage);
+    app.get('/users/login', controllers.user.getLoginPage);
+    app.get('/users/logout', middlewares.user.logoutUser);
+    app.get('/unauthorized', controllers.user.getUnauthorized);
 
-    app.post('/register', controllers.user.registerUser);
-    app.post('/login', middlewares.user.loginLocal);
-    app.post('/logout', middlewares.user.logoutUser);
+    app.post('/users/register', controllers.user.registerUser);
+    app.post('/users/login', middlewares.user.loginLocal);
 }
 
 module.exports = { init };
