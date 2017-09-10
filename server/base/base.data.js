@@ -24,6 +24,10 @@ class BaseData {
             _id: new ObjectID(id),
         });
     }
+
+    getAll() {
+        return this.collection.find().toArray();
+    }
 }
 
 module.exports = BaseData;

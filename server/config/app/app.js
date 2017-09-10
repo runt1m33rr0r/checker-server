@@ -11,10 +11,15 @@ function setupStatics(app) {
     const materialPath = path.join(
         __dirname,
         '../../../node_modules/material-components-web');
+    const normalizePath = path.join(
+        __dirname,
+        '../../../node_modules/normalize.css'
+    );
     const staticsPath = path.join(__dirname, '../../../public');
 
     app.use('/material', express.static(materialPath));
-    app.use('/static', express.static(staticsPath));
+    app.use('/normalize', express.static(normalizePath));
+    app.use('/public', express.static(staticsPath));
 }
 
 function init(db) {

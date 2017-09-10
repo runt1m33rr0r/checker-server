@@ -1,19 +1,15 @@
 extends ../base/base
 
 block content
-    form(action="/register" method="post")
-        div
-            div(class="mdc-form-field")
-                div(class="mdc-textfield" data-mdc-auto-init="MDCTextfield")
-                    input(id="firstname" type="text" class="mdc-textfield__input" name="username")
-                    label(for="firstname" class="mdc-textfield__label") Username
+    div.center-form
+        form(action="/register" method="post")
+            div
+                label.mdc-form-field.mdc-textfield(data-mdc-auto-init="MDCTextfield")
+                    input.mdc-textfield__input(type="text" name="username" required)
+                    span.mdc-textfield__label Потребителско име
+            div
+                label.mdc-form-field.mdc-textfield(data-mdc-auto-init="MDCTextfield")
+                    input.mdc-textfield__input(type="password" name="password" required)
+                    span.mdc-textfield__label Парола
 
-            div(class="mdc-form-field")
-                div(class="mdc-textfield" data-mdc-auto-init="MDCTextfield")
-                    input(id="password" type="password" class="mdc-textfield__input" name="password")
-                    label(for="password" class="mdc-textfield__label") Password
-
-        button(
-            type="submit"
-            class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple-surface"
-            data-mdc-auto-init="MDCRipple") Sign up!
+            button.mdc-button.mdc-button--raised(type="submit") Регистриране

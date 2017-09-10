@@ -1,22 +1,6 @@
 extends ./base/base
 
 block content
-    h1(class="mdc-typography--display1") Hello!
-    if (user)
-        | #{user.username}
-        form(action="/logout" method="post")
-            button(
-                    type="submit"
-                    class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple-surface"
-                    data-mdc-auto-init="MDCRipple") Log out!
-    if (!user)
-        form(action="/login" method="get")
-            button(
-                    type="submit"
-                    class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple-surface"
-                    data-mdc-auto-init="MDCRipple") Log in!
-        form(action="/register" method="get")
-            button(
-                    type="submit"
-                    class="mdc-button mdc-button--raised mdc-button--primary mdc-ripple-surface"
-                    data-mdc-auto-init="MDCRipple") Register!
+    div.main.mdc-toolbar-fixed-adjust
+        h1.mdc-typography--display1 Hello
+        p.mdc-typography--body1 Test text
