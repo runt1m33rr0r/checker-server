@@ -7,7 +7,7 @@ function init({ data }) {
                 .then((result) => {
                     res.send(result);
                 })
-                .catch((err) => res.send(err.message));
+                .catch((err) => res.render('base/error', { error: err }));
         },
         createRoom(req, res) {
             const name = req.roomName;
@@ -17,7 +17,7 @@ function init({ data }) {
                 .then(() => {
                     res.send('room created');
                 })
-                .catch((err) => res.send(err.message));
+                .catch((err) => res.render('base/error', { error: err }));
         },
     };
 }

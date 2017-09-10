@@ -9,12 +9,16 @@ function init({ data, encryption }) {
         UserData.getUserByUsername(username)
             .then((user) => {
                 if (!user) {
-                    return res.send('User does not exist!');
+                    return res.render('base/error', {
+                        error: {
+                            message: 'Такъв потребител не съществува!',
+                        },
+                    });
                 }
 
                 return res.send(user);
             })
-            .catch((err) => res.send(err.message));
+            .catch((err) => res.render('base/error', { error: err }));
     }
 
     function getUserById(req, res) {
@@ -23,12 +27,16 @@ function init({ data, encryption }) {
         UserData.getUserById(id)
             .then((user) => {
                 if (!user) {
-                    return res.send('User does not exist!');
+                    return res.render('base/error', {
+                        error: {
+                            message: 'Такъв потребител не съществува!',
+                        },
+                    });
                 }
 
                 return res.send(user);
             })
-            .catch((err) => res.send(err.message));
+            .catch((err) => res.render('base/error', { error: err }));
     }
 
     return {
@@ -42,7 +50,11 @@ function init({ data, encryption }) {
                 return getUserById(req, res);
             }
 
-            return res.send('Invalid request!');
+            return res.render('base/error', {
+                error: {
+                    message: 'Невалидна заявка!',
+                },
+            });
         },
         getLoginPage(req, res) {
             res.render('user/login');
@@ -52,7 +64,7 @@ function init({ data, encryption }) {
         },
         registerUser(req, res) {
             if (req.user) {
-                return res.send('Can not register while being logged in!');
+                res.redirect('/unauthorized');
             }
 
             const username = req.body.username;
@@ -63,9 +75,12 @@ function init({ data, encryption }) {
 
             UserData.createUser(username, roles, salt, hash)
                 .then(() => {
-                    res.redirect('/login');
+                    res.redirect('/users/login');
                 })
-                .catch((err) => res.send(err.message));
+                .catch((err) => res.render('base/error', { error: err }));
+        },
+        getUnauthorized(req, res) {
+            res.render('base/unauthorized');
         },
     };
 }

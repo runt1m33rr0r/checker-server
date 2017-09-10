@@ -3,6 +3,9 @@ function init() {
         getHome(req, res) {
             res.render('home');
         },
+        redirectHome(req, res) {
+            res.redirect('/home');
+        },
     };
 }
 

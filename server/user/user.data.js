@@ -13,7 +13,7 @@ class UserData extends BaseData {
             .then((result) => {
                 if (result) {
                     return Promise.reject({
-                        message: 'Such user already exists!',
+                        message: 'Потребителското име е заето!',
                     });
                 }
 

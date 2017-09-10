@@ -2,7 +2,7 @@
   "name": "sys-server",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "GNU",
+  "license": "AGPL-3.0",
   "scripts": {
     "start": "node server.js",
     "dev": "./node_modules/.bin/nodemon server.js"
@@ -12,6 +12,7 @@
     "connect-mongo": "^1.3.2",
     "express": "^4.15.4",
     "express-session": "^1.15.5",
+    "jquery": "^3.2.1",
     "material-components-web": "^0.19.0",
     "mongodb": "^2.2.31",
     "normalize.css": "^7.0.0",
