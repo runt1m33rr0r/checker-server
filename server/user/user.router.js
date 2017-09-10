@@ -1,6 +1,10 @@
 const roleTypes = require('../utils/roletypes');
 
-function init({ app, controllers, middlewares }) {
+function init({
+    app,
+    controllers,
+    middlewares,
+}) {
     app.get(
         '/users/search',
         middlewares.user.isInRole(roleTypes.Normal),
@@ -14,4 +18,6 @@ function init({ app, controllers, middlewares }) {
     app.post('/users/login', middlewares.user.loginLocal);
 }
 
-module.exports = { init };
+module.exports = {
+    init,
+};

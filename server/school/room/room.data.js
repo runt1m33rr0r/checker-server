@@ -4,7 +4,9 @@ class RoomData extends BaseData {
     constructor(db, models) {
         super(db);
 
-        const { Room } = models;
+        const {
+            Room,
+        } = models;
         this.Room = Room;
     }
 
@@ -24,7 +26,9 @@ class RoomData extends BaseData {
 
     getRoomByName(name) {
         if (!name) {
-            return Promise.reject({ message: 'Room name not specified!' });
+            return Promise.reject({
+                message: 'Room name not specified!',
+            });
         }
 
         return this.collection.findOne({

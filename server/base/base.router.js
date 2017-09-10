@@ -1,6 +1,11 @@
-function init({ app, controllers }) {
+function init({
+    app,
+    controllers,
+}) {
     app.get('/', controllers.base.redirectHome);
     app.get('/home', controllers.base.getHome);
 }
 
-module.exports = { init };
+module.exports = {
+    init,
+};

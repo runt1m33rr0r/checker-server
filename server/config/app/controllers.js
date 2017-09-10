@@ -1,5 +1,3 @@
-/* globals __dirname */
-
 const path = require('path');
 const encryption = require('../../utils/encryption');
 const fileWalker = require('../../utils/file.system').walkDirectorySync;
@@ -12,7 +10,10 @@ function init(data) {
         if (file.includes('.controller')) {
             const modulePath = file;
             const controllerModule = require(modulePath)
-                .init({ data, encryption });
+                .init({
+                    data,
+                    encryption,
+                });
             let moduleName = path.parse(modulePath).base;
             moduleName = moduleName.substring(
                 0,
@@ -24,4 +25,6 @@ function init(data) {
     return controllers;
 }
 
-module.exports = { init };
+module.exports = {
+    init,
+};

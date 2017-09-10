@@ -3,7 +3,9 @@ const LocalStrategy = require('passport-local').Strategy;
 const encryption = require('../../utils/encryption');
 
 function init(app, data) {
-    const { UserData } = data;
+    const {
+        UserData,
+    } = data;
 
     passport.use(new LocalStrategy((username, password, done) => {
         UserData.getUserByUsername(username)
@@ -15,10 +17,10 @@ function init(app, data) {
                 }
 
                 if (!UserData.checkPassword(
-                    password,
-                    user.salt,
-                    user.hashedPass,
-                    encryption)) {
+                        password,
+                        user.salt,
+                        user.hashedPass,
+                        encryption)) {
                     return done(null, false, {
                         message: 'Неправилни данни!',
                     });
@@ -52,10 +54,14 @@ function init(app, data) {
     app.use((req, res, next) => {
         if (req.user) {
             const username = req.user.username;
-            res.locals.user = { username };
+            res.locals.user = {
+                username,
+            };
         }
         next();
     });
 }
 
-module.exports = { init };
+module.exports = {
+    init,
+};

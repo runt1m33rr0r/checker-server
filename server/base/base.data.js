@@ -1,4 +1,6 @@
-const { ObjectID } = require('mongodb');
+const {
+    ObjectID,
+} = require('mongodb');
 
 class BaseData {
     constructor(db) {
@@ -9,7 +11,9 @@ class BaseData {
 
     createEntry(entry) {
         if (!entry) {
-            return Promise.reject({ message: 'Invalid entry!' });
+            return Promise.reject({
+                message: 'Invalid entry!',
+            });
         }
 
         return this.collection.insertOne(entry);
@@ -17,7 +21,9 @@ class BaseData {
 
     getByID(id) {
         if (!id || !ObjectID.isValid(id)) {
-            return Promise.reject({ message: 'Invalid ID' });
+            return Promise.reject({
+                message: 'Invalid ID',
+            });
         }
 
         return this.collection.findOne({

@@ -18,7 +18,7 @@ function init() {
                 res.redirect('/unauthorized');
             };
         },
-        loginLocal(req, res) {
+        loginLocal(req, res, next) {
             if (req.user) {
                 return res.redirect('/unauthorized');
             }
@@ -34,12 +34,14 @@ function init() {
 
                 req.logIn(user, (err) => {
                     if (err) {
-                        return res.render('base/error', { error: err });
+                        return res.render('base/error', {
+                            error: err,
+                        });
                     }
 
                     return res.redirect('/');
                 });
-            })(req, res);
+            })(req, res, next);
         },
         logoutUser(req, res) {
             if (!req.user) {
@@ -52,4 +54,6 @@ function init() {
     };
 }
 
-module.exports = { init };
+module.exports = {
+    init,
+};
