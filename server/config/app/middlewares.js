@@ -1,5 +1,3 @@
-/* globals __dirname */
-
 const path = require('path');
 const fileWalker = require('../../utils/file.system').walkDirectorySync;
 
@@ -22,4 +20,6 @@ function init() {
     return middlewares;
 }
 
-module.exports = { init };
+module.exports = {
+    init,
+};

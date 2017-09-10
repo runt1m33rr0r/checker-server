@@ -1,5 +1,3 @@
-/* global __dirname */
-
 const path = require('path');
 const modelsLoader = require('./models');
 const fileWalker = require('../../utils/file.system').walkDirectorySync;
@@ -22,4 +20,6 @@ function init(db) {
     return data;
 }
 
-module.exports = { init };
+module.exports = {
+    init,
+};

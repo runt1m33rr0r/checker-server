@@ -1,4 +1,3 @@
-/* eslint no-process-env: 0 */
 /* eslint no-console: 0 */
 
 const settings = require('./settings');
@@ -17,4 +16,6 @@ async function init() {
         () => console.log(`working at :${settings.port}`));
 }
 
-module.exports = { init };
+module.exports = {
+    init,
+};

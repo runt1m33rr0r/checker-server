@@ -25,18 +25,14 @@ class Population {
     }
 
     _initByTimetable(populationSize, timetable) {
-        for (let individCount = 0;
-            individCount < populationSize;
-            individCount++) {
-            this._population[individCount] = new Individual(timetable);
+        for (let i = 0; i < populationSize; i++) {
+            this._population[i] = new Individual(timetable);
         }
     }
 
     _initByChromosomeLength(populationSize, chromosomeLength) {
-        for (let individCount = 0;
-            individCount < populationSize;
-            individCount++) {
-            this._population[individCount] = new Individual(chromosomeLength);
+        for (let i = 0; i < populationSize; i++) {
+            this._population[i] = new Individual(chromosomeLength);
         }
     }
 

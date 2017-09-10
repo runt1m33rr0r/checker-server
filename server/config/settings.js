@@ -1,6 +1,3 @@
-/* global process __dirname */
-/* eslint no-process-env: 0 */
-
 const path = require('path');
 
 const rootPath = path.join(__dirname, '/../../');

@@ -68,25 +68,19 @@ class GeneticAlgorithm {
     mutatePopulation(population, timetable) {
         const newPopulation = new Population(this._populationSize);
 
-        for (let populationIndex = 0;
-            populationIndex < population.getPopulationSize();
-            populationIndex++) {
-            const individual = population.getFittest(populationIndex);
+        for (let pi = 0; pi < population.getPopulationSize(); pi++) {
+            const individual = population.getFittest(pi);
             const randomIndividual = new Individual(timetable);
 
-            for (let geneIndex = 0;
-                geneIndex < individual.getChromosomeLength();
-                geneIndex++) {
-                if (populationIndex > this._elitismCount) {
+            for (let gi = 0; gi < individual.getChromosomeLength(); gi++) {
+                if (pi > this._elitismCount) {
                     if (this._mutationRate > Math.random()) {
-                        individual.setGene(
-                            geneIndex,
-                            randomIndividual.getGene(geneIndex));
+                        individual.setGene(gi, randomIndividual.getGene(gi));
                     }
                 }
             }
 
-            newPopulation.setIndividual(populationIndex, individual);
+            newPopulation.setIndividual(pi, individual);
         }
 
         return newPopulation;
@@ -95,33 +89,29 @@ class GeneticAlgorithm {
     crossoverPopulation(population) {
         const newPopulation = new Population(population.getPopulationSize());
 
-        for (let populationIndex = 0;
-            populationIndex < population.getPopulationSize();
-            populationIndex++) {
-            const parent1 = population.getFittest(populationIndex);
+        for (let pi = 0; pi < population.getPopulationSize(); pi++) {
+            const parent1 = population.getFittest(pi);
 
             if (this._crossoverRate > Math.random() &&
-                populationIndex >= this._elitismCount) {
+            pi >= this._elitismCount) {
                 const offspring = new Individual(parent1.getChromosomeLength());
                 const parent2 = this.selectParent(population);
 
-                for (let geneIndex = 0;
-                    geneIndex < parent1.getChromosomeLength();
-                    geneIndex++) {
+                for (let gi = 0; gi < parent1.getChromosomeLength(); gi++) {
                     if (0.5 > Math.random()) {
                         offspring.setGene(
-                            geneIndex,
-                            parent1.getGene(geneIndex));
+                            gi,
+                            parent1.getGene(gi));
                     } else {
                         offspring.setGene(
-                            geneIndex,
-                            parent2.getGene(geneIndex));
+                            gi,
+                            parent2.getGene(gi));
                     }
                 }
 
-                newPopulation.setIndividual(populationIndex, offspring);
+                newPopulation.setIndividual(pi, offspring);
             } else {
-                newPopulation.setIndividual(populationIndex, parent1);
+                newPopulation.setIndividual(pi, parent1);
             }
         }
 

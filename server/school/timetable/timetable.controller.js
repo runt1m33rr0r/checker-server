@@ -1,5 +1,9 @@
-function init({ data }) {
-    const { RoomData } = data;
+function init({
+    data,
+}) {
+    const {
+        RoomData,
+    } = data;
 
     return {
         getAllRooms(req, res) {
@@ -7,7 +11,9 @@ function init({ data }) {
                 .then((result) => {
                     res.send(result);
                 })
-                .catch((err) => res.render('base/error', { error: err }));
+                .catch((err) => res.render('base/error', {
+                    error: err,
+                }));
         },
         createRoom(req, res) {
             const name = req.roomName;
@@ -17,9 +23,13 @@ function init({ data }) {
                 .then(() => {
                     res.send('room created');
                 })
-                .catch((err) => res.render('base/error', { error: err }));
+                .catch((err) => res.render('base/error', {
+                    error: err,
+                }));
         },
     };
 }
 
-module.exports = { init };
+module.exports = {
+    init,
+};

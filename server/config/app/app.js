@@ -1,5 +1,3 @@
-/* globals __dirname */
-
 const path = require('path');
 const bodyParser = require('body-parser');
 const express = require('express');
@@ -32,16 +30,24 @@ function init(db) {
 
     setupStatics(app);
 
-    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.urlencoded({
+        extended: true,
+    }));
     app.use(expressSession({
         resave: false,
         saveUninitialized: false,
         secret: settings.secret,
-        store: new MongoStore({ db: db }),
-        cookie: { maxAge: 7 * 86400000 },
+        store: new MongoStore({
+            db: db,
+        }),
+        cookie: {
+            maxAge: 7 * 86400000,
+        },
     }));
 
     return app;
 }
 
-module.exports = { init };
+module.exports = {
+    init,
+};

@@ -5,7 +5,8 @@
   "license": "AGPL-3.0",
   "scripts": {
     "start": "node server.js",
-    "dev": "./node_modules/.bin/nodemon server.js"
+    "dev": "./node_modules/.bin/nodemon server.js",
+    "escheck": "./node_modules/.bin/eslint ."
   },
   "dependencies": {
     "body-parser": "^1.17.2",
@@ -21,8 +22,8 @@
     "pug": "^2.0.0-rc.3"
   },
   "devDependencies": {
-    "babel-eslint": "^7.2.3",
     "eslint": "^4.5.0",
+    "eslint-config-defaults": "^9.0.0",
     "eslint-config-google": "^0.9.1",
     "gulp": "^3.9.1",
     "nodemon": "^1.12.0"

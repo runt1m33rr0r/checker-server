@@ -4,7 +4,9 @@ class UserData extends BaseData {
     constructor(db, models) {
         super(db);
 
-        const { User } = models;
+        const {
+            User,
+        } = models;
         this.User = User;
     }
 
@@ -28,7 +30,9 @@ class UserData extends BaseData {
 
     getUserByUsername(username) {
         if (!username) {
-            return Promise.reject({ message: 'Username not specified!' });
+            return Promise.reject({
+                message: 'Username not specified!',
+            });
         }
 
         return this.collection.findOne({

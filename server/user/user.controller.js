@@ -1,7 +1,12 @@
 const roleTypes = require('../utils/roletypes');
 
-function init({ data, encryption }) {
-    const { UserData } = data;
+function init({
+    data,
+    encryption,
+}) {
+    const {
+        UserData,
+    } = data;
 
     function getUserByUsername(req, res) {
         const username = req.query.username;
@@ -18,7 +23,9 @@ function init({ data, encryption }) {
 
                 return res.send(user);
             })
-            .catch((err) => res.render('base/error', { error: err }));
+            .catch((err) => res.render('base/error', {
+                error: err,
+            }));
     }
 
     function getUserById(req, res) {
@@ -36,7 +43,9 @@ function init({ data, encryption }) {
 
                 return res.send(user);
             })
-            .catch((err) => res.render('base/error', { error: err }));
+            .catch((err) => res.render('base/error', {
+                error: err,
+            }));
     }
 
     return {
@@ -77,7 +86,9 @@ function init({ data, encryption }) {
                 .then(() => {
                     res.redirect('/users/login');
                 })
-                .catch((err) => res.render('base/error', { error: err }));
+                .catch((err) => res.render('base/error', {
+                    error: err,
+                }));
         },
         getUnauthorized(req, res) {
             res.render('base/unauthorized');
@@ -85,4 +96,6 @@ function init({ data, encryption }) {
     };
 }
 
-module.exports = { init };
+module.exports = {
+    init,
+};
