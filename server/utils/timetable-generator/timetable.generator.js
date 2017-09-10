@@ -11,7 +11,7 @@ class TimetableGenerator {
     }
 
     getReadyTimetable() {
-        const timetable = this.initTimetable();
+        const timetable = this._initTimetable();
         const ga = new GeneticAlgorithm(100, 0.01, 0.9, 2, 5);
         let population = ga.initPopulation(timetable);
 

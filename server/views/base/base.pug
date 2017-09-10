@@ -1,15 +1,23 @@
-doctype
-html(class="mdc-typography")
-    head
-        title System
-        meta(charset="utf-8")
+include ./nav
 
-        link(rel="stylesheet", href="/material/dist/material-components-web.min.css")
+doctype
+html
+    head
+        title School System
+        meta(charset="utf-8" name="viewport" content="width=device-width, initial-scale=1")
+
+        link(rel="stylesheet" href="/normalize/normalize.css")
+        link(rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500")
+        ling(rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono")
+        link(rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons")
+        link(rel="stylesheet" href="/material/dist/material-components-web.min.css")
+        link(rel="stylesheet" href="/public/styles/main.css")
         block styles
         block head_scripts
-    body
+    body.mdc-typography.mdc-layout-grid
+        +nav
         block content
 
         script(src="/material/dist/material-components-web.min.js")
-        script window.mdc.autoInit();
+        script(src="/public/scripts/main.js")
         block bottom_scripts

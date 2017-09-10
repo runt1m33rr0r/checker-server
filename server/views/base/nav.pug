@@ -1,0 +1,30 @@
+mixin nav
+    div.mdc-toolbar.mdc-toolbar--fixed
+        div.mdc-toolbar__row
+            section.mdc-toolbar__section.mdc-toolbar__section--align-start
+                button.menu.material-icons.mdc-toolbar__icon--menu menu
+                span.mdc-toolbar__title.catalog-title Система
+
+    aside.mdc-temporary-drawer
+        nav.mdc-temporary-drawer__drawer
+            header.mdc-temporary-drawer__header
+                div.mdc-temporary-drawer__header-content.mdc-theme--primary-bg.mdc-theme--text-primary-on-primary
+                    | Навигация
+            nav.mdc-temporary-drawer__content.mdc-list-group
+                div.mdc-list
+                    if !user
+                        a.mdc-list-item(href="/login")
+                            i.material-icons.mdc-list-item__start-detail(aria-hidden="true") account_circle
+                            | Вход
+                        a.mdc-list-item(href="/register")
+                            i.material-icons.mdc-list-item__start-detail(aria-hidden="true") account_box
+                            | Регистрация
+                    else
+                        a.mdc-list-item(href="/logout")
+                            i.material-icons.mdc-list-item__start-detail(aria-hidden="true") account_box
+                            | Изход
+                hr.mdc-list-divider
+                div.mdc-list
+                    a.mdc-list-item(href="#")
+                        i.material-icons.mdc-list-item__start-detail(aria-hidden="true") star
+                        | Други неща
