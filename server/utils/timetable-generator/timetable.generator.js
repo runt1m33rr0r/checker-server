@@ -93,7 +93,7 @@ class TimetableGenerator {
     _initGroups(timetable) {
         for (let i = 0; i < this._groups.length; i++) {
             const currentGroup = this._groups[0];
-            const groupSubjects = currentGroup.subjectCodes;
+            const groupSubjects = currentGroup.subjects;
             const id = i + 1;
             const subjectdIds = [];
 

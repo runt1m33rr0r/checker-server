@@ -2,6 +2,6 @@ extends ./base
 
 block content
     if error
-        h1#unauthorized.mdc-typography--display3= error.message
+        h1.text-danger error.message
     else
-        h1#unauthorized.mdc-typography--display3 Непозната грешка!
+        h1.text-danger Непозната грешка!

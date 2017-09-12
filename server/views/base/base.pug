@@ -1,24 +1,26 @@
 include ./nav
 
 doctype
-html.mdc-typography
+html
     head
         title School System
-        meta(charset="utf-8" name="viewport" content="width=device-width, initial-scale=1")
+        meta(charset="utf-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
 
-        link(rel="stylesheet" href="/public/normalize.css")
-        link(rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500")
-        ling(rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono")
-        link(rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons")
-        link(rel="stylesheet" href="/public/dist/material-components-web.min.css")
+        link(rel="stylesheet" href="/public/dist/css/bootstrap.min.css")
+        link(rel="stylesheet" href="/public/css/font-awesome.min.css")
         link(rel="stylesheet" href="/public/styles/main.css")
         block styles
         block head_scripts
     body
-        +nav
-        block content
+        header
+            +nav
+        section#main-content.d-flex.flex-column.justify-content-center.align-items-center
+            block content
 
-        script(src="/public/dist/material-components-web.min.js")
-        script(src="/public/dist/jquery.min.js")
-        script(src="/public/scripts/main.js")
-        block bottom_scripts
+            script(src="/public/dist/jquery.min.js")
+            script(src="/public/dist/umd/popper.min.js")
+            script(src="/public/dist/js/bootstrap.min.js")
+
+            script(src="/public/scripts/main.js")
+            block bottom_scripts
