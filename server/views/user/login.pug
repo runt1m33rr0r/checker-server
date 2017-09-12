@@ -1,15 +1,11 @@
 extends ../base/base
 
 block content
-    div.center-form
-        form(action="/users/login" method="post")
-            div
-                label.mdc-form-field.mdc-textfield(data-mdc-auto-init="MDCTextfield")
-                    input.mdc-textfield__input(type="text" name="username")
-                    span.mdc-textfield__label Потребителско име
-            div
-                label.mdc-form-field.mdc-textfield(data-mdc-auto-init="MDCTextfield")
-                    input.mdc-textfield__input(type="password" name="password")
-                    span.mdc-textfield__label Парола
-
-            button.mdc-button.mdc-button--raised(type="submit") Вход
+    div
+        form.pl-2.pr-2(action="/users/login" method="post")
+            h2 Вход
+            label.sr-only(for="inputUsername") Потребителско име
+            input#inputUsername.form-control(placeholder="Потребителско име" name="username" type="text" required autofocus)
+            label.sr-only(for="inputPassword") Парола
+            input#inputPassword.mt-1.form-control(placeholder="Password" name="password" type="password" required)
+            button.mt-1.btn.btn-lg.btn-primary.btn-block(type="submit") Влез

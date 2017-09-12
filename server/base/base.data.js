@@ -19,6 +19,16 @@ class BaseData {
         return this.collection.insertOne(entry);
     }
 
+    createManyEntries(entries) {
+        if (!entries || entries.length < 1) {
+            return Promise.reject({
+                message: 'Invalid entries!',
+            });
+        }
+
+        return this.collection.insertMany(entries);
+    }
+
     getByID(id) {
         if (!id || !ObjectID.isValid(id)) {
             return Promise.reject({

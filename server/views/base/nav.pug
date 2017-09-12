@@ -1,33 +1,22 @@
 mixin nav
-    div.mdc-toolbar.mdc-toolbar--fixed
-        div.mdc-toolbar__row
-            section.mdc-toolbar__section.mdc-toolbar__section--align-start
-                button.menu.material-icons.mdc-toolbar__icon--menu menu
-                span.mdc-toolbar__title.catalog-title Система
-
-    aside.mdc-temporary-drawer
-        nav.mdc-temporary-drawer__drawer
-            header.mdc-temporary-drawer__header
-                div.mdc-temporary-drawer__header-content.mdc-theme--primary-bg.mdc-theme--text-primary-on-primary
-                    if user
-                        h1.mdc-typography--display1= user.username
-                    else
-                        h1.mdc-typography--display1 Навигация
-            nav.mdc-temporary-drawer__content.mdc-list-group
-                div.mdc-list
-                    if !user
-                        a.mdc-list-item(href="/users/login")
-                            i.material-icons.mdc-list-item__start-detail(aria-hidden="true") account_circle
-                            | Вход
-                        a.mdc-list-item(href="/users/register")
-                            i.material-icons.mdc-list-item__start-detail(aria-hidden="true") account_box
-                            | Регистрация
-                    else
-                        a.mdc-list-item(href="/users/logout")
-                            i.material-icons.mdc-list-item__start-detail(aria-hidden="true") account_box
-                            | Изход
-                hr.mdc-list-divider
-                div.mdc-list
-                    a.mdc-list-item(href="#")
-                        i.material-icons.mdc-list-item__start-detail(aria-hidden="true") settings
-                        | Система
+    nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
+        a.navbar-brand(href="/home")
+            i.fa.fa-home
+        button.navbar-toggler.collapsed(type="button" data-toggle="collapse" data-target="#navbarCollapse")
+            span.navbar-toggler-icon
+        div#navbarCollapse.collapse.navbar-collapse
+            ul.navbar-nav.mr-auto
+                li.nav-item
+                    a.btn.btn-outline-success(href="/room") Система
+            ul.navbar-nav.ml-auto
+                li.nav-item.dropdown
+                if !user
+                    a.active.nav-link.dropdown-toggle(href="#" id="reglog" data-toggle="dropdown")
+                        | Регистрация / Вход
+                    div.dropdown-menu.dropdown-menu-right
+                        a.dropdown-item(href="/users/register") Регистрация
+                        a.dropdown-item(href="/users/login") Вход
+                else
+                    a.nav-link.dropdown-toggle(href="#" id="userctrl" data-toggle="dropdown")= user.username
+                    div.dropdown-menu.dropdown-menu-right
+                        a.dropdown-item(href="/users/logout") Изход

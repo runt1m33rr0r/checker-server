@@ -6,20 +6,22 @@ const MongoStore = require('connect-mongo')(expressSession);
 const settings = require('../settings');
 
 function setupStatics(app) {
-    const materialPath = path.join(
+    const bootstrapPath = path.join(
         __dirname,
-        '../../../node_modules/material-components-web');
-    const normalizePath = path.join(
+        '../../../node_modules/bootstrap');
+    const fontAwesome = path.join(
         __dirname,
-        '../../../node_modules/normalize.css'
-    );
+        '../../../node_modules/font-awesome');
     const jqueryPath = path.join(__dirname, '../../../node_modules/jquery');
+    const popperPath = path.join(__dirname, '../../../node_modules/popper.js');
     const staticsPath = path.join(__dirname, '../../../public');
 
-    app.use('/public', express.static(materialPath));
-    app.use('/public', express.static(normalizePath));
-    app.use('/public', express.static(staticsPath));
     app.use('/public', express.static(jqueryPath));
+    app.use('/public', express.static(popperPath));
+    app.use('/public', express.static(bootstrapPath));
+    app.use('/public', express.static(fontAwesome));
+
+    app.use('/public', express.static(staticsPath));
 }
 
 function init(db) {

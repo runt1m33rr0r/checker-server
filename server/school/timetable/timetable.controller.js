@@ -6,6 +6,9 @@ function init({
     } = data;
 
     return {
+        getSetupPage(req, res) {
+            res.render('school/system');
+        },
         getAllRooms(req, res) {
             RoomData.getAll()
                 .then((result) => {
@@ -15,17 +18,18 @@ function init({
                     error: err,
                 }));
         },
-        createRoom(req, res) {
+        createRooms(req, res) {
             const name = req.roomName;
             const capacity = req.roomCapacity;
+            console.log(req);
 
-            RoomData.createRoom(name, capacity)
-                .then(() => {
-                    res.send('room created');
-                })
-                .catch((err) => res.render('base/error', {
-                    error: err,
-                }));
+            // RoomData.createRoom(name, capacity)
+            //     .then(() => {
+            //         res.send('room created');
+            //     })
+            //     .catch((err) => res.render('base/error', {
+            //         error: err,
+            //     }));
         },
     };
 }

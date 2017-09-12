@@ -1,0 +1,24 @@
+extends ../base/base
+
+block styles
+    link(rel="stylesheet" href="/public/styles/system.css")
+
+block content
+    div
+        ul.nav.nav-pills.mb-3(role="tablist")
+            li.nav-item
+                a.nav-link.active(data-toggle="pill" href="#pills-home")
+                    | Username
+            li.nav-item
+                a.nav-link(data-toggle="pill" href="#pills-profile")
+                    | Pass
+        div.tab-content
+            div#pills-home.tab-pane.fade.show.active
+                label.sr-only(for="inputUsername") Потребителско име
+                input#inputUsername.form-control(placeholder="Потребителско име" name="username" type="text" required autofocus)
+            div#pills-profile.tab-pane.fade
+                label.sr-only(for="inputPassword") Парола
+                input#inputPassword.mt-1.form-control(placeholder="Password" name="password" type="password" required)
+                button#btn-login.mt-1.btn.btn-lg.btn-primary.btn-block(type="submit") Влез
+block bottom_scripts
+    script(src="/public/scripts/system.js")
