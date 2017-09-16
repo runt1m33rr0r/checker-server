@@ -14,12 +14,14 @@ function setupStatics(app) {
         '../../../node_modules/font-awesome');
     const jqueryPath = path.join(__dirname, '../../../node_modules/jquery');
     const popperPath = path.join(__dirname, '../../../node_modules/popper.js');
+    const momentPath = path.join(__dirname, '../../../node_modules/moment');
     const staticsPath = path.join(__dirname, '../../../public');
 
     app.use('/public', express.static(jqueryPath));
     app.use('/public', express.static(popperPath));
     app.use('/public', express.static(bootstrapPath));
     app.use('/public', express.static(fontAwesome));
+    app.use('/public', express.static(momentPath));
 
     app.use('/public', express.static(staticsPath));
 }

@@ -37,43 +37,41 @@ block content
                 div.form-group
                     label(for="subjects-list") Списък с предмети:
                     div#subjects-list.input-group
-                        input.form-control(type="text" placeholder="Име на предмет...")
+                        input#subject-name.form-control(type="text" placeholder="Име на предмет...")
                         span.input-group-btn
-                            button.btn.btn-secondary(type="button") Добави
+                            button#subject-btn.btn.btn-secondary(type="button") Добави
 
-                    div.list-group.mt-1
-                        a.list-group-item.list-group-item-action Математика
-                        a.list-group-item.list-group-item-action Физика
+                    div#subjects.list-group.mt-1
+                        span.list-group-item.list-group-item-action Математика
+                        span.list-group-item.list-group-item-action Физика
             div#room-settings.tab-pane.fade
                 div.form-group
                     label(for="room-list") Списък с кабинети:
                     div#room-list.input-group
-                        input.form-control(type="text" placeholder="Име на кабинет...")
+                        input#room-name.form-control(type="text" placeholder="Име на кабинет...")
                         span.input-group-btn
-                            button.btn.btn-secondary(type="button") Добави
-                    div.list-group.mt-1
-                        a.list-group-item.list-group-item-action Математика
-                        a.list-group-item.list-group-item-action Физика
+                            button#room-btn.btn.btn-secondary(type="button") Добави
+
+                    div#rooms.list-group.mt-1
+                        span.list-group-item.list-group-item-action Математика
+                        span.list-group-item.list-group-item-action Физика
             div#timetable-settings.tab-pane.fade
                 div.form-group
                     input.form-control(type="text" placeholder="Максимален брой часове на ден")
 
                     label.mt-1(for="timeslot-list") Списък с часови диапазони:
                     div#timeslot-list.input-group
-                        input.form-control(type="text" placeholder="От")
-                        input.form-control(type="text" placeholder="До")
+                        input#from.form-control(type="text" placeholder="От")
+                        input#to.form-control(type="text" placeholder="До")
                         span.input-group-btn
-                            button.btn.btn-secondary(type="button") Добави
-                    div.list-group.mt-1
-                        a.list-group-item.list-group-item-action От 08 до 8:45
-                        a.list-group-item.list-group-item-action От 09 до 9:45
+                            button#timeslot-btn.btn.btn-secondary(type="button") Добави
+
+                    div#timeslots.list-group.mt-1
+                        span.list-group-item.list-group-item-action От 08 до 8:45
+                        span.list-group-item.list-group-item-action От 09 до 9:45
             div#group-settings.tab-pane.fade
                 div.form-group
                     label(for="group-list") Списък с групи:
-                    div#group-list.input-group
-                        input.form-control(type="text" placeholder="Име на група...")
-                        span.input-group-btn
-                            button.btn.btn-secondary(type="button") Добави
 
                     div.list-group.mt-1
                         a.list-group-item.list-group-item-action(data-toggle="modal" data-target="#exampleModal" data-whatever="some_data") 9G
