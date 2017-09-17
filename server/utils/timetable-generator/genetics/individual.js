@@ -4,9 +4,9 @@ class Individual {
         this._fitness = -1;
 
         if (typeof param === 'object') {
-            this._initRandomOnTimetable(param);
+            this._initByRandomTimetable(param);
         } else if (typeof param === 'number') {
-            this._initRandomIndividual(param);
+            this._initByRandomIndividual(param);
         } else if (Array.isArray(param)) {
             this._initByChromosome(param);
         } else {
@@ -14,7 +14,7 @@ class Individual {
         }
     }
 
-    _initRandomOnTimetable(timetable) {
+    _initByRandomTimetable(timetable) {
         const newChromosome = [];
         let chromosomeIndex = 0;
 
@@ -23,11 +23,6 @@ class Individual {
                 newChromosome[chromosomeIndex] = timetable
                     .getRandomTimeslot()
                     .getTimeslotId();
-                chromosomeIndex++;
-
-                newChromosome[chromosomeIndex] = timetable
-                    .getRandomRoom()
-                    .getRoomId();
                 chromosomeIndex++;
 
                 newChromosome[chromosomeIndex] = timetable
@@ -40,7 +35,7 @@ class Individual {
         this._chromosome = newChromosome;
     }
 
-    _initRandomIndividual(chromosomeLength) {
+    _initByRandomIndividual(chromosomeLength) {
         const individ = [];
         for (let gene = 0; gene < chromosomeLength; gene++) {
             individ[gene] = gene;
