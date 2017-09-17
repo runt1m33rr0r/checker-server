@@ -8,7 +8,7 @@ body, html {
     min-width: 300px;
 }
 
-#main-content {
+#main-content, #register, #login {
     width: 100%;
     height: 100%;
 }
