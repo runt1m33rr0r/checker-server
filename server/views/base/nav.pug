@@ -2,21 +2,24 @@ mixin nav
     nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
         a.navbar-brand(href="/home")
             i.fa.fa-home
-        button.navbar-toggler.collapsed(type="button" data-toggle="collapse" data-target="#navbarCollapse")
+        button.navbar-toggler.collapsed(type="button" data-toggle="collapse" data-target="#navbar-collapse")
             span.navbar-toggler-icon
-        div#navbarCollapse.collapse.navbar-collapse
+        div#navbar-collapse.collapse.navbar-collapse
             ul.navbar-nav.mr-auto
-                li.nav-item
-                    a.btn.btn-outline-success(href="/room") Система
+                li.nav-item.dropdown
+                    a.nav-link.dropdown-toggle(href="#" data-toggle="dropdown") Система
+                    div.dropdown-menu
+                        a.dropdown-item(href="/room") Генериране на програма
+                        a.dropdown-item(href="/room") Въвеждане на програма
             ul.navbar-nav.ml-auto
                 li.nav-item.dropdown
                 if !user
-                    a.active.nav-link.dropdown-toggle(href="#" id="reglog" data-toggle="dropdown")
+                    a.active.nav-link.dropdown-toggle(href="#" data-toggle="dropdown")
                         | Регистрация / Вход
                     div.dropdown-menu.dropdown-menu-right
                         a.dropdown-item(href="/users/register") Регистрация
                         a.dropdown-item(href="/users/login") Вход
                 else
-                    a.nav-link.dropdown-toggle(href="#" id="userctrl" data-toggle="dropdown")= user.username
+                    a.nav-link.dropdown-toggle(href="#" data-toggle="dropdown")= user.username
                     div.dropdown-menu.dropdown-menu-right
                         a.dropdown-item(href="/users/logout") Изход

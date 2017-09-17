@@ -94,7 +94,7 @@ class TimetableGenerator {
                 }
             });
 
-            timetable.addGroup(id, currentGroup.size, subjectdIds);
+            timetable.addGroup(id, subjectdIds);
         }
     }
 }
