@@ -5,7 +5,6 @@ class Lesson {
         this._subjectId = subjectId;
         this._teacherId = 0;
         this._timeslotId = 0;
-        this._roomId = 0;
     }
 
     addTeacher(teacherId) {
@@ -14,10 +13,6 @@ class Lesson {
 
     addTimeslot(timeslotId) {
         this._timeslotId = timeslotId;
-    }
-
-    setRoomId(roomId) {
-        this._roomId = roomId;
     }
 
     getLessonId() {
@@ -38,10 +33,6 @@ class Lesson {
 
     getTimeslotId() {
         return this._timeslotId;
-    }
-
-    getRoomId() {
-        return this._roomId;
     }
 }
 
