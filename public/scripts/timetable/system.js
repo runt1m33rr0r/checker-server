@@ -122,7 +122,7 @@ $('#groups-tab').click(function (e) {
     }
 })
 
-$('#finish button').click(function(e) {
+$('#finish button').click(function (e) {
     console.log(subjects);
     console.log(timeslotsStr);
     console.log(groups);
