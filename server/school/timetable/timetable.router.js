@@ -2,8 +2,15 @@ function init({
     app,
     controllers,
 }) {
-    app.get('/room', controllers.timetable.getSetupPage);
-    app.post('/room', controllers.timetable.createRooms);
+    const settingsRoute = '/school/settings/';
+    const controller = controllers.timetable;
+
+    app.get(settingsRoute + 'base', controller.getBaseSettingsPage);
+    // app.get(settingsRoute + 'subjects', controller.getSubjectSettingsPage);
+    // app.get(settingsRoute + 'groups', controller.getGroupsSettingsPage);
+    // app.get(settingsRoute + 'timetable', controller.getTimetableSettingsPage);
+
+    app.post(settingsRoute + 'base', controller.saveBaseSettings);
 }
 
 module.exports = {

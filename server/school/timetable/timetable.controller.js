@@ -2,34 +2,33 @@ function init({
     data,
 }) {
     const {
-        RoomData,
+        GroupData,
     } = data;
 
     return {
-        getSetupPage(req, res) {
-            res.render('school/system');
+        getBaseSettingsPage(req, res) {
+            res.render('school/settings/base');
         },
-        getAllRooms(req, res) {
-            RoomData.getAll()
-                .then((result) => {
-                    res.send(result);
-                })
-                .catch((err) => res.render('base/error', {
-                    error: err,
-                }));
-        },
-        createRooms(req, res) {
-            const name = req.roomName;
-            const capacity = req.roomCapacity;
-            console.log(req);
+        saveBaseSettings(req, res) {
+            const groups = req.body.groups;
 
-            // RoomData.createRoom(name, capacity)
-            //     .then(() => {
-            //         res.send('room created');
-            //     })
-            //     .catch((err) => res.render('base/error', {
-            //         error: err,
-            //     }));
+            if (!groups) {
+                return res.status(500).json({
+                    message: 'Missing groups!',
+                });
+            }
+
+            GroupData.createGroups(groups)
+                .then(() => {
+                    res.status(200).json({
+                        message: 'cool',
+                    });
+                })
+                .catch((err) => {
+                    res.status(400).json({
+                        message: err.message,
+                    });
+                });
         },
     };
 }

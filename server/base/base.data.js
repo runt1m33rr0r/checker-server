@@ -20,7 +20,7 @@ class BaseData {
     }
 
     createManyEntries(entries) {
-        if (!entries || entries.length < 1) {
+        if (!entries || !Array.isArray(entries) || entries.length < 1) {
             return Promise.reject({
                 message: 'Invalid entries!',
             });

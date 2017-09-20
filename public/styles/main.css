@@ -17,6 +17,6 @@ h1, h2 {
     text-align: center;
 }
 
-form {
+form, .form {
     min-width: 300px;
 }

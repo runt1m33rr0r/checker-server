@@ -1,0 +1,18 @@
+extends ../../base/base
+
+block content
+    div.d-flex.flex-column.justify-content-center.align-items-center.mt-5.pt-4
+        h3 Основни настройки на училището
+        div.form.pl-2.pr-2
+            label(for="school-type") Вид учище:
+            select#school-type.form-control
+                option гимназия
+                option основно училище
+
+            label.mt-1(for="groups-per-grade") Брой паралелки за всеки клас:
+            input#groups-per-grade.form-control(type="text")
+
+            button.mt-1.btn.btn-lg.btn-primary.btn-block Запази
+
+block bottom_scripts
+    script(src="/public/scripts/school/settings/base.js")
