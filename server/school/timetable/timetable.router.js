@@ -7,7 +7,7 @@ function init({
 
     app.get(settingsRoute + 'base', controller.getBaseSettingsPage);
     app.get(settingsRoute + 'subjects', controller.getSubjectSettingsPage);
-    // app.get(settingsRoute + 'groups', controller.getGroupsSettingsPage);
+    app.get(settingsRoute + 'groups', controller.getGroupsSettingsPage);
     app.get(settingsRoute + 'timetable', controller.getTimetableSettingsPage);
 
     app.post(settingsRoute + 'base', controller.saveBaseSettings);

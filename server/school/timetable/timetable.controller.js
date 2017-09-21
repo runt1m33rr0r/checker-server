@@ -17,6 +17,24 @@ function init({
         getTimetableSettingsPage(req, res) {
             res.render('school/settings/timetable');
         },
+        getGroupsSettingsPage(req, res) {
+            let allGroups = GroupData.getAll();
+            let allSubjects = SubjectData.getAll();
+
+            Promise.all([allGroups, allSubjects])
+                .then((result) => {
+                    const groups = result[0];
+                    const subjects = result[1];
+
+                    res.render('school/settings/groups', {
+                        groups: groups,
+                        subjects: subjects,
+                    });
+                })
+                .catch((err) => res.render('base/error', {
+                    error: err,
+                }));
+        },
         saveBaseSettings(req, res) {
             const groups = req.body.groups;
 
@@ -26,7 +44,10 @@ function init({
                 });
             }
 
-            GroupData.createGroups(groups)
+            GroupData.clean()
+                .then(() => {
+                    return GroupData.createGroups(groups);
+                })
                 .then(() => {
                     res.status(200).json({
                         message: 'cool',
@@ -47,7 +68,10 @@ function init({
                 });
             }
 
-            SubjectData.createSubjects(subjects)
+            SubjectData.clean()
+                .then(() => {
+                    return SubjectData.createSubjects(subjects);
+                })
                 .then(() => {
                     res.status(200).json({
                         message: 'cool',
@@ -68,7 +92,10 @@ function init({
                 });
             }
 
-            TimeslotData.createTimeslots(timeslots)
+            TimeslotData.clean()
+                .then(() => {
+                    return TimeslotData.createTimeslots(timeslots);
+                })
                 .then(() => {
                     res.status(200).json({
                         message: 'cool',
