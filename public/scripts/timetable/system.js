@@ -66,16 +66,20 @@ function initListEvents(listDom, listJs) {
     });
 }
 
-function parseTimeslot(fromDom, toDom) {
+function parseTimeslot(fromDom, toDom, dayDom) {
     let from = $(fromDom).val();
     let to = $(toDom).val();
+    let day = $(dayDom).val();
+
     let areValid =
         moment(from, ['HH:mm', 'HH'], true).isValid() &&
-        moment(to, ['HH:mm', 'HH'], true).isValid();
+        moment(to, ['HH:mm', 'HH'], true).isValid() &&
+        moment(day, ['DD'], true).isValid();
 
     if (areValid) {
         let parsedFrom = moment(from, ['HH:mm', 'HH'], true).toObject();
         let parsedTo = moment(to, ['HH:mm', 'HH'], true).toObject();
+        let parsedDay = moment(to, ['HH:mm', 'HH'], true).toObject();
 
         return 'От ' + parsedFrom.hours + ':' + parsedFrom.minutes + ' ' +
             'До ' + parsedTo.hours + ':' + parsedTo.minutes;
