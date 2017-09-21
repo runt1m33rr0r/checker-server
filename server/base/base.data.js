@@ -9,6 +9,10 @@ class BaseData {
         this.collection = this.db.collection(this.collectionName);
     }
 
+    clean() {
+        return this.collection.deleteMany({});
+    }
+
     createEntry(entry) {
         if (!entry) {
             return Promise.reject({
