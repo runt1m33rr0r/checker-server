@@ -4,6 +4,7 @@ function init({
     const {
         GroupData,
         SubjectData,
+        TimeslotData,
     } = data;
 
     return {
@@ -12,6 +13,9 @@ function init({
         },
         getSubjectSettingsPage(req, res) {
             res.render('school/settings/subjects');
+        },
+        getTimetableSettingsPage(req, res) {
+            res.render('school/settings/timetable');
         },
         saveBaseSettings(req, res) {
             const groups = req.body.groups;
@@ -54,7 +58,28 @@ function init({
                         message: err.message,
                     });
                 });
-        }
+        },
+        saveTimetableSettings(req, res) {
+            const timeslots = req.body.timeslots;
+
+            if (!timeslots) {
+                return res.status(500).json({
+                    message: 'Missing timeslots!',
+                });
+            }
+
+            TimeslotData.createTimeslots(timeslots)
+                .then(() => {
+                    res.status(200).json({
+                        message: 'cool',
+                    });
+                })
+                .catch((err) => {
+                    res.status(400).json({
+                        message: err.message,
+                    });
+                });
+        },
     };
 }
 
