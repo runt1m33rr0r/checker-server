@@ -13,90 +13,48 @@ block content
                 a.nav-link(data-toggle="pill" href="#subject-settings")
                     | Настройки за предмети
             li.nav-item
-                a.nav-link(data-toggle="pill" href="#room-settings")
-                    | Настройки за стаите
-            li.nav-item
                 a.nav-link(data-toggle="pill" href="#timetable-settings")
                     | Настройки за програмата
             li.nav-item
-                a.nav-link(data-toggle="pill" href="#group-settings")
+                a#groups-tab.nav-link(data-toggle="pill" href="#group-settings")
                     | Настройки за групи
+            li.nav-item
+                a.nav-link(data-toggle="pill" href="#finish")
+                    | Преглед на настройки
         div.tab-content
+            div#finish.tab-pane.fade
+                h2 Преглед
+                button.btn.btn-primary(type="button" data-dismiss="modal") Генерирай
+
             div#basic-settings.tab-pane.fade.show.active
-                div.form-group
-                    label(for="school-type") Вид учище:
-                    select#school-type.form-control
-                        option гимназия
-                        option основно училище
-                div.form-group
-                    label(for="groups-per-grade") Брой паралелки за всеки клас:
-                    input#groups-per-grade.form-control(type="text")
-                    label.mt-3(for="group-capacity") Брой места за всяка паралелка:
-                    input#group-capacity.form-control(type="text")
+                label(for="school-type") Вид учище:
+                select#school-type.form-control
+                    option гимназия
+                    option основно училище
+
+                label.mt-1(for="groups-per-grade") Брой паралелки за всеки клас:
+                input#groups-per-grade.form-control(type="text")
             div#subject-settings.tab-pane.fade
-                div.form-group
-                    label(for="subjects-list") Списък с предмети:
-                    div#subjects-list.input-group
-                        input#subject-name.form-control(type="text" placeholder="Име на предмет...")
-                        span.input-group-btn
-                            button#subject-btn.btn.btn-secondary(type="button") Добави
+                label(for="subjects-list") Списък с предмети:
+                div#subjects-list.input-group
+                    input#subject-name.form-control(type="text" placeholder="Име на предмет...")
+                    span.input-group-btn
+                        button#subject-btn.btn.btn-secondary(type="button") Добави
 
-                    div#subjects.list-group.mt-1
-                        span.list-group-item.list-group-item-action Математика
-                        span.list-group-item.list-group-item-action Физика
-            div#room-settings.tab-pane.fade
-                div.form-group
-                    label(for="room-list") Списък с кабинети:
-                    div#room-list.input-group
-                        input#room-name.form-control(type="text" placeholder="Име на кабинет...")
-                        span.input-group-btn
-                            button#room-btn.btn.btn-secondary(type="button") Добави
-
-                    div#rooms.list-group.mt-1
-                        span.list-group-item.list-group-item-action Математика
-                        span.list-group-item.list-group-item-action Физика
+                div#subjects.list-group.mt-1
             div#timetable-settings.tab-pane.fade
-                div.form-group
-                    input.form-control(type="text" placeholder="Максимален брой часове на ден")
+                label.mt-1(for="timeslot-list") Списък с часови диапазони:
+                div#timeslot-list.input-group
+                    input#from.form-control(type="text" placeholder="От")
+                    input#to.form-control(type="text" placeholder="До")
+                    span.input-group-btn
+                        button#timeslot-btn.btn.btn-secondary(type="button") Добави
 
-                    label.mt-1(for="timeslot-list") Списък с часови диапазони:
-                    div#timeslot-list.input-group
-                        input#from.form-control(type="text" placeholder="От")
-                        input#to.form-control(type="text" placeholder="До")
-                        span.input-group-btn
-                            button#timeslot-btn.btn.btn-secondary(type="button") Добави
-
-                    div#timeslots.list-group.mt-1
-                        span.list-group-item.list-group-item-action От 08 до 8:45
-                        span.list-group-item.list-group-item-action От 09 до 9:45
+                div#timeslots.list-group.mt-1
             div#group-settings.tab-pane.fade
-                div.form-group
-                    label(for="group-list") Списък с групи:
+                label(for="group-list") Списък с групи:
+                div#groups.list-group.mt-1
 
-                    div.list-group.mt-1
-                        a.list-group-item.list-group-item-action(data-toggle="modal" data-target="#exampleModal" data-whatever="some_data") 9G
-                        a.list-group-item.list-group-item-action 12G
-
-                div#exampleModal.modal.fade(tabindex="-1" role="dialog")
-                    div.modal-dialog.modal-lg(role="document")
-                        div.modal-content
-                            div.modal-header
-                                h5#exampleModalLabel.modal-title Настройки на 9G
-                            div.modal-body
-                                div.form-group
-                                    div.input-group
-                                        input.form-control(type="text" placeholder="Име на предмет...")
-                                        input.form-control(type="text" placeholder="Брой часове на седмица...")
-                                        span.input-group-btn
-                                            button.btn.btn-secondary(type="button") Добави
-                                    div.list-group.mt-1
-                                        a.list-group-item.list-group-item-action Математика - 5
-                                        a.list-group-item.list-group-item-action Физика - 2
-
-                                    input.mt-1.form-control(type="text" placeholder="Име на класен ръководител...")
-
-                            div.modal-footer
-                                button.btn.btn-primary(type="button" data-dismiss="modal") Запази
 
 block bottom_scripts
-    script(src="/public/scripts/system.js")
+    script(src="/public/scripts/timetable/system.js")
