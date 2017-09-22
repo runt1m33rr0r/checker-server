@@ -7,6 +7,35 @@ function init({
         TimeslotData,
     } = data;
 
+    function getValidSubjects(subjects) {
+        let validSubjectCodes = [];
+        let subjectPromises = [];
+
+        subjects.forEach((subject) => {
+            const promise = SubjectData.getSubjectByCode(subject)
+                .then((result) => {
+                    if (result) {
+                        validSubjectCodes.push(result.code);
+                    }
+                });
+            subjectPromises.push(promise);
+        });
+
+        return Promise.all(subjectPromises)
+            .then(() => {
+                return Promise.resolve(validSubjectCodes);
+            });
+    }
+
+    function updateGroupSubjects(groupName, subjectCodes) {
+        return getValidSubjects(subjectCodes)
+            .then((subjects) => {
+                return GroupData.updateGroupSubjects(
+                    groupName,
+                    subjects);
+            });
+    }
+
     return {
         getBaseSettingsPage(req, res) {
             res.render('school/settings/base');
@@ -96,6 +125,39 @@ function init({
                 .then(() => {
                     return TimeslotData.createTimeslots(timeslots);
                 })
+                .then(() => {
+                    res.status(200).json({
+                        message: 'cool',
+                    });
+                })
+                .catch((err) => {
+                    res.status(400).json({
+                        message: err.message,
+                    });
+                });
+        },
+        saveGroupsSettings(req, res) {
+            const groups = req.body.groups;
+
+            if (!groups || !Array.isArray(groups) || groups.length < 1) {
+                return res.status(500).json({
+                    message: 'Missing groups!',
+                });
+            }
+
+            let updates = [];
+            for (let group of groups) {
+                if (!group.subjects ||
+                    !Array.isArray(group.subjects)) {
+                    return res.status(400).json({
+                        message: 'Invalid group subjects!',
+                    });
+                }
+
+                updates.push(updateGroupSubjects(group.name, group.subjects));
+            }
+
+            Promise.all(updates)
                 .then(() => {
                     res.status(200).json({
                         message: 'cool',

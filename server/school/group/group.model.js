@@ -10,6 +10,13 @@ class Group {
             throw new Error('Invalid subjects collection!');
         }
 
+        for (let subject of subjects) {
+            if (typeof subject !== 'string' ||
+                subject.length < 3) {
+                throw new Error('Invalid subjects collection!');
+            }
+        }
+
         this.name = name;
         this.subjects = subjects;
     }

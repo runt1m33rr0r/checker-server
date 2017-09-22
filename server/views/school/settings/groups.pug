@@ -4,30 +4,35 @@ block styles
     link(rel="stylesheet" href="/public/styles/groups.css")
 
 block content
+    - function groupHasSubject(group, subject) { return group.subjects.includes(subject) }
     div.d-flex.flex-column.justify-content-center.align-items-center.mt-5.pt-4
         h3 Списък с групи:
         div#groups.list-group.mt-1
             if !groups || groups.length < 1
                 h3 Няма групи в системата!
             else
-                each group in groups
-                    div.card
-                        div.card-header
-                            h5.mb-0
-                                a(data-toggle="collapse" href="#" + group.name)= group.name
+                form#groups-form
+                    each group in groups
+                        div.card
+                            div.card-header
+                                h5.mb-0
+                                    a(data-toggle="collapse" href="#" + group.name)= group.name
 
-                        div.collapse.ml-2.mr-2.mb-1(data-parent="#groups" id=group.name)
-                            if !subjects || subjects.length < 1
-                                span.mt-2 Няма предмети в системата!
-                            else
-                                each subject in subjects
-                                    div.mt-2
-                                        label.custom-control.custom-checkbox
-                                            input.custom-control-input(type="checkbox")
-                                            span.custom-control-indicator
-                                            span.custom-control-description= subject.code
+                            div.collapse.ml-2.mr-2.mb-1(data-parent="#groups" id=group.name)
+                                if !subjects || subjects.length < 1
+                                    span.mt-2 Няма предмети в системата!
+                                else
+                                    each subject in subjects
+                                        div.mt-2
+                                            label.custom-control.custom-checkbox
+                                                if groupHasSubject(group, subject.code)
+                                                    input.custom-control-input(name=group.name value=subject.code checked type="checkbox")
+                                                else
+                                                    input.custom-control-input(name=group.name value=subject.code type="checkbox")
+                                                span.custom-control-indicator
+                                                span.custom-control-description= subject.code
 
-            button#save-btn.mt-1.btn.btn-lg.btn-primary.btn-block Запази
+                    button#btn-save.mt-1.btn.btn-lg.btn-primary.btn-block Запази
 
 block bottom_scripts
     script(src="/public/scripts/school/settings/groups.js")

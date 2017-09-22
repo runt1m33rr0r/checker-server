@@ -21,7 +21,6 @@ class SubjectData extends BaseData {
 
             const check = this.getSubjectByCode(subjectCode)
                 .then((result) => {
-                    console.log(result);
                     if (result) {
                         return Promise.reject({
                             message: 'Такива предмети вече съществуват!',
