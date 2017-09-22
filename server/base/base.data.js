@@ -9,6 +9,10 @@ class BaseData {
         this.collection = this.db.collection(this.collectionName);
     }
 
+    clean() {
+        return this.collection.deleteMany({});
+    }
+
     createEntry(entry) {
         if (!entry) {
             return Promise.reject({
@@ -20,7 +24,7 @@ class BaseData {
     }
 
     createManyEntries(entries) {
-        if (!entries || entries.length < 1) {
+        if (!entries || !Array.isArray(entries) || entries.length < 1) {
             return Promise.reject({
                 message: 'Invalid entries!',
             });

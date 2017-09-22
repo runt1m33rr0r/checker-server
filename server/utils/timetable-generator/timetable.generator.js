@@ -2,8 +2,7 @@ const Timetable = require('./objects/timetable');
 const GeneticAlgorithm = require('./genetics/genetic.algorithm');
 
 class TimetableGenerator {
-    constructor(rooms, timeslots, teachers, subjects, groups) {
-        this._rooms = rooms;
+    constructor(timeslots, teachers, subjects, groups) {
         this._timeslots = timeslots;
         this._teachers = teachers;
         this._subjects = subjects;
@@ -34,20 +33,12 @@ class TimetableGenerator {
     _initTimetable() {
         const timetable = new Timetable();
 
-        this._initRooms(timetable);
         this._initTimeslots(timetable);
         this._initTeachers(timetable);
         this._initSubjects(timetable);
         this._initGroups(timetable);
 
         return timetable;
-    }
-
-    _initRooms(timetable) {
-        for (let i = 0; i < this._rooms.length; i++) {
-            const currentRoom = this._rooms[i];
-            timetable.addRoom(i + 1, currentRoom.name, currentRoom.capacity);
-        }
     }
 
     _initTimeslots(timetable) {
@@ -103,7 +94,7 @@ class TimetableGenerator {
                 }
             });
 
-            timetable.addGroup(id, currentGroup.size, subjectdIds);
+            timetable.addGroup(id, subjectdIds);
         }
     }
 }
