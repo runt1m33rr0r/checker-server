@@ -24,6 +24,34 @@ class GroupData extends BaseData {
             });
     }
 
+    updateGroupSubjects(groupName, subjects) {
+        if (!groupName ||
+            typeof groupName !== 'string' ||
+            groupName.length < 1 ||
+            !Array.isArray(subjects)) {
+            return Promise.reject({
+                message: 'Invalid name or subjects!',
+            });
+        }
+
+        for (let subject of subjects) {
+            if (typeof subject !== 'string' ||
+                subject.length < 3) {
+                return Promise.reject({
+                    message: 'Invalid subjects collection!',
+                });
+            }
+        }
+
+        return this.collection.findOneAndUpdate({
+            name: groupName,
+        }, {
+            $set: {
+                subjects: subjects,
+            },
+        });
+    }
+
     createGroups(groupsArray) {
         let groupModels = [];
         let checks = [];

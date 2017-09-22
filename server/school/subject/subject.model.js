@@ -16,6 +16,13 @@ class Subject {
             throw new Error('Invalid teachers collection!');
         }
 
+        for (let teacher of teachers) {
+            if (typeof teacher !== 'string' ||
+                teacher.length < 3) {
+                throw new Error('Invalid teachers collection!');
+            }
+        }
+
         this.name = name;
         this.code = code;
         this.teachers = teachers;

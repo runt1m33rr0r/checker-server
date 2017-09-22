@@ -12,6 +12,7 @@ function init({
 
     app.post(settingsRoute + 'base', controller.saveBaseSettings);
     app.post(settingsRoute + 'subjects', controller.saveSubjectSettings);
+    app.post(settingsRoute + 'groups', controller.saveGroupsSettings);
     app.post(settingsRoute + 'timetable', controller.saveTimetableSettings);
 }
 
