@@ -4,8 +4,7 @@ block content
     div#login.d-flex.flex-column.justify-content-center.align-items-center
         form.pl-2.pr-2(action="/users/login" method="post")
             h2 Вход
-            label.sr-only(for="inputUsername") Потребителско име
-            input#inputUsername.form-control(placeholder="Потребителско име" name="username" type="text" required autofocus)
-            label.sr-only(for="inputPassword") Парола
-            input#inputPassword.mt-1.form-control(placeholder="Password" name="password" type="password" required)
+            input.form-control(placeholder="Потребителско име" name="username" type="text" required autofocus)
+            label.sr-only(for="input-password") Парола
+            input.mt-1.form-control(placeholder="Password" name="password" type="password" required)
             button.mt-1.btn.btn-lg.btn-primary.btn-block(type="submit") Влез
