@@ -7,35 +7,6 @@ function init({
         TimeslotData,
     } = data;
 
-    function getValidSubjects(subjects) {
-        let validSubjectCodes = [];
-        let subjectPromises = [];
-
-        subjects.forEach((subject) => {
-            const promise = SubjectData.getSubjectByCode(subject)
-                .then((result) => {
-                    if (result) {
-                        validSubjectCodes.push(result.code);
-                    }
-                });
-            subjectPromises.push(promise);
-        });
-
-        return Promise.all(subjectPromises)
-            .then(() => {
-                return Promise.resolve(validSubjectCodes);
-            });
-    }
-
-    function updateGroupSubjects(groupName, subjectCodes) {
-        return getValidSubjects(subjectCodes)
-            .then((subjects) => {
-                return GroupData.updateGroupSubjects(
-                    groupName,
-                    subjects);
-            });
-    }
-
     return {
         getBaseSettingsPage(req, res) {
             res.render('school/settings/base');
@@ -63,6 +34,32 @@ function init({
                 .catch((err) => res.render('base/error', {
                     error: err,
                 }));
+        },
+        getAllGroups(req, res) {
+            GroupData.getAll()
+                .then((data) => {
+                    res.status(200).json({
+                        groups: data,
+                    });
+                })
+                .catch((err) => {
+                    res.status(500).json({
+                        message: err.message,
+                    });
+                });
+        },
+        getAllSubjects(req, res) {
+            SubjectData.getAll()
+                .then((data) => {
+                    res.status(200).json({
+                        subjects: data,
+                    });
+                })
+                .catch((err) => {
+                    res.status(500).json({
+                        message: err.message,
+                    });
+                });
         },
         saveBaseSettings(req, res) {
             const groups = req.body.groups;
@@ -154,7 +151,14 @@ function init({
                     });
                 }
 
-                updates.push(updateGroupSubjects(group.name, group.subjects));
+                const update = SubjectData.getSubjectsByCodes(group.subjects)
+                    .then((subjects) => {
+                        return GroupData.updateGroupSubjects(
+                            group.name,
+                            subjects);
+                    });
+
+                updates.push(update);
             }
 
             Promise.all(updates)

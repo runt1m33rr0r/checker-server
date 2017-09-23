@@ -20,21 +20,27 @@ class BaseData {
             });
         }
 
-        return this.collection.insertOne(entry);
+        return this.collection.insertOne(entry)
+            .then(() => {
+                return entry;
+            });
     }
 
     createManyEntries(entries) {
-        if (!entries || !Array.isArray(entries) || entries.length < 1) {
+        if (!Array.isArray(entries) || entries.length < 1) {
             return Promise.reject({
                 message: 'Invalid entries!',
             });
         }
 
-        return this.collection.insertMany(entries);
+        return this.collection.insertMany(entries)
+            .then(() => {
+                return entries;
+            });
     }
 
     getByID(id) {
-        if (!id || !ObjectID.isValid(id)) {
+        if (!ObjectID.isValid(id)) {
             return Promise.reject({
                 message: 'Invalid ID',
             });

@@ -2,15 +2,14 @@ const roleTypes = require('../utils/roletypes');
 
 class User {
     constructor(username, roles, salt, hashedPass) {
-        if (!username ||
-            typeof username !== 'string' ||
-            username.length < 5 ||
+        if (typeof username !== 'string' ||
+            username.length < 6 ||
             username.length > 15 ||
             username !== username.toLowerCase()) {
             throw new Error('Invalid credentials!');
         }
 
-        if (!roles || !Array.isArray(roles) || roles.length === 0) {
+        if (!Array.isArray(roles) || roles.length === 0) {
             throw new Error('User must have a role!');
         } else {
             roles.forEach((role) => {
@@ -21,11 +20,11 @@ class User {
             });
         }
 
-        if (!salt || typeof salt !== 'string') {
+        if (typeof salt !== 'string') {
             throw new Error('Invalid credentials!');
         }
 
-        if (!hashedPass || typeof hashedPass !== 'string') {
+        if (typeof hashedPass !== 'string') {
             throw new Error('Invalid credentials!');
         }
 
