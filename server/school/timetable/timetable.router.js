@@ -12,11 +12,17 @@ function init({
     app.get(settingsRoute + 'subjects', controller.getSubjectSettingsPage);
     app.get(settingsRoute + 'groups', controller.getGroupsSettingsPage);
     app.get(settingsRoute + 'timetable', controller.getTimetableSettingsPage);
+    app.get(
+        settingsRoute + 'timetable/generate',
+        controller.getGenerateTimetablePage);
 
     app.post(settingsRoute + 'base', controller.saveBaseSettings);
     app.post(settingsRoute + 'subjects', controller.saveSubjectSettings);
     app.post(settingsRoute + 'groups', controller.saveGroupsSettings);
     app.post(settingsRoute + 'timetable', controller.saveTimetableSettings);
+    app.post(
+        settingsRoute + 'timetable/generate',
+        controller.generateTimetable);
 }
 
 module.exports = {

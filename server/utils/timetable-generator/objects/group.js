@@ -1,5 +1,6 @@
 class Group {
-    constructor(groupId, subjectIds) {
+    constructor(groupName, groupId, subjectIds) {
+        this._groupName = groupName;
         this._groupId = groupId;
         this._subjectIds = subjectIds;
     }
@@ -10,6 +11,10 @@ class Group {
 
     getSubjectIds() {
         return this._subjectIds;
+    }
+
+    getGroupName() {
+        return this._groupName;
     }
 }
 
