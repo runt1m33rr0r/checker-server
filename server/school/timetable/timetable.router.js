@@ -5,6 +5,9 @@ function init({
     const settingsRoute = '/school/settings/';
     const controller = controllers.timetable;
 
+    app.get('/api/groups', controller.getAllGroups);
+    app.get('/api/subjects', controller.getAllSubjects);
+
     app.get(settingsRoute + 'base', controller.getBaseSettingsPage);
     app.get(settingsRoute + 'subjects', controller.getSubjectSettingsPage);
     app.get(settingsRoute + 'groups', controller.getGroupsSettingsPage);

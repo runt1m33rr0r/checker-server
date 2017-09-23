@@ -35,6 +35,32 @@ function init({
                     error: err,
                 }));
         },
+        getAllGroups(req, res) {
+            GroupData.getAll()
+                .then((data) => {
+                    res.status(200).json({
+                        groups: data,
+                    });
+                })
+                .catch((err) => {
+                    res.status(500).json({
+                        message: err.message,
+                    });
+                });
+        },
+        getAllSubjects(req, res) {
+            SubjectData.getAll()
+                .then((data) => {
+                    res.status(200).json({
+                        subjects: data,
+                    });
+                })
+                .catch((err) => {
+                    res.status(500).json({
+                        message: err.message,
+                    });
+                });
+        },
         saveBaseSettings(req, res) {
             const groups = req.body.groups;
 
