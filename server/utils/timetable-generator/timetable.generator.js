@@ -89,7 +89,7 @@ class TimetableGenerator {
             const subjectdIds = [];
 
             this._subjects.forEach((subject) => {
-                if (groupSubjects.includes(subject.code)) {
+                if (groupSubjects.includes(subject)) {
                     subjectdIds.push(subject.id);
                 }
             });

@@ -9,6 +9,7 @@ function init({
         TeacherData,
         GroupData,
         SubjectData,
+        StudentData,
     } = data;
 
     function registerTeacher(
@@ -63,7 +64,17 @@ function init({
     }
 
     function registerStudent(firstName, lastName, username, group) {
-
+        return GroupData.getGroupByName(group)
+            .then((result) => {
+                if (result) {
+                    return StudentData.createStudent(
+                        firstName, lastName, username, group);
+                } else {
+                    return Promise.reject({
+                        message: 'Невалидна група!',
+                    });
+                }
+            });
     }
 
     function getUserByUsername(req, res) {
@@ -146,15 +157,31 @@ function init({
             const userType = req.body.userType;
             const roles = [roleTypes.Normal];
 
-            if (typeof leadTeacher !== 'boolean') {
-                return res.status(500).json({
-                    message: 'Невалиден потребител!',
-                });
-            }
-
             if (userType === roleTypes.Student) {
-                registerStudent(firstName, lastName, username, group);
+                roles.push(roleTypes.Student);
+                registerStudent(firstName, lastName, username, group)
+                    .then(() => {
+                        return UserData.createUser(username, roles, salt, hash);
+                    })
+                    .then(() => {
+                        res.status(200).json({
+                            message: 'cool',
+                        });
+                    })
+                    .catch((err) => {
+                        res.status(500).json({
+                            message: err.message,
+                        });
+                    });
             } else if (userType === roleTypes.Teacher) {
+                if (typeof leadTeacher !== 'boolean') {
+                    return res.status(500).json({
+                        message: 'Невалиден потребител!',
+                    });
+                }
+
+                roles.push(roleTypes.Teacher);
+
                 registerTeacher(
                         firstName,
                         lastName,
