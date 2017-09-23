@@ -4,8 +4,30 @@ block content
     div#register.d-flex.flex-column.justify-content-center.align-items-center
         form.pl-2.pr-2(action="/users/register" method="post")
             h2 Регистрация
-            label.sr-only(for="inputUsername") Потребителско име
-            input#inputUsername.form-control(placeholder="Потребителско име" name="username" type="text" required autofocus)
-            label.sr-only(for="inputPassword") Парола
-            input#inputPassword.mt-1.form-control(placeholder="Password" name="password" type="password" required)
+            input.form-control(placeholder="Име" name="firstName" type="text" required autofocus)
+            input.mt-1.form-control(placeholder="Фамилия" name="lastName" type="text" required autofocus)
+            input.mt-1.form-control(placeholder="Потребителско име" name="username" type="text" required autofocus)
+            input.mt-1.form-control(placeholder="Парола" name="password" type="password" required)
+
+            select#user-type.mt-1.form-control(name="userType")
+                option(value="Student" selected) ученик
+                option(value="Teacher") учител
+
+            label#lead-teacher.mt-1.custom-control.custom-checkbox.d-none
+                input(type="checkbox" name="leadTeacher").custom-control-input
+                span.custom-control-indicator
+                span.custom-control-description Класен ръководител
+
+            select#group.mt-1.form-control(name="group")
+
+            div#subjects.card.mt-1.d-none
+                div#heading-one.card-header
+                    h5.mb-0
+                        a(data-toggle="collapse" href="#collapse-one") предмети
+                div#collapse-one.collapse
+                    div.card-body
+
             button.mt-1.btn.btn-lg.btn-primary.btn-block(type="submit") Регистрирай
+
+block bottom_scripts
+    script(src="/public/scripts/users/register.js")
