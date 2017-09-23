@@ -8,6 +8,7 @@ function init({
         SubjectData,
         TimeslotData,
         TeacherData,
+        LessonData,
     } = data;
 
     return {
@@ -185,6 +186,8 @@ function init({
             const subjectsPromise = SubjectData.getAll();
             const groupsPromise = GroupData.getAll();
 
+            let lessons = [];
+
             Promise.all([
                 timeslotsPromise,
                 teachersPromise,
@@ -202,11 +205,45 @@ function init({
                     teachers,
                     subjects,
                     groups);
-                const timetable = generator.getReadyTimetable();
-                console.log(timetable);
-            });
+                lessons = generator.getReadyTimetable().lessons;
+                return lessons;
+            })
+            .then((lessons) => {
+                if (!Array.isArray(lessons)) {
+                    return Promise.reject({
+                        message: 'Невалидна програма!',
+                    });
+                }
 
-            res.redirect('/');
+                const checks = [];
+                for (let lesson of lessons) {
+                    if (!lesson.timeslot) {
+                        return Promise.reject({
+                            message: 'Невалидно време!',
+                        });
+                    }
+
+                    const check = TimeslotData.getByID(lesson.timeslot._id)
+                        .then((result) => {
+                            if (!result) {
+                                return Promise.reject({
+                                    message: 'Невалидно време!',
+                                });
+                            }
+                        });
+                    checks.push(check);
+                }
+                return Promise.all(checks);
+            })
+            .then(() => {
+                return LessonData.createLessons(lessons);
+            })
+            .then(() => {
+                res.redirect('/');
+            })
+            .catch((err) => res.render('base/error', {
+                error: err,
+            }));
         },
     };
 }
