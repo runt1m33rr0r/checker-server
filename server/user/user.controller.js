@@ -38,6 +38,10 @@ function init({
                         group,
                         subjectCodes,
                     );
+                })
+                .then((result) => {
+                    return SubjectData.addTeacherToSubjects(
+                        username, result.subjects);
                 });
         } else {
             return SubjectData.getSubjectsByCodes(subjects)
@@ -50,6 +54,10 @@ function init({
                         '',
                         subjectCodes,
                     );
+                })
+                .then((result) => {
+                    return SubjectData.addTeacherToSubjects(
+                        username, result.subjects);
                 });
         }
     }
