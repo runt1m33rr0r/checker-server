@@ -1,7 +1,7 @@
 extends ../base/base
 
 block content
-    div#register.d-flex.flex-column.justify-content-center.align-items-center
+    div.full.d-flex.flex-column.justify-content-center.align-items-center
         form.pl-2.pr-2(action="/users/register" method="post")
             h2 Регистрация
             input.form-control(placeholder="Име" name="firstName" type="text" required autofocus)

@@ -11,22 +11,22 @@ class TimeslotData extends BaseData {
     }
 
     createTimeslots(timeslotArray) {
+        if (!Array.isArray(timeslotArray)) {
+            return Promise.reject({
+                message: 'Invalid timeslots!',
+            });
+        }
+
         let timeslotModels = [];
         let checks = [];
 
         for (let timeslot of timeslotArray) {
-            const fromHour = timeslot.fromHour;
-            const fromMinute = timeslot.fromMinute;
-            const toHour = timeslot.toHour;
-            const toMinute = timeslot.toMinute;
-            const day = timeslot.day;
-
             const check = this.collection.findOne({
-                    fromHour: fromHour,
-                    fromMinute: fromMinute,
-                    toHour: toHour,
-                    toMinute: toMinute,
-                    day: day,
+                    fromHour: timeslot.fromHour,
+                    fromMinute: timeslot.fromMinute,
+                    toHour: timeslot.toHour,
+                    toMinute: timeslot.toMinute,
+                    day: timeslot.day,
                 })
                 .then((result) => {
                     if (result) {
@@ -35,9 +35,12 @@ class TimeslotData extends BaseData {
                         });
                     }
 
-                    timeslotModels.push(
-                        new this.Timeslot(
-                            fromHour, fromMinute, toHour, toMinute, day));
+                    timeslotModels.push(new this.Timeslot(
+                            timeslot.fromHour,
+                            timeslot.fromMinute,
+                            timeslot.toHour,
+                            timeslot.toMinute,
+                            timeslot.day));
                 });
             checks.push(check);
         }

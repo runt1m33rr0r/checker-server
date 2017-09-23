@@ -43,15 +43,15 @@ class TimetableGenerator {
             const t = timetable
                 .getTimeslotById(bestLesson.getTimeslotId())
                 .getTimeslot();
-            const value =
-                `From ${t.fromHour}:${t.fromMinute}` +
-                ` to ${t.toHour}:${t.toMinute} on ${t.day}`;
+            // const value =
+            //     `From ${t.fromHour}:${t.fromMinute}` +
+            //     ` to ${t.toHour}:${t.toMinute} on ${t.day}`;
 
             const lesson = {
                 subject: subject,
                 group: group,
                 teacher: teacher,
-                timeslot: value,
+                timeslot: t,
             };
 
             finalLessons.push(lesson);
