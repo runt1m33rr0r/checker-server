@@ -27,7 +27,42 @@ class TimetableGenerator {
 
         timetable.createLessons(population.getFittest(0));
 
-        return timetable;
+        const lessons = timetable.getLessons();
+        let finalLessons = [];
+        for (let i = 0; i < lessons.length; i++) {
+            const bestLesson = lessons[i];
+            const subject = timetable
+                .getSubjectById(bestLesson.getSubjectId())
+                .getSubjectName();
+            const group = timetable
+                .getGroupById(bestLesson.getGroupId())
+                .getGroupName();
+            const teacher = timetable
+                .getTeacherById(bestLesson.getTeacherId())
+                .getTeacherName();
+            const t = timetable
+                .getTimeslotById(bestLesson.getTimeslotId())
+                .getTimeslot();
+            const value =
+                `From ${t.fromHour}:${t.fromMinute}` +
+                ` to ${t.toHour}:${t.toMinute} on ${t.day}`;
+
+            const lesson = {
+                subject: subject,
+                group: group,
+                teacher: teacher,
+                timeslot: value,
+            };
+
+            finalLessons.push(lesson);
+        }
+
+        const clashes = timetable.calcClashes();
+
+        return {
+            lessons: finalLessons,
+            clashes: clashes,
+        };
     }
 
     _initTimetable() {
@@ -43,8 +78,8 @@ class TimetableGenerator {
 
     _initTimeslots(timetable) {
         for (let i = 0; i < this._timeslots.length; i++) {
-            const currentTimeslot = this._timeslots[i];
-            timetable.addTimeslot(i + 1, currentTimeslot.value);
+            const t = this._timeslots[i];
+            timetable.addTimeslot(i + 1, t);
         }
     }
 
@@ -83,18 +118,18 @@ class TimetableGenerator {
 
     _initGroups(timetable) {
         for (let i = 0; i < this._groups.length; i++) {
-            const currentGroup = this._groups[0];
+            const currentGroup = this._groups[i];
             const groupSubjects = currentGroup.subjects;
             const id = i + 1;
             const subjectdIds = [];
 
             this._subjects.forEach((subject) => {
-                if (groupSubjects.includes(subject)) {
+                if (groupSubjects.includes(subject.code)) {
                     subjectdIds.push(subject.id);
                 }
             });
 
-            timetable.addGroup(id, subjectdIds);
+            timetable.addGroup(currentGroup.name, id, subjectdIds);
         }
     }
 }

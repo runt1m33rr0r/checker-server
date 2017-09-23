@@ -1,3 +1,5 @@
+const Generator = require('../../utils/timetable-generator');
+
 function init({
     data,
 }) {
@@ -5,6 +7,7 @@ function init({
         GroupData,
         SubjectData,
         TimeslotData,
+        TeacherData,
     } = data;
 
     return {
@@ -16,6 +19,9 @@ function init({
         },
         getTimetableSettingsPage(req, res) {
             res.render('school/settings/timetable');
+        },
+        getGenerateTimetablePage(req, res) {
+            res.render('school/timetable/generate');
         },
         getGroupsSettingsPage(req, res) {
             let allGroups = GroupData.getAll();
@@ -172,6 +178,35 @@ function init({
                         message: err.message,
                     });
                 });
+        },
+        generateTimetable(req, res) {
+            const timeslotsPromise = TimeslotData.getAll();
+            const teachersPromise = TeacherData.getAll();
+            const subjectsPromise = SubjectData.getAll();
+            const groupsPromise = GroupData.getAll();
+
+            Promise.all([
+                timeslotsPromise,
+                teachersPromise,
+                subjectsPromise,
+                groupsPromise,
+            ])
+            .then((data) => {
+                const timeslots = data[0];
+                const teachers = data[1];
+                const subjects = data[2];
+                const groups = data[3];
+
+                const generator = new Generator(
+                    timeslots,
+                    teachers,
+                    subjects,
+                    groups);
+                const timetable = generator.getReadyTimetable();
+                console.log(timetable);
+            });
+
+            res.redirect('/');
         },
     };
 }
