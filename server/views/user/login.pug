@@ -1,7 +1,7 @@
 extends ../base/base
 
 block content
-    div#login.d-flex.flex-column.justify-content-center.align-items-center
+    div.full.d-flex.flex-column.justify-content-center.align-items-center
         form.pl-2.pr-2(action="/users/login" method="post")
             h2 Вход
             input.form-control(placeholder="Потребителско име" name="username" type="text" required autofocus)

@@ -31,12 +31,12 @@
         let from = $(fromDom).val();
         let to = $(toDom).val();
         let areValid =
-            moment(from, ['HH:mm', 'HH'], true).isValid() &&
-            moment(to, ['HH:mm', 'HH'], true).isValid();
+            moment(from, ['HH:mm', 'HH'], false).isValid() &&
+            moment(to, ['HH:mm', 'HH'], false).isValid();
 
         if (areValid) {
-            let parsedFrom = moment(from, ['HH:mm', 'HH'], true).toObject();
-            let parsedTo = moment(to, ['HH:mm', 'HH'], true).toObject();
+            let parsedFrom = moment(from, ['HH:mm', 'HH'], false).toObject();
+            let parsedTo = moment(to, ['HH:mm', 'HH'], false).toObject();
             return `От ${parsedFrom.hours}:${parsedFrom.minutes} до ${parsedTo.hours}:${parsedTo.minutes}`
         } else {
             throw new Error('invalid timeslots');

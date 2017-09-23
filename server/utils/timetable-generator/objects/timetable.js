@@ -50,10 +50,10 @@ class Timetable {
             new Subject(subjectId, subjectCode, someSubject, teacherIds));
     }
 
-    addGroup(groupId, subjectIds) {
+    addGroup(name, groupId, subjectIds) {
         this._groups.set(
             groupId,
-            new Group(groupId, subjectIds));
+            new Group(name, groupId, subjectIds));
         this._numLessons = 0;
     }
 

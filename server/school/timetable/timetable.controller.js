@@ -1,3 +1,5 @@
+const Generator = require('../../utils/timetable-generator');
+
 function init({
     data,
 }) {
@@ -5,6 +7,8 @@ function init({
         GroupData,
         SubjectData,
         TimeslotData,
+        TeacherData,
+        LessonData,
     } = data;
 
     return {
@@ -16,6 +20,9 @@ function init({
         },
         getTimetableSettingsPage(req, res) {
             res.render('school/settings/timetable');
+        },
+        getGenerateTimetablePage(req, res) {
+            res.render('school/timetable/generate');
         },
         getGroupsSettingsPage(req, res) {
             let allGroups = GroupData.getAll();
@@ -172,6 +179,71 @@ function init({
                         message: err.message,
                     });
                 });
+        },
+        generateTimetable(req, res) {
+            const timeslotsPromise = TimeslotData.getAll();
+            const teachersPromise = TeacherData.getAll();
+            const subjectsPromise = SubjectData.getAll();
+            const groupsPromise = GroupData.getAll();
+
+            let lessons = [];
+
+            Promise.all([
+                timeslotsPromise,
+                teachersPromise,
+                subjectsPromise,
+                groupsPromise,
+            ])
+            .then((data) => {
+                const timeslots = data[0];
+                const teachers = data[1];
+                const subjects = data[2];
+                const groups = data[3];
+
+                const generator = new Generator(
+                    timeslots,
+                    teachers,
+                    subjects,
+                    groups);
+                lessons = generator.getReadyTimetable().lessons;
+                return lessons;
+            })
+            .then((lessons) => {
+                if (!Array.isArray(lessons)) {
+                    return Promise.reject({
+                        message: 'Невалидна програма!',
+                    });
+                }
+
+                const checks = [];
+                for (let lesson of lessons) {
+                    if (!lesson.timeslot) {
+                        return Promise.reject({
+                            message: 'Невалидно време!',
+                        });
+                    }
+
+                    const check = TimeslotData.getByID(lesson.timeslot._id)
+                        .then((result) => {
+                            if (!result) {
+                                return Promise.reject({
+                                    message: 'Невалидно време!',
+                                });
+                            }
+                        });
+                    checks.push(check);
+                }
+                return Promise.all(checks);
+            })
+            .then(() => {
+                return LessonData.createLessons(lessons);
+            })
+            .then(() => {
+                res.redirect('/');
+            })
+            .catch((err) => res.render('base/error', {
+                error: err,
+            }));
         },
     };
 }
