@@ -131,7 +131,6 @@
             dataType: 'json',
             data: JSON.stringify(postData),
             success(response) {
-                console.log(response);
                 window.location.href = '/users/login';
             },
             error(error) {
