@@ -39,6 +39,34 @@ class SubjectData extends BaseData {
             });
     }
 
+    addTeacherToSubject(username, subjectCode) {
+        if (!username || typeof username !== 'string' || username.length < 5) {
+            return Promise.reject({
+                message: 'Invalid username!',
+            });
+        }
+
+        return this.getSubjectByCode(subjectCode)
+            .then((subject) => {
+                this.collection.updateOne({
+                    code: subject.code,
+                }, {
+                    $push: {
+                        teachers: username,
+                    },
+                });
+            });
+    }
+
+    addTeacherToSubjects(username, subjectCodes) {
+        let updates = [];
+        for (let subject of subjectCodes) {
+            updates.push(
+                this.addTeacherToSubject(username, subject));
+        }
+        return Promise.all(updates);
+    }
+
     getSubjectByCode(code) {
         if (!code) {
             return Promise.reject({

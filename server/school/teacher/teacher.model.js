@@ -24,7 +24,7 @@ class Teacher {
             throw new Error('Invalid group!');
         }
 
-        if (!Array.isArray(subjects)) {
+        if (!Array.isArray(subjects) || subjects.length < 1) {
             throw new Error('Invalid subjects!');
         }
 
