@@ -51,6 +51,26 @@ class SubjectData extends BaseData {
         });
     }
 
+    getSubjectsByCodes(codes) {
+        let validSubjectCodes = [];
+        let subjectPromises = [];
+
+        codes.forEach((code) => {
+            const promise = this.getSubjectByCode(code)
+                .then((result) => {
+                    if (result) {
+                        validSubjectCodes.push(result.code);
+                    }
+                });
+            subjectPromises.push(promise);
+        });
+
+        return Promise.all(subjectPromises)
+            .then(() => {
+                return Promise.resolve(validSubjectCodes);
+            });
+    }
+
     getSubjectByName(name) {
         if (!name) {
             return Promise.reject({
