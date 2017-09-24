@@ -10,6 +10,22 @@ class LessonData extends BaseData {
         this.Lesson = Lesson;
     }
 
+    _checkUnique(groupName, subjectCode, teacherUsername, timeslot) {
+        return this.collection.findOne({
+                groupName: groupName,
+                subjectCode: subjectCode,
+                teacherUsername: teacherUsername,
+                timeslot: timeslot,
+            })
+            .then((result) => {
+                if (result) {
+                    return Promise.reject({
+                        message: 'Такъв час вече съществува!',
+                    });
+                }
+            });
+    }
+
     createLessons(lessons) {
         if (!Array.isArray(lessons)) {
             return Promise.reject({
@@ -20,19 +36,12 @@ class LessonData extends BaseData {
         let checks = [];
         let lessonModels = [];
         for (let lesson of lessons) {
-            const check = this.collection.findOne({
-                    groupName: lesson.group,
-                    subjectCode: lesson.subject,
-                    teacherUsername: lesson.teacher,
-                    timeslot: lesson.timeslot,
-                })
-                .then((result) => {
-                    if (result) {
-                        return Promise.reject({
-                            message: 'Такива часове вече съществуват!',
-                        });
-                    }
-
+            const check = this._checkUnique(
+                    lesson.group,
+                    lesson.subject,
+                    lesson.teacher,
+                    lesson.timeslot)
+                .then(() => {
                     lessonModels.push(new this.Lesson(
                         lesson.group,
                         lesson.subject,
@@ -45,6 +54,19 @@ class LessonData extends BaseData {
         return Promise.all(checks)
             .then(() => {
                 return this.createManyEntries(lessonModels);
+            });
+    }
+
+    createLesson(groupName, subjectCode, teacherUsername, timeslot) {
+        this._checkUnique(groupName, subjectCode, teacherUsername, timeslot)
+            .then(() => {
+                const model = new this.Lesson(
+                    groupName,
+                    subjectCode,
+                    teacherUsername,
+                    timeslot);
+
+                return this.createEntry(model);
             });
     }
 }

@@ -22,7 +22,12 @@ function init({
             res.render('school/settings/timetable');
         },
         getGenerateTimetablePage(req, res) {
-            res.render('school/timetable/generate');
+            LessonData.getAll()
+                .then((result) => {
+                    res.render('school/timetable/generate', {
+                        lessons: result,
+                    });
+                });
         },
         getGroupsSettingsPage(req, res) {
             let allGroups = GroupData.getAll();
@@ -236,10 +241,13 @@ function init({
                 return Promise.all(checks);
             })
             .then(() => {
+                return LessonData.clean();
+            })
+            .then(() => {
                 return LessonData.createLessons(lessons);
             })
             .then(() => {
-                res.redirect('/');
+                res.redirect('/school/settings/timetable/generate');
             })
             .catch((err) => res.render('base/error', {
                 error: err,
