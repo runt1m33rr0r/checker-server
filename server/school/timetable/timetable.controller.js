@@ -27,7 +27,89 @@ function init({
                     res.render('school/timetable/generate', {
                         lessons: result,
                     });
-                });
+                })
+                .catch((err) => res.render('base/error', {
+                    error: err,
+                }));
+        },
+        getCreateTimetablePage(req, res) {
+            const promises = [
+                LessonData.getAll(),
+                TeacherData.getAll(),
+                TimeslotData.getAll(),
+                GroupData.getAll(),
+                SubjectData.getAll(),
+            ];
+
+            Promise.all(promises)
+                .then((result) => {
+                    const lessons = result[0];
+                    const teachers = result[1];
+                    const timeslots = result[2];
+                    const groups = result[3];
+                    const subjects = result[4];
+
+                    res.render('school/timetable/create', {
+                        lessons,
+                        teachers,
+                        timeslots,
+                        groups,
+                        subjects,
+                    });
+                })
+                .catch((err) => res.render('base/error', {
+                    error: err,
+                }));
+        },
+        deleteTimetable(req, res) {
+            LessonData.clean()
+                .then(() => {
+                    res.redirect('/school/settings/timetable/create');
+                })
+                .catch((err) => res.render('base/error', {
+                    error: err,
+                }));
+        },
+        createLesson(req, res) {
+            const groupName = req.body.group;
+            const subjectCode = req.body.subject;
+            const teacherUsername = req.body.teacher;
+            const timeslotID = req.body.timeslot;
+
+            const promises = [
+                GroupData.getGroupByName(groupName),
+                SubjectData.getSubjectByCode(subjectCode),
+                TeacherData.getTeacherByUsername(teacherUsername),
+                TimeslotData.getByID(timeslotID),
+            ];
+            Promise.all(promises)
+                .then((result) => {
+                    const group = result[0];
+                    const subject = result[1];
+                    const teacher = result[2];
+                    const timeslot = result[3];
+
+                    if (!group || !subject || !teacher || !timeslot) {
+                        return Promise.reject({
+                            message: 'Невалидни данни!',
+                        });
+                    }
+
+                    return Promise.resolve(timeslot);
+                })
+                .then((timeslot) => {
+                    return LessonData.createLesson(
+                        groupName,
+                        subjectCode,
+                        teacherUsername,
+                        timeslot);
+                })
+                .then(() => {
+                    res.redirect('/school/settings/timetable/create');
+                })
+                .catch((err) => res.render('base/error', {
+                    error: err,
+                }));
         },
         getGroupsSettingsPage(req, res) {
             let allGroups = GroupData.getAll();
@@ -194,64 +276,64 @@ function init({
             let lessons = [];
 
             Promise.all([
-                timeslotsPromise,
-                teachersPromise,
-                subjectsPromise,
-                groupsPromise,
-            ])
-            .then((data) => {
-                const timeslots = data[0];
-                const teachers = data[1];
-                const subjects = data[2];
-                const groups = data[3];
+                    timeslotsPromise,
+                    teachersPromise,
+                    subjectsPromise,
+                    groupsPromise,
+                ])
+                .then((data) => {
+                    const timeslots = data[0];
+                    const teachers = data[1];
+                    const subjects = data[2];
+                    const groups = data[3];
 
-                const generator = new Generator(
-                    timeslots,
-                    teachers,
-                    subjects,
-                    groups);
-                lessons = generator.getReadyTimetable().lessons;
-                return lessons;
-            })
-            .then((lessons) => {
-                if (!Array.isArray(lessons)) {
-                    return Promise.reject({
-                        message: 'Невалидна програма!',
-                    });
-                }
-
-                const checks = [];
-                for (let lesson of lessons) {
-                    if (!lesson.timeslot) {
+                    const generator = new Generator(
+                        timeslots,
+                        teachers,
+                        subjects,
+                        groups);
+                    lessons = generator.getReadyTimetable().lessons;
+                    return lessons;
+                })
+                .then((lessons) => {
+                    if (!Array.isArray(lessons)) {
                         return Promise.reject({
-                            message: 'Невалидно време!',
+                            message: 'Невалидна програма!',
                         });
                     }
 
-                    const check = TimeslotData.getByID(lesson.timeslot._id)
-                        .then((result) => {
-                            if (!result) {
-                                return Promise.reject({
-                                    message: 'Невалидно време!',
-                                });
-                            }
-                        });
-                    checks.push(check);
-                }
-                return Promise.all(checks);
-            })
-            .then(() => {
-                return LessonData.clean();
-            })
-            .then(() => {
-                return LessonData.createLessons(lessons);
-            })
-            .then(() => {
-                res.redirect('/school/settings/timetable/generate');
-            })
-            .catch((err) => res.render('base/error', {
-                error: err,
-            }));
+                    const checks = [];
+                    for (let lesson of lessons) {
+                        if (!lesson.timeslot) {
+                            return Promise.reject({
+                                message: 'Невалидно време!',
+                            });
+                        }
+
+                        const check = TimeslotData.getByID(lesson.timeslot._id)
+                            .then((result) => {
+                                if (!result) {
+                                    return Promise.reject({
+                                        message: 'Невалидно време!',
+                                    });
+                                }
+                            });
+                        checks.push(check);
+                    }
+                    return Promise.all(checks);
+                })
+                .then(() => {
+                    return LessonData.clean();
+                })
+                .then(() => {
+                    return LessonData.createLessons(lessons);
+                })
+                .then(() => {
+                    res.redirect('/school/settings/timetable/generate');
+                })
+                .catch((err) => res.render('base/error', {
+                    error: err,
+                }));
         },
     };
 }

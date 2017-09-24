@@ -1,0 +1,81 @@
+extends ../../base/base
+
+block content
+    div.form.d-flex.flex-column.justify-content-center.align-items-center.mt-5.pt-4
+        if lessons.length < 1
+            h2 Училището няма въведена програма
+            form(method="post" action="/school/settings/timetable/add")
+                select.mt-1.form-control(name="group")
+                    each group in groups
+                        option(value=group.name)= group.name
+                select.mt-1.form-control(name="subject")
+                    each subject in subjects
+                        option(value=subject.code)= subject.code
+                select.mt-1.form-control(name="teacher")
+                    each teacher in teachers
+                        option(value=teacher.username)= teacher.username
+                select.mt-1.form-control(name="timeslot")
+                    each timeslot in timeslots
+                        if timeslot.day === 1
+                            option(value=timeslot._id) Понеделник от #{timeslot.fromHour}:#{timeslot.fromMinute} до #{timeslot.toHour}:#{timeslot.toMinute}
+                        if timeslot.day === 2
+                            option(value=timeslot._id) Вторник от #{timeslot.fromHour}:#{timeslot.fromMinute} до #{timeslot.toHour}:#{timeslot.toMinute}
+                        if timeslot.day === 3
+                            option(value=timeslot._id) Сряда от #{timeslot.fromHour}:#{timeslot.fromMinute} до #{timeslot.toHour}:#{timeslot.toMinute}
+                        if timeslot.day === 4
+                            option(value=timeslot._id) Четвъртък от #{timeslot.fromHour}:#{timeslot.fromMinute} до #{timeslot.toHour}:#{timeslot.toMinute}
+                        if timeslot.day === 5
+                            option(value=timeslot._id) Петък от #{timeslot.fromHour}:#{timeslot.fromMinute} до #{timeslot.toHour}:#{timeslot.toMinute}
+                button.mt-1.btn.btn-lg.btn-primary.btn-block(type="submit") Добави урок
+        else
+            h2 Училището има въведена програма
+
+            form(method="post" action="/school/settings/timetable/add")
+                select.mt-1.form-control(name="group")
+                    each group in groups
+                        option(value=group.name)= group.name
+                select.mt-1.form-control(name="subject")
+                    each subject in subjects
+                        option(value=subject.code)= subject.code
+                select.mt-1.form-control(name="teacher")
+                    each teacher in teachers
+                        option(value=teacher.username)= teacher.username
+                select.mt-1.form-control(name="timeslot")
+                    each timeslot in timeslots
+                        if timeslot.day === 1
+                            option(value=timeslot._id) Понеделник от #{timeslot.fromHour}:#{timeslot.fromMinute} до #{timeslot.toHour}:#{timeslot.toMinute}
+                        if timeslot.day === 2
+                            option(value=timeslot._id) Вторник от #{timeslot.fromHour}:#{timeslot.fromMinute} до #{timeslot.toHour}:#{timeslot.toMinute}
+                        if timeslot.day === 3
+                            option(value=timeslot._id) Сряда от #{timeslot.fromHour}:#{timeslot.fromMinute} до #{timeslot.toHour}:#{timeslot.toMinute}
+                        if timeslot.day === 4
+                            option(value=timeslot._id) Четвъртък от #{timeslot.fromHour}:#{timeslot.fromMinute} до #{timeslot.toHour}:#{timeslot.toMinute}
+                        if timeslot.day === 5
+                            option(value=timeslot._id) Петък от #{timeslot.fromHour}:#{timeslot.fromMinute} до #{timeslot.toHour}:#{timeslot.toMinute}
+                button.mt-1.btn.btn-lg.btn-primary.btn-block(type="submit") Добави урок
+
+            form.mt-3.mb-3(method="post" action="/school/settings/timetable/delete")
+                table.form.table.table-responsive.table-inverse
+                    thead
+                        tr
+                            th Група
+                            th Предмет
+                            th Учител
+                            th Време
+                    tbody
+                        each lesson in lessons
+                            tr
+                                th(scope="row")= lesson.groupName
+                                td= lesson.subjectCode
+                                td= lesson.teacherUsername
+                                if lesson.timeslot.day === 1
+                                    td Понеделник от #{lesson.timeslot.fromHour}:#{lesson.timeslot.fromMinute} до #{lesson.timeslot.toHour}:#{lesson.timeslot.toMinute}
+                                if lesson.timeslot.day === 2
+                                    td Вторник от #{lesson.timeslot.fromHour}:#{lesson.timeslot.fromMinute} до #{lesson.timeslot.toHour}:#{lesson.timeslot.toMinute}
+                                if lesson.timeslot.day === 3
+                                    td Сряда от #{lesson.timeslot.fromHour}:#{lesson.timeslot.fromMinute} до #{lesson.timeslot.toHour}:#{lesson.timeslot.toMinute}
+                                if lesson.timeslot.day === 4
+                                    td Четвъртък от #{lesson.timeslot.fromHour}:#{lesson.timeslot.fromMinute} до #{lesson.timeslot.toHour}:#{lesson.timeslot.toMinute}
+                                if lesson.timeslot.day === 5
+                                    td Петък от #{lesson.timeslot.fromHour}:#{lesson.timeslot.fromMinute} до #{lesson.timeslot.toHour}:#{lesson.timeslot.toMinute}
+                button.mt-1.btn.btn-lg.btn-primary.btn-block(type="submit") Изтрий я
