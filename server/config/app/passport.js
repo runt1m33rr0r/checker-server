@@ -54,8 +54,10 @@ function init(app, data) {
     app.use((req, res, next) => {
         if (req.user) {
             const username = req.user.username;
+            const roles = req.user.roles;
             res.locals.user = {
                 username,
+                roles,
             };
         }
         next();
