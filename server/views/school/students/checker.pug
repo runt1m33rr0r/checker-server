@@ -2,7 +2,9 @@ extends ../../base/base
 
 block content
     div.full.d-flex.flex-column.justify-content-center.align-items-center
-        input#image(type="file" accept="image/*" capture="camera").d-none
+        form(enctype="multipart/form-data" method="post" action="http://192.168.1.102:5000/encode")
+            input#image(name="image" type="file" accept="image/*" capture="camera").d-none
+            button.mt-1.btn.btn-primary(type="submit") Прати
 
 block bottom_scripts
     script(src="/public/scripts/school/students/checker.js")
