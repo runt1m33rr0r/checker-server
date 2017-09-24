@@ -15,6 +15,9 @@ function init({
     app.get(
         settingsRoute + 'timetable/generate',
         controller.getGenerateTimetablePage);
+    app.get(
+        settingsRoute + 'timetable/create',
+        controller.getCreateTimetablePage);
 
     app.post(settingsRoute + 'base', controller.saveBaseSettings);
     app.post(settingsRoute + 'subjects', controller.saveSubjectSettings);
@@ -23,6 +26,12 @@ function init({
     app.post(
         settingsRoute + 'timetable/generate',
         controller.generateTimetable);
+    app.post(
+        settingsRoute + 'timetable/delete',
+        controller.deleteTimetable);
+    app.post(
+        settingsRoute + 'timetable/add',
+        controller.createLesson);
 }
 
 module.exports = {

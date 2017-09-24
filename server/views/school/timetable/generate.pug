@@ -5,13 +5,13 @@ block content
         form(method="post" action="/school/settings/timetable/generate")
             if lessons.length < 1
                 h2 Училището няма въведена програма
-                button.mt-1.btn.btn-lg.btn-primary.btn-block(type="submit") Генерирай
+                button.mt-1.mb-1.btn.btn-lg.btn-primary.btn-block(type="submit") Генерирай
             else
                 h2 Училището има въведена програма
-                button.mt-1.btn.btn-lg.btn-primary.btn-block(type="submit") Генерирай нова
+                button.mt-1.mb-1.btn.btn-lg.btn-primary.btn-block(type="submit") Генерирай нова
 
 
-                table.table.table-responsive
+                table.table.table-responsive.table-inverse
                     thead.thead-inverse
                             tr
                                 th Група
