@@ -9,7 +9,6 @@ function init({
         getStudentChecker(req, res) {
             res.render('school/students/checker');
         },
-
         createEncoding(req, res) {
             if (!req.files ||
                 !Array.isArray(req.files.photo) ||
@@ -54,8 +53,20 @@ function init({
             const username = req.user.username;
 
             StudentData.verifyIdentity(username, photo)
-                .then(() => {
-                    res.redirect('/');
+                .then((data) => {
+                    if (data.same === 'True') {
+                        res.render('base/success', {
+                            success: {
+                                message: `Познахме те, ${username} ;)`,
+                            },
+                        });
+                    } else {
+                        res.render('base/error', {
+                            error: {
+                                message: `Не те познахме, ${username} :(`,
+                            },
+                        });
+                    }
                 })
                 .catch((err) => res.render('base/error', {
                     error: err,
