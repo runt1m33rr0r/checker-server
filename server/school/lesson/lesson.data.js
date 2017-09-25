@@ -69,6 +69,12 @@ class LessonData extends BaseData {
                 return this.createEntry(model);
             });
     }
+
+    getLessonsByGroupName(groupName) {
+        return this.collection.find({
+            groupName: groupName,
+        }).toArray();
+    }
 }
 
 module.exports = LessonData;

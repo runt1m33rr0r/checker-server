@@ -56,15 +56,21 @@ class StudentData extends BaseData {
                     });
                 }
 
-                return axios.post('http://localhost:3000/verify', {
-                    'image': new Buffer(image).toString('base64'),
-                    'encoding': student.encoding,
-                })
-                .catch(() => {
+                if (!student.encoding) {
                     return Promise.reject({
-                        message: 'Сървъра не работи!',
+                        message: 'Нямате снимка в профила си!',
                     });
-                });
+                }
+
+                return axios.post('http://localhost:3000/verify', {
+                        'image': new Buffer(image).toString('base64'),
+                        'encoding': student.encoding,
+                    })
+                    .catch(() => {
+                        return Promise.reject({
+                            message: 'Сървъра не работи!',
+                        });
+                    });
             })
             .then((res) => {
                 if (res.data && typeof res.data.same === 'string') {
@@ -94,6 +100,25 @@ class StudentData extends BaseData {
         }, {
             $set: {
                 'encoding': encoding,
+            },
+        });
+    }
+
+    addCheck(username, check) {
+        if (typeof username !== 'string' ||
+            typeof check.day !== 'number' ||
+            typeof check.hour !== 'number' ||
+            typeof check.minute !== 'number') {
+            return Promise.reject({
+                message: 'Невалидни данни!',
+            });
+        }
+
+        return this.collection.findOneAndUpdate({
+            username: username,
+        }, {
+            $push: {
+                checks: check,
             },
         });
     }
