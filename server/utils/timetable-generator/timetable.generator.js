@@ -33,7 +33,7 @@ class TimetableGenerator {
             const bestLesson = lessons[i];
             const subject = timetable
                 .getSubjectById(bestLesson.getSubjectId())
-                .getSubjectName();
+                .getSubjectCode();
             const group = timetable
                 .getGroupById(bestLesson.getGroupId())
                 .getGroupName();

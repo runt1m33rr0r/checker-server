@@ -23,6 +23,9 @@ class Student {
         this.lastName = lastName;
         this.username = username;
         this.group = group;
+        this.encoding = '';
+        this.marks = [];
+        this.absences = [];
     }
 }
 

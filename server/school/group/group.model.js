@@ -19,6 +19,8 @@ class Group {
 
         this.name = name;
         this.subjects = subjects;
+        this.students = [];
+        this.leadTeacher = '';
     }
 }
 

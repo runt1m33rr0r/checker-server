@@ -140,6 +140,72 @@ function init({
         getRegisterPage(req, res) {
             res.render('user/register');
         },
+        getProfilePage(req, res) {
+            if (req.user.roles.includes('Student')) {
+                StudentData.getStudentByUsername(req.user.username)
+                    .then((user) => {
+                        res.render('user/profile', {
+                            student: user,
+                        });
+                    })
+                    .catch((err) => res.render('base/error', {
+                        error: err,
+                    }));
+            } else if (req.user.roles.includes('Teacher')) {
+                TeacherData.getTeacherByUsername(req.user.username)
+                    .then((user) => {
+                        res.render('user/profile', {
+                            teacher: user,
+                        });
+                    })
+                    .catch((err) => res.render('base/error', {
+                        error: err,
+                    }));
+            } else {
+                res.render('base/error', {
+                    error: {
+                        message: 'Internal error!',
+                    },
+                });
+            }
+        },
+        saveProfile(req, res) {
+            const roles = req.user.roles;
+            if (roles.includes('Student')) {
+                if (!req.files ||
+                    !Array.isArray(req.files.photo) ||
+                    req.files.photo.length < 1 ||
+                    !req.files.photo[0] ||
+                    !req.files.photo[0].buffer) {
+                    return res.render('base/error', {
+                        error: {
+                            message: 'Невалидни данни!',
+                        },
+                    });
+                }
+
+                const photo = req.files.photo[0].buffer;
+                const username = req.user.username;
+
+                StudentData.createEncoding(photo)
+                    .then((encoding) => {
+                        return StudentData.saveEncoding(username, encoding);
+                    })
+                    .then(() => {
+                        res.render('base/success', {
+                            success: {
+                                message: 'Настройките се запазиха успешно!',
+                            },
+                        });
+                    })
+                    .catch((err) => res.render('base/error', {
+                        error: err,
+                    }));
+            } else {
+                // add other stuff later
+                res.redirect('/');
+            }
+        },
         registerUser(req, res) {
             if (req.user) {
                 res.redirect('/unauthorized');

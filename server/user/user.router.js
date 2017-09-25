@@ -1,4 +1,6 @@
 const roleTypes = require('../utils/roletypes');
+const multer = require('multer');
+const upload = multer();
 
 function init({
     app,
@@ -13,9 +15,21 @@ function init({
     app.get('/users/login', controllers.user.getLoginPage);
     app.get('/users/logout', middlewares.user.logoutUser);
     app.get('/unauthorized', controllers.user.getUnauthorized);
+    app.get(
+        '/users/profile',
+        middlewares.user.isAuthenticated,
+        controllers.user.getProfilePage);
 
     app.post('/users/register', controllers.user.registerUser);
     app.post('/users/login', middlewares.user.loginLocal);
+    app.post(
+        '/users/profile/save',
+        middlewares.user.isAuthenticated,
+        upload.fields([{
+            name: 'photo',
+            maxCount: 1,
+        }]),
+        controllers.user.saveProfile);
 }
 
 module.exports = {

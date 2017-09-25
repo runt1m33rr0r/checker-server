@@ -6,16 +6,22 @@ mixin nav
             span.navbar-toggler-icon
         div#navbar-collapse.collapse.navbar-collapse
             ul.navbar-nav.mr-auto
-                li.nav-item.dropdown
-                    a.nav-link.dropdown-toggle(href="#" data-toggle="dropdown") Система
-                    div.dropdown-menu
-                        a.dropdown-item(href="/school/settings/base") Основни настройки
-                        a.dropdown-item(href="/school/settings/subjects") Настройки на предмети
-                        a.dropdown-item(href="/school/settings/groups") Настройки на класовете
-                        a.dropdown-item(href="/school/settings/timetable") Настройки на графика
+                -if (user && user.roles.includes('Teacher'))
+                    li.nav-item.dropdown
+                        a.nav-link.dropdown-toggle(href="#" data-toggle="dropdown") Система
+                        div.dropdown-menu
+                            a.dropdown-item(href="/school/settings/base") Основни настройки
+                            a.dropdown-item(href="/school/settings/subjects") Настройки на предмети
+                            a.dropdown-item(href="/school/settings/groups") Настройки на класовете
+                            a.dropdown-item(href="/school/settings/timetable") Настройки на графика
 
-                        a.dropdown-item(href="/school/settings/timetable/generate") Генериране на програма
-                        a.dropdown-item(href="/room") Въвеждане на програма
+                            a.dropdown-item(href="/school/settings/timetable/generate") Генериране на програма
+                            a.dropdown-item(href="/school/settings/timetable/create") Въвеждане на програма
+                -if (user && user.roles.includes('Student'))
+                    li.nav-item.dropdown
+                        a.nav-link.dropdown-toggle(href="#" data-toggle="dropdown") Присъствия/Отсъствия
+                        div.dropdown-menu
+                            a.dropdown-item(href="/students/checker") Отбележи присъствие
             ul.navbar-nav.ml-auto
                 li.nav-item.dropdown
                 if !user
@@ -28,3 +34,4 @@ mixin nav
                     a.nav-link.dropdown-toggle(href="#" data-toggle="dropdown")= user.username
                     div.dropdown-menu.dropdown-menu-right
                         a.dropdown-item(href="/users/logout") Изход
+                        a.dropdown-item(href="/users/profile") Профил

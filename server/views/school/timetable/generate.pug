@@ -3,5 +3,34 @@ extends ../../base/base
 block content
     div.form.d-flex.flex-column.justify-content-center.align-items-center.mt-5.pt-4
         form(method="post" action="/school/settings/timetable/generate")
-            h2 Училището няма въведена програма
-            button.mt-1.btn.btn-lg.btn-primary.btn-block(type="submit") Генерирай
+            if lessons.length < 1
+                h2 Училището няма въведена програма
+                button.mt-1.mb-1.btn.btn-lg.btn-primary.btn-block(type="submit") Генерирай
+            else
+                h2 Училището има въведена програма
+                button.mt-1.mb-1.btn.btn-lg.btn-primary.btn-block(type="submit") Генерирай нова
+
+
+                table.table.table-responsive.table-inverse
+                    thead.thead-inverse
+                            tr
+                                th Група
+                                th Предмет
+                                th Учител
+                                th Време
+                    tbody
+                        each lesson in lessons
+                            tr
+                                th(scope="row")= lesson.groupName
+                                td= lesson.subjectCode
+                                td= lesson.teacherUsername
+                                if lesson.timeslot.day === 1
+                                    td Понеделник от #{lesson.timeslot.fromHour}:#{lesson.timeslot.fromMinute} до #{lesson.timeslot.toHour}:#{lesson.timeslot.toMinute}
+                                if lesson.timeslot.day === 2
+                                    td Вторник от #{lesson.timeslot.fromHour}:#{lesson.timeslot.fromMinute} до #{lesson.timeslot.toHour}:#{lesson.timeslot.toMinute}
+                                if lesson.timeslot.day === 3
+                                    td Сряда от #{lesson.timeslot.fromHour}:#{lesson.timeslot.fromMinute} до #{lesson.timeslot.toHour}:#{lesson.timeslot.toMinute}
+                                if lesson.timeslot.day === 4
+                                    td Четвъртък от #{lesson.timeslot.fromHour}:#{lesson.timeslot.fromMinute} до #{lesson.timeslot.toHour}:#{lesson.timeslot.toMinute}
+                                if lesson.timeslot.day === 5
+                                    td Петък от #{lesson.timeslot.fromHour}:#{lesson.timeslot.fromMinute} до #{lesson.timeslot.toHour}:#{lesson.timeslot.toMinute}
