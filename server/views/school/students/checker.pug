@@ -2,9 +2,11 @@ extends ../../base/base
 
 block content
     div.full.d-flex.flex-column.justify-content-center.align-items-center
-        form(enctype="multipart/form-data" method="post" action="http://192.168.1.102:5000/encode")
-            input#image(name="image" type="file" accept="image/*" capture="camera").d-none
-            button.mt-1.btn.btn-primary(type="submit") Прати
+        h2.mb-5 Отбелязване на присъствие
+        form.d-flex.flex-column.justify-content-center.align-items-center(enctype="multipart/form-data" method="post" action="/students/checker")
+            label#image-label Отвори камера
+                input#image(name="photo" type="file" accept="image/*" capture="camera")
+            button.mt-3.btn.btn-primary(type="submit") Прати
 
 block bottom_scripts
     script(src="/public/scripts/school/students/checker.js")
