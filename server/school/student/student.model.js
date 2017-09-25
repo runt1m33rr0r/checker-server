@@ -25,6 +25,7 @@ class Student {
         this.group = group;
         this.encoding = '';
         this.marks = [];
+        this.checks = [];
         this.absences = [];
     }
 }
