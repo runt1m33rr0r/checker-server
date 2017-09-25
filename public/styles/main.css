@@ -20,3 +20,15 @@ h1, h2 {
 form, .form {
     min-width: 300px;
 }
+
+#image-label {
+    cursor: pointer;
+    background-color: #0069D9;
+    color: white;
+    border-radius: 3px;
+    padding: 6px;
+ }
+
+ #image {
+    display: none;
+ }
