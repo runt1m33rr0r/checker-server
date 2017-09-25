@@ -15,19 +15,28 @@ class StudentData extends BaseData {
         return axios.post('http://localhost:3000/encode', {
                 'image': new Buffer(image).toString('base64'),
             })
+            .catch(() => {
+                return Promise.reject({
+                    message: 'Сървъра не работи!',
+                });
+            })
             .then((res) => {
                 if (res.data && res.data.encoding) {
                     const result = res.data.encoding;
                     return Promise.resolve(result);
+                } else if (res.data && res.data.message) {
+                    return Promise.reject({
+                        message: 'Не виждам лице на снимката!',
+                    });
                 } else {
                     return Promise.reject({
                         message: 'Internal error',
                     });
                 }
             })
-            .catch(() => {
+            .catch((err) => {
                 return Promise.reject({
-                    message: 'Internal error',
+                    message: err.message,
                 });
             });
     }

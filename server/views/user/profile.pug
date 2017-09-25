@@ -1,0 +1,12 @@
+extends ../base/base
+
+block content
+    div.full.d-flex.flex-column.justify-content-center.align-items-center
+        if student
+            h2 Личен профил на #{student.username}
+            form.mt-3.d-flex.flex-column.justify-content-center.align-items-center(enctype="multipart/form-data" method="post" action="/users/profile/save")
+                label#image-label Прикачи снимка за разпознаване
+                    input#image(name="photo" type="file" accept="image/*" capture="camera")
+                button.mt-3.btn.btn-primary(type="submit") Запази настройки
+        if teacher
+            h2 Личен профил на #{teacher.username}
