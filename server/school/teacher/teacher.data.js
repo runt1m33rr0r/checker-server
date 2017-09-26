@@ -15,7 +15,7 @@ class TeacherData extends BaseData {
             .then((result) => {
                 if (result) {
                     return Promise.reject({
-                        message: 'Teacher already exists!',
+                        message: 'Невалидни данни!',
                     });
                 }
 
@@ -33,7 +33,7 @@ class TeacherData extends BaseData {
     getTeacherByUsername(username) {
         if (!username) {
             return Promise.reject({
-                message: 'Username not specified!',
+                message: 'Невалидни данни!',
             });
         }
 

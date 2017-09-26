@@ -8,5 +8,5 @@ block content
                 label#image-label Прикачи снимка за разпознаване
                     input#image(name="photo" type="file" accept="image/*" capture="camera")
                 button.mt-3.btn.btn-primary(type="submit") Запази настройки
-        if teacher
-            h2 Личен профил на #{teacher.username}
+        -if (user.roles.includes('Teacher'))
+            h2 Личен профил на #{user.username}
