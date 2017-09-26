@@ -10,7 +10,7 @@ class Timeslot {
             toHour < 0 || toHour > 24 ||
             toMinute < 0 || toMinute > 60 ||
             day < 1 || day > 7) {
-            throw new Error('Invalid timeslot!');
+            throw new Error('Невалидни данни!');
         }
 
         this.fromHour = fromHour;

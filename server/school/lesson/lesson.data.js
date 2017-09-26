@@ -29,7 +29,7 @@ class LessonData extends BaseData {
     createLessons(lessons) {
         if (!Array.isArray(lessons)) {
             return Promise.reject({
-                message: 'Invalid lessons!',
+                message: 'Невалидни данни!',
             });
         }
 

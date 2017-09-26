@@ -42,7 +42,7 @@ class SubjectData extends BaseData {
     addTeacherToSubject(username, subjectCode) {
         if (!username || typeof username !== 'string' || username.length < 5) {
             return Promise.reject({
-                message: 'Invalid username!',
+                message: 'Невалидни данни!',
             });
         }
 
@@ -70,7 +70,7 @@ class SubjectData extends BaseData {
     getSubjectByCode(code) {
         if (!code) {
             return Promise.reject({
-                message: 'Code not specified!',
+                message: 'Невалидни данни!',
             });
         }
 
@@ -102,7 +102,7 @@ class SubjectData extends BaseData {
     getSubjectByName(name) {
         if (!name) {
             return Promise.reject({
-                message: 'Name not specified!',
+                message: 'Невалидни данни!',
             });
         }
 

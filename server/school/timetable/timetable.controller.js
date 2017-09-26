@@ -160,7 +160,7 @@ function init({
 
             if (!groups) {
                 return res.status(500).json({
-                    message: 'Missing groups!',
+                    message: 'Невалидни данни!',
                 });
             }
 
@@ -170,7 +170,7 @@ function init({
                 })
                 .then(() => {
                     res.status(200).json({
-                        message: 'cool',
+                        message: 'Готово',
                     });
                 })
                 .catch((err) => {
@@ -184,7 +184,7 @@ function init({
 
             if (!subjects) {
                 return res.status(500).json({
-                    message: 'Missing subjects!',
+                    message: 'Невалидни данни!',
                 });
             }
 
@@ -194,7 +194,7 @@ function init({
                 })
                 .then(() => {
                     res.status(200).json({
-                        message: 'cool',
+                        message: 'Готово',
                     });
                 })
                 .catch((err) => {
@@ -208,7 +208,7 @@ function init({
 
             if (!timeslots) {
                 return res.status(500).json({
-                    message: 'Missing timeslots!',
+                    message: 'Невалидни данни!',
                 });
             }
 
@@ -218,7 +218,7 @@ function init({
                 })
                 .then(() => {
                     res.status(200).json({
-                        message: 'cool',
+                        message: 'Готово',
                     });
                 })
                 .catch((err) => {
@@ -232,7 +232,7 @@ function init({
 
             if (!groups || !Array.isArray(groups) || groups.length < 1) {
                 return res.status(500).json({
-                    message: 'Missing groups!',
+                    message: 'Невалидни данни!',
                 });
             }
 
@@ -241,7 +241,7 @@ function init({
                 if (!group.subjects ||
                     !Array.isArray(group.subjects)) {
                     return res.status(400).json({
-                        message: 'Invalid group subjects!',
+                        message: 'Невалидни данни!',
                     });
                 }
 
@@ -258,7 +258,7 @@ function init({
             Promise.all(updates)
                 .then(() => {
                     res.status(200).json({
-                        message: 'cool',
+                        message: 'Готово',
                     });
                 })
                 .catch((err) => {
@@ -286,6 +286,15 @@ function init({
                     const teachers = data[1];
                     const subjects = data[2];
                     const groups = data[3];
+
+                    if (timeslots.length < 1 ||
+                        teachers.length < 1 ||
+                        subjects.length < 1 ||
+                        groups.length < 1) {
+                        return Promise.reject({
+                            message: 'Невалидни данни!',
+                        });
+                    }
 
                     const generator = new Generator(
                         timeslots,

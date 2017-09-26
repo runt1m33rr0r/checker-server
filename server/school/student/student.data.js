@@ -30,7 +30,7 @@ class StudentData extends BaseData {
                     });
                 } else {
                     return Promise.reject({
-                        message: 'Internal error',
+                        message: 'Вътрешна грешка!',
                     });
                 }
             })
@@ -44,7 +44,7 @@ class StudentData extends BaseData {
     verifyIdentity(username, image) {
         if (!image) {
             return Promise.reject({
-                message: 'Internal error',
+                message: 'Вътрешна грешка!',
             });
         }
 
@@ -52,7 +52,7 @@ class StudentData extends BaseData {
             .then((student) => {
                 if (!student) {
                     return Promise.reject({
-                        message: 'Internal error',
+                        message: 'Вътрешна грешка!',
                     });
                 }
 
@@ -81,7 +81,7 @@ class StudentData extends BaseData {
                     });
                 } else {
                     return Promise.reject({
-                        message: 'Internal error',
+                        message: 'Вътрешна грешка!',
                     });
                 }
             });
@@ -91,7 +91,7 @@ class StudentData extends BaseData {
         if (typeof username !== 'string' ||
             typeof encoding !== 'string') {
             return Promise.reject({
-                message: 'Internal error!',
+                message: 'Вътрешна грешка!',
             });
         }
 
@@ -144,7 +144,7 @@ class StudentData extends BaseData {
             .then((result) => {
                 if (result) {
                     return Promise.reject({
-                        message: 'Student already exists!',
+                        message: 'Невалидни данни!',
                     });
                 }
 
@@ -160,7 +160,7 @@ class StudentData extends BaseData {
     getStudentByUsername(username) {
         if (!username) {
             return Promise.reject({
-                message: 'Username not specified!',
+                message: 'Невалидни данни!',
             });
         }
 

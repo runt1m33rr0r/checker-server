@@ -16,7 +16,7 @@ class BaseData {
     createEntry(entry) {
         if (!entry) {
             return Promise.reject({
-                message: 'Invalid entry!',
+                message: 'Невалидни данни!',
             });
         }
 
@@ -29,7 +29,7 @@ class BaseData {
     createManyEntries(entries) {
         if (!Array.isArray(entries) || entries.length < 1) {
             return Promise.reject({
-                message: 'Invalid entries!',
+                message: 'Невалидни данни!',
             });
         }
 
@@ -42,7 +42,7 @@ class BaseData {
     getByID(id) {
         if (!ObjectID.isValid(id)) {
             return Promise.reject({
-                message: 'Invalid ID',
+                message: 'Невалидни данни!',
             });
         }
 

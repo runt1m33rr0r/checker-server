@@ -15,7 +15,7 @@ class GroupData extends BaseData {
             .then((result) => {
                 if (result) {
                     return Promise.reject({
-                        message: 'Такава група вече съществува!',
+                        message: 'Невалидни данни!',
                     });
                 }
 
@@ -30,7 +30,7 @@ class GroupData extends BaseData {
             groupName.length < 1 ||
             !Array.isArray(subjects)) {
             return Promise.reject({
-                message: 'Invalid name or subjects!',
+                message: 'Невалидни данни!',
             });
         }
 
@@ -38,7 +38,7 @@ class GroupData extends BaseData {
             if (typeof subject !== 'string' ||
                 subject.length < 3) {
                 return Promise.reject({
-                    message: 'Invalid subjects collection!',
+                    message: 'Невалидни данни!',
                 });
             }
         }
@@ -64,7 +64,7 @@ class GroupData extends BaseData {
                 .then((result) => {
                     if (result) {
                         return Promise.reject({
-                            message: 'Такива групи вече съществуват!',
+                            message: 'Невалидни данни!',
                         });
                     }
 
@@ -82,7 +82,7 @@ class GroupData extends BaseData {
     getGroupByName(name) {
         if (!name) {
             return Promise.reject({
-                message: 'Name not specified!',
+                message: 'Невалидни данни!',
             });
         }
 
