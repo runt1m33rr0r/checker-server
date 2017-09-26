@@ -3,6 +3,7 @@ function init({
 }) {
     const {
         StudentData,
+        LessonData,
     } = data;
 
     function verifyIdentity(req, res) {
@@ -32,6 +33,27 @@ function init({
     return {
         getStudentChecker(req, res) {
             res.render('school/students/checker');
+        },
+        getTimetablePage(req, res) {
+            const username = req.user.username;
+            StudentData.getStudentByUsername(username)
+                .then((student) => {
+                    return LessonData.getLessonsByGroupName(student.group);
+                })
+                .then((lessons) => {
+                    res.render('school/students/timetable', {
+                        lessons: lessons,
+                    });
+                });
+        },
+        getAbsencesPage(req, res) {
+            const username = req.user.username;
+            StudentData.getStudentByUsername(username)
+                .then((student) => {
+                    res.render('school/students/absences', {
+                        absences: student.absences,
+                    });
+                });
         },
         createEncoding(req, res) {
             if (!req.files ||
