@@ -12,6 +12,14 @@ function init({
         '/students/checker',
         middlewares.user.isInRole(roles.Student),
         controller.getStudentChecker);
+    app.get(
+        '/students/timetable',
+        middlewares.user.isInRole(roles.Student),
+        controller.getTimetablePage);
+    app.get(
+        '/students/absences',
+        middlewares.user.isInRole(roles.Student),
+        controller.getAbsencesPage);
     app.post(
         '/students/checker',
         middlewares.user.isInRole(roles.Student),

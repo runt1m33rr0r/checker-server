@@ -1,0 +1,27 @@
+extends ../../base/base
+
+block content
+    div.d-flex.flex-column.justify-content-center.align-items-center.mt-5.pt-4
+        if absences.length < 1
+            h2 Нямаш отсъствия
+        else
+            div.form
+                table.table.table-responsive.table-inverse
+                    thead.thead-inverse
+                        tr
+                            th Предмет
+                            th Време
+                    tbody
+                        each absence in absences
+                            tr
+                                th(scope="row")= absence.subject
+                                if absence.day === 1
+                                    td Понеделник от #{absence.hour}:#{absence.minute}
+                                if absence.day === 2
+                                    td Вторник от #{absence.hour}:#{absence.minute}
+                                if absence.day === 3
+                                    td Сряда от #{absence.hour}:#{absence.minute}
+                                if absence.day === 4
+                                    td Четвъртък от #{absence.hour}:#{absence.minute}
+                                if absence.day === 5
+                                    td Петък от #{absence.hour}:#{absence.minute}

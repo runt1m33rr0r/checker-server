@@ -123,6 +123,22 @@ class StudentData extends BaseData {
         });
     }
 
+    clearChecks(username) {
+        if (typeof username !== 'string') {
+            return Promise.reject({
+                message: 'Невалидни данни!',
+            });
+        }
+
+        return this.collection.findOneAndUpdate({
+            username: username,
+        }, {
+            $set: {
+                checks: [],
+            },
+        });
+    }
+
     createStudent(firstName, lastName, username, group) {
         return this.getStudentByUsername(username)
             .then((result) => {
@@ -150,6 +166,22 @@ class StudentData extends BaseData {
 
         return this.collection.findOne({
             username: username,
+        });
+    }
+
+    addAbsence(username, abscence) {
+        if (!abscence || !username) {
+            return Promise.reject({
+                message: 'Невалидни данни!',
+            });
+        }
+
+        return this.collection.findOneAndUpdate({
+            username: username,
+        }, {
+            $push: {
+                absences: abscence,
+            },
         });
     }
 }

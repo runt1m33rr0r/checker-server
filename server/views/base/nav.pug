@@ -18,10 +18,12 @@ mixin nav
                             a.dropdown-item(href="/school/settings/timetable/generate") Генериране на програма
                             a.dropdown-item(href="/school/settings/timetable/create") Въвеждане на програма
                 -if (user && user.roles.includes('Student'))
+                    a.nav-link(href="/students/timetable") Седмична програма
                     li.nav-item.dropdown
                         a.nav-link.dropdown-toggle(href="#" data-toggle="dropdown") Присъствия/Отсъствия
                         div.dropdown-menu
                             a.dropdown-item(href="/students/checker") Отбележи присъствие
+                            a.dropdown-item(href="/students/absences") Списък с отсъствия
             ul.navbar-nav.ml-auto
                 li.nav-item.dropdown
                 if !user
