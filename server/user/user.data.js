@@ -31,7 +31,7 @@ class UserData extends BaseData {
     getUserByUsername(username) {
         if (!username) {
             return Promise.reject({
-                message: 'Username not specified!',
+                message: 'Невалидни данни!',
             });
         }
 
@@ -42,7 +42,7 @@ class UserData extends BaseData {
 
     checkPassword(password, salt, hash, encryption) {
         if (!password || !salt || !hash || !encryption) {
-            throw new Error('Internal server password error!');
+            throw new Error('Невалидни данни!');
         }
 
         const testHash = encryption.getHash(salt, password);

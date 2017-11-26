@@ -12,6 +12,28 @@ function init({
         StudentData,
     } = data;
 
+    function _seedAdmin() {
+        UserData.getUserByUsername('admin')
+            .then((user) => {
+                if (!user) {
+                    const salt = encryption.getSalt();
+                    const hash = encryption.getHash(salt, '123456');
+                    const roles = [
+                        roleTypes.Normal,
+                        roleTypes.Teacher,
+                        roleTypes.Admin,
+                    ];
+
+                    return UserData.createUser('admin', roles, salt, hash);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    _seedAdmin();
+
     function registerTeacher(
         firstName,
         lastName,
@@ -164,7 +186,7 @@ function init({
             } else {
                 res.render('base/error', {
                     error: {
-                        message: 'Internal error!',
+                        message: 'Вътрешна грешка!',
                     },
                 });
             }
@@ -231,7 +253,7 @@ function init({
                     })
                     .then(() => {
                         res.status(200).json({
-                            message: 'cool',
+                            message: 'Готово',
                         });
                     })
                     .catch((err) => {
@@ -260,7 +282,7 @@ function init({
                     })
                     .then(() => {
                         res.status(200).json({
-                            message: 'cool',
+                            message: 'Готово',
                         });
                     })
                     .catch((err) => {

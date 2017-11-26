@@ -3,23 +3,23 @@ class Subject {
         if (typeof name !== 'string' ||
             name.length < 3 ||
             name.length > 30) {
-            throw new Error('Invalid subject name!');
+            throw new Error('Невалидни данни!');
         }
 
         if (typeof name !== 'string' ||
             name.length < 3 ||
             name.length > 30) {
-            throw new Error('Invalid subject code!');
+            throw new Error('Невалидни данни!');
         }
 
         if (!teachers || !Array.isArray(teachers)) {
-            throw new Error('Invalid teachers collection!');
+            throw new Error('Невалидни данни!');
         }
 
         for (let teacher of teachers) {
             if (typeof teacher !== 'string' ||
                 teacher.length < 3) {
-                throw new Error('Invalid teachers collection!');
+                throw new Error('Невалидни данни!');
             }
         }
 

@@ -13,7 +13,7 @@ class TimeslotData extends BaseData {
     createTimeslots(timeslotArray) {
         if (!Array.isArray(timeslotArray)) {
             return Promise.reject({
-                message: 'Invalid timeslots!',
+                message: 'Невалидни данни!',
             });
         }
 

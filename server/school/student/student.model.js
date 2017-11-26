@@ -2,21 +2,21 @@ class Student {
     constructor(firstName, lastName, username, group) {
         if (typeof firstName !== 'string' ||
             firstName.length < 3) {
-            throw new Error('Invalid first name!');
+            throw new Error('Невалидни данни!');
         }
 
         if (typeof lastName !== 'string' ||
             lastName.length < 3) {
-            throw new Error('Invalid last name!');
+            throw new Error('Невалидни данни!');
         }
 
         if (typeof username !== 'string' ||
             username.length < 6) {
-            throw new Error('Invalid username!');
+            throw new Error('Невалидни данни!');
         }
 
         if (typeof group !== 'string' || group.length < 2) {
-            throw new Error('Invalid group!');
+            throw new Error('Невалидни данни!');
         }
 
         this.firstName = firstName;
@@ -25,6 +25,7 @@ class Student {
         this.group = group;
         this.encoding = '';
         this.marks = [];
+        this.checks = [];
         this.absences = [];
     }
 }

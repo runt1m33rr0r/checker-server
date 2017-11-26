@@ -29,7 +29,7 @@ class LessonData extends BaseData {
     createLessons(lessons) {
         if (!Array.isArray(lessons)) {
             return Promise.reject({
-                message: 'Invalid lessons!',
+                message: 'Невалидни данни!',
             });
         }
 
@@ -68,6 +68,12 @@ class LessonData extends BaseData {
 
                 return this.createEntry(model);
             });
+    }
+
+    getLessonsByGroupName(groupName) {
+        return this.collection.find({
+            groupName: groupName,
+        }).toArray();
     }
 }
 

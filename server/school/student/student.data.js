@@ -30,7 +30,7 @@ class StudentData extends BaseData {
                     });
                 } else {
                     return Promise.reject({
-                        message: 'Internal error',
+                        message: 'Вътрешна грешка!',
                     });
                 }
             })
@@ -44,7 +44,7 @@ class StudentData extends BaseData {
     verifyIdentity(username, image) {
         if (!image) {
             return Promise.reject({
-                message: 'Internal error',
+                message: 'Вътрешна грешка!',
             });
         }
 
@@ -52,19 +52,25 @@ class StudentData extends BaseData {
             .then((student) => {
                 if (!student) {
                     return Promise.reject({
-                        message: 'Internal error',
+                        message: 'Вътрешна грешка!',
+                    });
+                }
+
+                if (!student.encoding) {
+                    return Promise.reject({
+                        message: 'Нямате снимка в профила си!',
                     });
                 }
 
                 return axios.post('http://localhost:3000/verify', {
-                    'image': new Buffer(image).toString('base64'),
-                    'encoding': student.encoding,
-                })
-                .catch(() => {
-                    return Promise.reject({
-                        message: 'Сървъра не работи!',
+                        'image': new Buffer(image).toString('base64'),
+                        'encoding': student.encoding,
+                    })
+                    .catch(() => {
+                        return Promise.reject({
+                            message: 'Сървъра не работи!',
+                        });
                     });
-                });
             })
             .then((res) => {
                 if (res.data && typeof res.data.same === 'string') {
@@ -75,7 +81,7 @@ class StudentData extends BaseData {
                     });
                 } else {
                     return Promise.reject({
-                        message: 'Internal error',
+                        message: 'Вътрешна грешка!',
                     });
                 }
             });
@@ -85,7 +91,7 @@ class StudentData extends BaseData {
         if (typeof username !== 'string' ||
             typeof encoding !== 'string') {
             return Promise.reject({
-                message: 'Internal error!',
+                message: 'Вътрешна грешка!',
             });
         }
 
@@ -98,12 +104,47 @@ class StudentData extends BaseData {
         });
     }
 
+    addCheck(username, check) {
+        if (typeof username !== 'string' ||
+            typeof check.day !== 'number' ||
+            typeof check.hour !== 'number' ||
+            typeof check.minute !== 'number') {
+            return Promise.reject({
+                message: 'Невалидни данни!',
+            });
+        }
+
+        return this.collection.findOneAndUpdate({
+            username: username,
+        }, {
+            $push: {
+                checks: check,
+            },
+        });
+    }
+
+    clearChecks(username) {
+        if (typeof username !== 'string') {
+            return Promise.reject({
+                message: 'Невалидни данни!',
+            });
+        }
+
+        return this.collection.findOneAndUpdate({
+            username: username,
+        }, {
+            $set: {
+                checks: [],
+            },
+        });
+    }
+
     createStudent(firstName, lastName, username, group) {
         return this.getStudentByUsername(username)
             .then((result) => {
                 if (result) {
                     return Promise.reject({
-                        message: 'Student already exists!',
+                        message: 'Невалидни данни!',
                     });
                 }
 
@@ -119,12 +160,28 @@ class StudentData extends BaseData {
     getStudentByUsername(username) {
         if (!username) {
             return Promise.reject({
-                message: 'Username not specified!',
+                message: 'Невалидни данни!',
             });
         }
 
         return this.collection.findOne({
             username: username,
+        });
+    }
+
+    addAbsence(username, abscence) {
+        if (!abscence || !username) {
+            return Promise.reject({
+                message: 'Невалидни данни!',
+            });
+        }
+
+        return this.collection.findOneAndUpdate({
+            username: username,
+        }, {
+            $push: {
+                absences: abscence,
+            },
         });
     }
 }

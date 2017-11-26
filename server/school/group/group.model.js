@@ -3,17 +3,17 @@ class Group {
         if (typeof name !== 'string' ||
             name.length < 1 ||
             name.length > 5) {
-            throw new Error('Invalid group name!');
+            throw new Error('Невалидни данни!');
         }
 
         if (!subjects || !Array.isArray(subjects)) {
-            throw new Error('Invalid subjects collection!');
+            throw new Error('Невалидни данни!');
         }
 
         for (let subject of subjects) {
             if (typeof subject !== 'string' ||
                 subject.length < 3) {
-                throw new Error('Invalid subjects collection!');
+                throw new Error('Невалидни данни!');
             }
         }
 
