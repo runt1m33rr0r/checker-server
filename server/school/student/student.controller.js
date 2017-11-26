@@ -1,132 +1,119 @@
-function init({
-    data,
-}) {
-    const {
-        StudentData,
-        LessonData,
-    } = data;
+function init({ data }) {
+  const { StudentData, LessonData } = data;
 
-    function verifyIdentity(req, res) {
-        if (!req.files ||
-            !Array.isArray(req.files.photo) ||
-            req.files.photo.length < 1 ||
-            !req.files.photo[0].buffer ||
-            !req.user.username) {
-            return Promise.reject({
-                message: 'Невалидни данни!',
-            });
-        }
-
-        const photo = req.files.photo[0].buffer;
-        const username = req.user.username;
-
-        return StudentData.verifyIdentity(username, photo)
-            .then((data) => {
-                if (data.same !== 'True') {
-                    return Promise.reject({
-                        message: 'Лицето на снимката не е ваше!',
-                    });
-                }
-            });
+  function verifyIdentity(req) {
+    if (
+      !req.files ||
+      !Array.isArray(req.files.photo) ||
+      req.files.photo.length < 1 ||
+      !req.files.photo[0].buffer ||
+      !req.user.username
+    ) {
+      return Promise.reject(new Error('Невалидни данни!'));
     }
 
-    return {
-        getStudentChecker(req, res) {
-            res.render('school/students/checker');
-        },
-        getTimetablePage(req, res) {
-            const username = req.user.username;
-            StudentData.getStudentByUsername(username)
-                .then((student) => {
-                    return LessonData.getLessonsByGroupName(student.group);
-                })
-                .then((lessons) => {
-                    res.render('school/students/timetable', {
-                        lessons: lessons,
-                    });
-                });
-        },
-        getAbsencesPage(req, res) {
-            const username = req.user.username;
-            StudentData.getStudentByUsername(username)
-                .then((student) => {
-                    res.render('school/students/absences', {
-                        absences: student.absences,
-                    });
-                });
-        },
-        createEncoding(req, res) {
-            if (!req.files ||
-                !Array.isArray(req.files.photo) ||
-                req.files.photo.length < 1 ||
-                !req.files.photo[0] ||
-                !req.files.photo[0].buffer ||
-                !req.user.username) {
-                return res.render('base/error', {
-                    error: {
-                        message: 'Невалидни данни!',
-                    },
-                });
-            }
-            const photo = req.files.photo[0].buffer;
-            const username = req.user.username;
+    const photo = req.files.photo[0].buffer;
+    const { username } = req.user;
 
-            StudentData.createEncoding(photo)
-                .then((encoding) => {
-                    return StudentData.saveEncoding(username, encoding);
-                })
-                .then(() => {
-                    res.redirect('/');
-                })
-                .catch((err) => res.render('base/error', {
-                    error: err,
-                }));
-        },
-        check(req, res) {
-            const username = req.user.username;
+    return StudentData.verifyIdentity(username, photo).then((studData) => {
+      if (studData.same !== 'True') {
+        return Promise.reject(new Error('Лицето на снимката не е ваше!'));
+      }
+    });
+  }
 
-            return verifyIdentity(req, res)
-                .then((res) => {
-                    return StudentData.getStudentByUsername(username);
-                })
-                .then((student) => {
-                    if (!student) {
-                        res.render('base/error', {
-                            error: {
-                                message: 'Вътрешна грешка!',
-                            },
-                        });
-                    }
+  return {
+    getStudentChecker(req, res) {
+      res.render('school/students/checker');
+    },
+    getTimetablePage(req, res) {
+      const { username } = req.user;
+      StudentData.getStudentByUsername(username)
+        .then(student => LessonData.getLessonsByGroupName(student.group))
+        .then((lessons) => {
+          res.render('school/students/timetable', {
+            lessons,
+          });
+        });
+    },
+    getAbsencesPage(req, res) {
+      const { username } = req.user;
+      StudentData.getStudentByUsername(username).then((student) => {
+        res.render('school/students/absences', {
+          absences: student.absences,
+        });
+      });
+    },
+    createEncoding(req, res) {
+      if (
+        !req.files ||
+        !Array.isArray(req.files.photo) ||
+        req.files.photo.length < 1 ||
+        !req.files.photo[0] ||
+        !req.files.photo[0].buffer ||
+        !req.user.username
+      ) {
+        return res.render('base/error', {
+          error: {
+            message: 'Невалидни данни!',
+          },
+        });
+      }
+      const photo = req.files.photo[0].buffer;
+      const { username } = req.user;
 
-                    return Promise.resolve(student);
-                })
-                .then((student) => {
-                    let date = new Date();
-                    let currentDay = date.getDay();
-                    let currentHour = date.getHours();
-                    let currentMinute = date.getMinutes();
-                    let check = {
-                        day: currentDay,
-                        hour: currentHour,
-                        minute: currentMinute,
-                    };
+      StudentData.createEncoding(photo)
+        .then(encoding => StudentData.saveEncoding(username, encoding))
+        .then(() => {
+          res.redirect('/');
+        })
+        .catch(err =>
+          res.render('base/error', {
+            error: err,
+          }));
+    },
+    check(req, res) {
+      const { username } = req.user;
 
-                    return StudentData.addCheck(student.username, check);
-                })
-                .then(() => {
-                    res.render('base/success', {
-                        success: {
-                            message: 'Успешно отбелязано присъствие!',
-                        },
-                    });
-                })
-                .catch((err) => res.render('base/error', {
-                    error: err,
-                }));
-        },
-    };
+      return verifyIdentity(req)
+        .then(() => StudentData.getStudentByUsername(username))
+        .then((student) => {
+          if (!student) {
+            res.render('base/error', {
+              error: {
+                message: 'Вътрешна грешка!',
+              },
+            });
+          }
+
+          return Promise.resolve(student);
+        })
+        .then((student) => {
+          const date = new Date();
+          const currentDay = date.getDay();
+          const currentHour = date.getHours();
+          const currentMinute = date.getMinutes();
+          const check = {
+            day: currentDay,
+            hour: currentHour,
+            minute: currentMinute,
+          };
+
+          return StudentData.addCheck(student.username, check);
+        })
+        .then(() => {
+          res.render('base/success', {
+            success: {
+              message: 'Успешно отбелязано присъствие!',
+            },
+          });
+        })
+        .catch(err =>
+          res.render('base/error', {
+            error: err,
+          }));
+    },
+  };
 }
 
-module.exports = {
-    init,
-};
+module.exports = { init };

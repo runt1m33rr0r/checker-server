@@ -1,19 +1,18 @@
 {
-    "env": {
-        "es6": true,
-        "node": true
-    },
-    "parserOptions": {
-        "ecmaVersion": 2017
-    },
-    "extends": ["eslint:recommended", "google"],
-    "rules": {
-        "eol-last": 0,
-        "linebreak-style": 0,
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "require-jsdoc": 0
-    }
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2017
+  },
+  "extends": ["airbnb-base"],
+  "rules": {
+    "linebreak-style": 0,
+    "consistent-return": 0,
+    "class-methods-use-this": 0,
+    "no-underscore-dangle": 0,
+    "global-require": 0,
+    "import/no-dynamic-require": 0
+  }
 }

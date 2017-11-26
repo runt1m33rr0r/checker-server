@@ -1,6 +1,6 @@
 module.exports = {
-    Normal: 'Normal',
-    Admin: 'Admin',
-    Teacher: 'Teacher',
-    Student: 'Student',
+  Normal: 'Normal',
+  Admin: 'Admin',
+  Teacher: 'Teacher',
+  Student: 'Student',
 };

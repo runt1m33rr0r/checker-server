@@ -1,59 +1,46 @@
-const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const settings = require('../config/settings');
 
 function init() {
-    return {
-        isAuthenticated(req, res, next) {
-            if (!req.isAuthenticated()) {
-                return res.redirect('/unauthorized');
-            }
-            next();
-        },
-        isInRole(role) {
-            return (req, res, next) => {
-                if (req.isAuthenticated() &&
-                    req.user.roles.indexOf(role) !== -1) {
-                    return next();
-                }
+  return {
+    isAuthenticated(req, res, next) {
+      const token = req.headers['x-access-token'];
+      if (!token) {
+        return res.status(401).send({
+          message: 'No token provided.',
+        });
+      }
 
-                res.redirect('/unauthorized');
-            };
-        },
-        loginLocal(req, res, next) {
-            if (req.user) {
-                return res.redirect('/unauthorized');
-            }
+      jwt.verify(token, settings.secret, (err, decoded) => {
+        if (err) {
+          return res.status(500).send({
+            message: 'Failed to authenticate token.',
+          });
+        }
 
-            passport.authenticate('local', (error, user, info) => {
-                if (error || !user) {
-                    return res.render('base/error', {
-                        error: {
-                            message: info.message,
-                        },
-                    });
-                }
+        req.username = decoded.username;
+        req.roles = decoded.roles;
+        next();
+      });
+    },
+    isInRole(role) {
+      return (req, res, next) => {
+        if (req.isAuthenticated() && req.user.roles.indexOf(role) !== -1) {
+          return next();
+        }
 
-                req.logIn(user, (err) => {
-                    if (err) {
-                        return res.render('base/error', {
-                            error: err,
-                        });
-                    }
+        res.redirect('/unauthorized');
+      };
+    },
+    logoutUser(req, res) {
+      if (!req.user) {
+        return res.redirect('/unauthorized');
+      }
 
-                    return res.redirect('/');
-                });
-            })(req, res, next);
-        },
-        logoutUser(req, res) {
-            if (!req.user) {
-                return res.redirect('/unauthorized');
-            }
-
-            req.logout();
-            res.redirect('/');
-        },
-    };
+      req.logout();
+      res.redirect('/');
+    },
+  };
 }
 
-module.exports = {
-    init,
-};
+module.exports = { init };

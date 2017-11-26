@@ -1,95 +1,81 @@
 const BaseData = require('../../base/base.data');
 
 class GroupData extends BaseData {
-    constructor(db, models) {
-        super(db);
+  constructor(db, models) {
+    super(db);
 
-        const {
-            Group,
-        } = models;
-        this.Group = Group;
+    const { Group } = models;
+    this.Group = Group;
+  }
+
+  createGroup(name, subjects) {
+    return this.getGroupByName(name).then((result) => {
+      if (result) {
+        return Promise.reject(new Error('Невалидни данни!'));
+      }
+
+      const groupModel = new this.Group(name, subjects);
+      return this.createEntry(groupModel);
+    });
+  }
+
+  updateGroupSubjects(groupName, subjects) {
+    if (
+      !groupName ||
+      typeof groupName !== 'string' ||
+      groupName.length < 1 ||
+      !Array.isArray(subjects)
+    ) {
+      return Promise.reject(new Error('Невалидни данни!'));
     }
 
-    createGroup(name, subjects) {
-        return this.getGroupByName(name)
-            .then((result) => {
-                if (result) {
-                    return Promise.reject({
-                        message: 'Невалидни данни!',
-                    });
-                }
-
-                const groupModel = new this.Group(name, subjects);
-                return this.createEntry(groupModel);
-            });
+    /* eslint no-restricted-syntax: 0 */
+    for (const subject of subjects) {
+      if (typeof subject !== 'string' || subject.length < 3) {
+        return Promise.reject(new Error('Невалидни данни!'));
+      }
     }
 
-    updateGroupSubjects(groupName, subjects) {
-        if (!groupName ||
-            typeof groupName !== 'string' ||
-            groupName.length < 1 ||
-            !Array.isArray(subjects)) {
-            return Promise.reject({
-                message: 'Невалидни данни!',
-            });
+    return this.collection.findOneAndUpdate(
+      {
+        name: groupName,
+      },
+      {
+        $set: {
+          subjects,
+        },
+      },
+    );
+  }
+
+  createGroups(groupsArray) {
+    const groupModels = [];
+    const checks = [];
+
+    for (const group of groupsArray) {
+      const groupName = group.name;
+      const { subjects } = group.subjects;
+
+      const check = this.getGroupByName(groupName).then((result) => {
+        if (result) {
+          return Promise.reject(new Error('Невалидни данни!'));
         }
 
-        for (let subject of subjects) {
-            if (typeof subject !== 'string' ||
-                subject.length < 3) {
-                return Promise.reject({
-                    message: 'Невалидни данни!',
-                });
-            }
-        }
-
-        return this.collection.findOneAndUpdate({
-            name: groupName,
-        }, {
-            $set: {
-                subjects: subjects,
-            },
-        });
+        groupModels.push(new this.Group(groupName, subjects));
+      });
+      checks.push(check);
     }
 
-    createGroups(groupsArray) {
-        let groupModels = [];
-        let checks = [];
+    return Promise.all(checks).then(() => this.createManyEntries(groupModels));
+  }
 
-        for (let group of groupsArray) {
-            const groupName = group.name;
-            const subjects = group.subjects;
-
-            const check = this.getGroupByName(groupName)
-                .then((result) => {
-                    if (result) {
-                        return Promise.reject({
-                            message: 'Невалидни данни!',
-                        });
-                    }
-
-                    groupModels.push(new this.Group(groupName, subjects));
-                });
-            checks.push(check);
-        }
-
-        return Promise.all(checks)
-            .then(() => {
-                return this.createManyEntries(groupModels);
-            });
+  getGroupByName(name) {
+    if (!name) {
+      return Promise.reject(new Error('Невалидни данни!'));
     }
 
-    getGroupByName(name) {
-        if (!name) {
-            return Promise.reject({
-                message: 'Невалидни данни!',
-            });
-        }
-
-        return this.collection.findOne({
-            name: name,
-        });
-    }
+    return this.collection.findOne({ name });
+  }
 }
 
 module.exports = GroupData;
