@@ -24,7 +24,7 @@ function init({
             .then((data) => {
                 if (data.same !== 'True') {
                     return Promise.reject({
-                        message: 'Невалидни данни!',
+                        message: 'Лицето на снимката не е ваше!',
                     });
                 }
             });
@@ -86,14 +86,14 @@ function init({
             const username = req.user.username;
 
             return verifyIdentity(req, res)
-                .then(() => {
+                .then((res) => {
                     return StudentData.getStudentByUsername(username);
                 })
                 .then((student) => {
                     if (!student) {
                         res.render('base/error', {
                             error: {
-                                message: 'Internal error!',
+                                message: 'Вътрешна грешка!',
                             },
                         });
                     }
