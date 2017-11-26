@@ -281,11 +281,11 @@ function init({
                     subjectsPromise,
                     groupsPromise,
                 ])
-                .then((data) => {
-                    const timeslots = data[0];
-                    const teachers = data[1];
-                    const subjects = data[2];
-                    const groups = data[3];
+                .then((result) => {
+                    const timeslots = result[0];
+                    const teachers = result[1];
+                    const subjects = result[2];
+                    const groups = result[3];
 
                     if (timeslots.length < 1 ||
                         teachers.length < 1 ||
