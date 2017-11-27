@@ -1,7 +1,4 @@
-const multer = require('multer');
 const roles = require('../../utils/roletypes');
-
-const upload = multer();
 
 function init({ app, controllers, middlewares }) {
   const controller = controllers.student;
@@ -23,12 +20,6 @@ function init({ app, controllers, middlewares }) {
   app.post(
     '/students/checker',
     middlewares.user.isInRole(roles.Student),
-    upload.fields([
-      {
-        name: 'photo',
-        maxCount: 1,
-      },
-    ]),
     controller.check,
   );
 }

@@ -1,6 +1,9 @@
 const roleTypes = require('../utils/roletypes');
 const settings = require('../config/settings');
 
+const STATUS = 200;
+const TOKEN_EXPIRATION = 86400;
+
 function init({ data, encryption }) {
   const {
     UserData, TeacherData, GroupData, SubjectData, StudentData,
@@ -45,116 +48,52 @@ function init({ data, encryption }) {
 
   function registerStudent(firstName, lastName, username, group) {
     return StudentData.createStudent(firstName, lastName, username, group);
-    // return GroupData.getGroupByName(group)
-    //     .then((result) => {
-    //         if (result) {
-    //             return StudentData.createStudent(
-    //                 firstName, lastName, username, group);
-    //         } else {
-    //             return Promise.reject({
-    //                 message: 'Невалидна група!',
-    //             });
-    //         }
-    //     });
-  }
-
-  function getUserByUsername(req, res) {
-    const { username } = req.query;
-
-    UserData.getUserByUsername(username)
-      .then((user) => {
-        if (!user) {
-          return res.render('base/error', {
-            error: {
-              message: 'Такъв потребител не съществува!',
-            },
-          });
-        }
-
-        return res.send(user);
-      })
-      .catch(err =>
-        res.render('base/error', {
-          error: err,
-        }));
-  }
-
-  function getUserById(req, res) {
-    const { id } = req.query;
-
-    UserData.getUserById(id)
-      .then((user) => {
-        if (!user) {
-          return res.render('base/error', {
-            error: {
-              message: 'Такъв потребител не съществува!',
-            },
-          });
-        }
-
-        return res.send(user);
-      })
-      .catch(err =>
-        res.render('base/error', {
-          error: err,
-        }));
+    // return GroupData.getGroupByName(group).then((result) => {
+    //   if (result) {
+    //     return StudentData.createStudent(firstName, lastName, username, group);
+    //   }
+    //   return Promise.reject(new Error('Невалидна група!'));
+    // });
   }
 
   return {
-    searchUser(req, res) {
-      const { username, id } = req.query;
-
-      if (username) {
-        return getUserByUsername(req, res);
-      } else if (id) {
-        return getUserById(req, res);
-      }
-
-      return res.render('base/error', {
-        error: {
-          message: 'Невалидна заявка!',
-        },
-      });
-    },
-    getLoginPage(req, res) {
-      res.render('user/login');
-    },
-    getRegisterPage(req, res) {
-      res.render('user/register');
-    },
-    getProfilePage(req, res) {
-      if (req.user.roles.includes('Student')) {
-        StudentData.getStudentByUsername(req.user.username)
-          .then((user) => {
-            res.render('user/profile', {
-              student: user,
-            });
-          })
-          .catch(err =>
-            res.render('base/error', {
-              error: err,
+    getProfile(req, res) {
+      if (req.roles.includes('Student')) {
+        StudentData.getStudentByUsername(req.username)
+          .then(user =>
+            res.status(STATUS).json({
+              success: true,
+              message: 'Student profile sent.',
+              user,
+            }))
+          .catch(() =>
+            res.status(STATUS).json({
+              success: false,
+              message: 'Internal error!',
             }));
-      } else if (req.user.roles.includes('Teacher')) {
-        TeacherData.getTeacherByUsername(req.user.username)
-          .then((user) => {
-            res.render('user/profile', {
-              teacher: user,
-            });
-          })
-          .catch(err =>
-            res.render('base/error', {
-              error: err,
+      } else if (req.roles.includes('Teacher')) {
+        TeacherData.getTeacherByUsername(req.username)
+          .then(user =>
+            res.status(STATUS).json({
+              success: true,
+              message: 'Teacher profile sent.',
+              user,
+            }))
+          .catch(() =>
+            res.status(STATUS).json({
+              success: false,
+              message: 'Internal error!',
             }));
       } else {
-        res.render('base/error', {
-          error: {
-            message: 'Вътрешна грешка!',
-          },
+        res.status(STATUS).json({
+          success: false,
+          message: 'Internal error!',
         });
       }
     },
     saveProfile(req, res) {
       const { roles } = req.user;
+
       if (roles.includes('Student')) {
         if (
           !req.files ||
@@ -163,10 +102,9 @@ function init({ data, encryption }) {
           !req.files.photo[0] ||
           !req.files.photo[0].buffer
         ) {
-          return res.render('base/error', {
-            error: {
-              message: 'Невалидни данни!',
-            },
+          return res.status(STATUS).json({
+            success: false,
+            message: 'Invalid data!',
           });
         }
 
@@ -176,15 +114,15 @@ function init({ data, encryption }) {
         StudentData.createEncoding(photo)
           .then(encoding => StudentData.saveEncoding(username, encoding))
           .then(() => {
-            res.render('base/success', {
-              success: {
-                message: 'Настройките се запазиха успешно!',
-              },
+            res.status(STATUS).json({
+              success: true,
+              message: 'Settings saved!',
             });
           })
-          .catch(err =>
-            res.render('base/error', {
-              error: err,
+          .catch(() =>
+            res.status(STATUS).json({
+              success: false,
+              message: 'Internal error!',
             }));
       } else {
         // add other stuff later
@@ -192,10 +130,6 @@ function init({ data, encryption }) {
       }
     },
     registerUser(req, res) {
-      if (req.user) {
-        res.redirect('/unauthorized');
-      }
-
       const {
         username,
         password,
@@ -211,33 +145,38 @@ function init({ data, encryption }) {
       const hash = encryption.getHash(salt, password);
       const roles = [roleTypes.Normal];
 
+      const token = encryption.getToken(
+        {
+          roles,
+          username,
+        },
+        settings.secret,
+        TOKEN_EXPIRATION,
+      );
+
       if (userType === roleTypes.Student) {
         roles.push(roleTypes.Student);
         registerStudent(firstName, lastName, username, group)
           .then(() => UserData.createUser(username, roles, salt, hash))
           .then(() => {
-            const token = encryption.getToken(
-              {
-                roles,
-                username,
-              },
-              settings.secret,
-              86400,
-            );
-            res.status(200).json({
-              message: 'Готово',
+            res.status(STATUS).json({
+              success: true,
+              message: 'Registered!',
+              roles,
               token,
             });
           })
           .catch((err) => {
-            res.status(500).json({
+            res.status(STATUS).json({
+              success: false,
               message: err.message,
             });
           });
       } else if (userType === roleTypes.Teacher) {
         if (typeof leadTeacher !== 'boolean') {
-          return res.status(500).json({
-            message: 'Невалиден потребител!',
+          return res.status(STATUS).json({
+            success: false,
+            message: 'Invalid user!',
           });
         }
 
@@ -246,27 +185,23 @@ function init({ data, encryption }) {
         registerTeacher(firstName, lastName, username, leadTeacher, group, subjects)
           .then(() => UserData.createUser(username, roles, salt, hash))
           .then(() => {
-            const token = encryption.getToken(
-              {
-                roles,
-                username,
-              },
-              settings.secret,
-              86400,
-            );
-            res.status(200).json({
-              message: 'Готово',
+            res.status(STATUS).json({
+              success: true,
+              message: 'Registered',
+              roles,
               token,
             });
           })
-          .catch((err) => {
-            res.status(500).json({
-              message: err.message,
+          .catch(() => {
+            res.status(STATUS).json({
+              success: false,
+              message: 'Internal error!',
             });
           });
       } else {
-        res.status(500).json({
-          message: 'Невалиден потребител!',
+        res.status(STATUS).json({
+          success: false,
+          message: 'Invalid data!',
         });
       }
     },
@@ -275,11 +210,17 @@ function init({ data, encryption }) {
 
       UserData.getUserByUsername(username).then((user) => {
         if (!user) {
-          return res.status(500).send('Error on the server.');
+          return res.status(STATUS).json({
+            success: false,
+            message: 'Invalid user!',
+          });
         }
 
         if (!UserData.checkPassword(password, user.salt, user.hashedPass, encryption)) {
-          return res.status(500).send('password error');
+          return res.status(STATUS).json({
+            success: false,
+            message: 'Invalid user!',
+          });
         }
 
         const token = encryption.getToken(
@@ -288,16 +229,15 @@ function init({ data, encryption }) {
             username,
           },
           settings.secret,
-          86400,
+          TOKEN_EXPIRATION,
         );
-        res.status(200).send({
-          message: 'cool',
+        res.status(STATUS).send({
+          success: true,
+          message: 'Logged in!',
+          roles: user.roles,
           token,
         });
       });
-    },
-    getUnauthorized(req, res) {
-      res.render('base/unauthorized');
     },
   };
 }

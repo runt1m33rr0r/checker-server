@@ -6,57 +6,6 @@ function init({ data }) {
   } = data;
 
   return {
-    getBaseSettingsPage(req, res) {
-      res.render('school/settings/base');
-    },
-    getSubjectSettingsPage(req, res) {
-      res.render('school/settings/subjects');
-    },
-    getTimetableSettingsPage(req, res) {
-      res.render('school/settings/timetable');
-    },
-    getGenerateTimetablePage(req, res) {
-      LessonData.getAll()
-        .then((result) => {
-          res.render('school/timetable/generate', {
-            lessons: result,
-          });
-        })
-        .catch(err =>
-          res.render('base/error', {
-            error: err,
-          }));
-    },
-    getCreateTimetablePage(req, res) {
-      const promises = [
-        LessonData.getAll(),
-        TeacherData.getAll(),
-        TimeslotData.getAll(),
-        GroupData.getAll(),
-        SubjectData.getAll(),
-      ];
-
-      Promise.all(promises)
-        .then((result) => {
-          const lessons = result[0];
-          const teachers = result[1];
-          const timeslots = result[2];
-          const groups = result[3];
-          const subjects = result[4];
-
-          res.render('school/timetable/create', {
-            lessons,
-            teachers,
-            timeslots,
-            groups,
-            subjects,
-          });
-        })
-        .catch(err =>
-          res.render('base/error', {
-            error: err,
-          }));
-    },
     deleteTimetable(req, res) {
       LessonData.clean()
         .then(() => {
@@ -96,25 +45,6 @@ function init({ data }) {
           LessonData.createLesson(groupName, subjectCode, teacherUsername, timeslot))
         .then(() => {
           res.redirect('/school/settings/timetable/create');
-        })
-        .catch(err =>
-          res.render('base/error', {
-            error: err,
-          }));
-    },
-    getGroupsSettingsPage(req, res) {
-      const allGroups = GroupData.getAll();
-      const allSubjects = SubjectData.getAll();
-
-      Promise.all([allGroups, allSubjects])
-        .then((result) => {
-          const groups = result[0];
-          const subjects = result[1];
-
-          res.render('school/settings/groups', {
-            groups,
-            subjects,
-          });
         })
         .catch(err =>
           res.render('base/error', {
@@ -287,7 +217,6 @@ function init({ data }) {
               return Promise.reject(new Error('Невалидно време!'));
             }
 
-            /* eslint no-underscore-dangle: 0 */
             const check = TimeslotData.getByID(lesson.timeslot._id).then(() => {
               if (!result) {
                 return Promise.reject(new Error('Невалидно време!'));

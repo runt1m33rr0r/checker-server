@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const settings = require('../config/settings');
 
 function getSalt() {
   const salt = crypto.randomBytes(128).toString('base64');
@@ -25,8 +26,17 @@ function getToken(data, secret, expiration) {
   });
 }
 
+function verifyToken(token) {
+  try {
+    return jwt.verify(token, settings.secret);
+  } catch (err) {
+    return null;
+  }
+}
+
 module.exports = {
   getSalt,
   getHash,
   getToken,
+  verifyToken,
 };

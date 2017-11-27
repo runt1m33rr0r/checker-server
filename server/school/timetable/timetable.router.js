@@ -7,37 +7,6 @@ function init({ app, controllers, middlewares }) {
   app.get('/api/groups', controller.getAllGroups);
   app.get('/api/subjects', controller.getAllSubjects);
 
-  app.get(
-    `${settingsRoute}base`,
-    middlewares.user.isInRole(roleTypes.Teacher),
-    controller.getBaseSettingsPage,
-  );
-  app.get(
-    `${settingsRoute}subjects`,
-    middlewares.user.isInRole(roleTypes.Teacher),
-    controller.getSubjectSettingsPage,
-  );
-  app.get(
-    `${settingsRoute}groups`,
-    middlewares.user.isInRole(roleTypes.Teacher),
-    controller.getGroupsSettingsPage,
-  );
-  app.get(
-    `${settingsRoute}timetable`,
-    middlewares.user.isInRole(roleTypes.Teacher),
-    controller.getTimetableSettingsPage,
-  );
-  app.get(
-    `${settingsRoute}timetable/generate`,
-    middlewares.user.isInRole(roleTypes.Teacher),
-    controller.getGenerateTimetablePage,
-  );
-  app.get(
-    `${settingsRoute}timetable/create`,
-    middlewares.user.isInRole(roleTypes.Teacher),
-    controller.getCreateTimetablePage,
-  );
-
   app.post(
     `${settingsRoute}base`,
     middlewares.user.isInRole(roleTypes.Teacher),
