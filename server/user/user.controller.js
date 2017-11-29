@@ -189,6 +189,7 @@ function init({ data, encryption }) {
               success: true,
               message: 'Registered',
               roles,
+              username,
               token,
             });
           })
@@ -236,6 +237,7 @@ function init({ data, encryption }) {
             success: true,
             message: 'Logged in!',
             roles: user.roles,
+            username,
             token,
           });
         })
