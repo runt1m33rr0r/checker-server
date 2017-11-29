@@ -208,36 +208,42 @@ function init({ data, encryption }) {
     loginUser(req, res) {
       const { username, password } = req.body;
 
-      UserData.getUserByUsername(username).then((user) => {
-        if (!user) {
-          return res.status(STATUS).json({
-            success: false,
-            message: 'Invalid user!',
-          });
-        }
+      UserData.getUserByUsername(username)
+        .then((user) => {
+          if (!user) {
+            return res.status(STATUS).json({
+              success: false,
+              message: 'Invalid user!',
+            });
+          }
 
-        if (!UserData.checkPassword(password, user.salt, user.hashedPass, encryption)) {
-          return res.status(STATUS).json({
-            success: false,
-            message: 'Invalid user!',
-          });
-        }
+          if (!UserData.checkPassword(password, user.salt, user.hashedPass, encryption)) {
+            return res.status(STATUS).json({
+              success: false,
+              message: 'Invalid user!',
+            });
+          }
 
-        const token = encryption.getToken(
-          {
+          const token = encryption.getToken(
+            {
+              roles: user.roles,
+              username,
+            },
+            settings.secret,
+            TOKEN_EXPIRATION,
+          );
+          res.status(STATUS).send({
+            success: true,
+            message: 'Logged in!',
             roles: user.roles,
-            username,
-          },
-          settings.secret,
-          TOKEN_EXPIRATION,
-        );
-        res.status(STATUS).send({
-          success: true,
-          message: 'Logged in!',
-          roles: user.roles,
-          token,
-        });
-      });
+            token,
+          });
+        })
+        .catch(() =>
+          res.status(STATUS).json({
+            success: false,
+            message: 'Invalid data!',
+          }));
     },
   };
 }
