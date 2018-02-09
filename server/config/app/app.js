@@ -8,9 +8,10 @@ function init() {
 
   app.use(bodyParser.json());
 
-  if (settings.environment === 'development') {
-    app.use(cors());
-  }
+  // if (settings.environment === 'development') {
+  //   app.use(cors());
+  // }
+  app.use(cors());
 
   return app;
 }

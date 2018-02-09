@@ -54,12 +54,12 @@ function init({ data }) {
     getAllGroups(req, res) {
       GroupData.getAll()
         .then((groupData) => {
-          res.status(200).json({
+          res.json({
             groups: groupData,
           });
         })
         .catch((err) => {
-          res.status(500).json({
+          res.json({
             message: err.message,
           });
         });
@@ -67,43 +67,44 @@ function init({ data }) {
     getAllSubjects(req, res) {
       SubjectData.getAll()
         .then((subjectData) => {
-          res.status(200).json({
+          res.json({
             subjects: subjectData,
           });
         })
         .catch((err) => {
-          res.status(500).json({
+          res.json({
             message: err.message,
           });
         });
     },
     saveBaseSettings(req, res) {
       const { groups } = req.body;
+      console.log(req.body);
+      return res.json({ success: true, message: 'cool' });
+      // if (!groups) {
+      //   return res.status(500).json({
+      //     message: 'Невалидни данни!',
+      //   });
+      // }
 
-      if (!groups) {
-        return res.status(500).json({
-          message: 'Невалидни данни!',
-        });
-      }
-
-      GroupData.clean()
-        .then(() => GroupData.createGroups(groups))
-        .then(() => {
-          res.status(200).json({
-            message: 'Готово',
-          });
-        })
-        .catch((err) => {
-          res.status(400).json({
-            message: err.message,
-          });
-        });
+      // GroupData.clean()
+      //   .then(() => GroupData.createGroups(groups))
+      //   .then(() => {
+      //     res.status(200).json({
+      //       message: 'Готово',
+      //     });
+      //   })
+      //   .catch((err) => {
+      //     res.status(400).json({
+      //       message: err.message,
+      //     });
+      //   });
     },
     saveSubjectSettings(req, res) {
       const { subjects } = req.body;
 
       if (!subjects) {
-        return res.status(500).json({
+        return res.json({
           message: 'Невалидни данни!',
         });
       }
@@ -111,12 +112,12 @@ function init({ data }) {
       SubjectData.clean()
         .then(() => SubjectData.createSubjects(subjects))
         .then(() => {
-          res.status(200).json({
+          res.json({
             message: 'Готово',
           });
         })
         .catch((err) => {
-          res.status(400).json({
+          res.json({
             message: err.message,
           });
         });
@@ -125,7 +126,7 @@ function init({ data }) {
       const { timeslots } = req.body;
 
       if (!timeslots) {
-        return res.status(500).json({
+        return res.json({
           message: 'Невалидни данни!',
         });
       }
@@ -133,12 +134,12 @@ function init({ data }) {
       TimeslotData.clean()
         .then(() => TimeslotData.createTimeslots(timeslots))
         .then(() => {
-          res.status(200).json({
+          res.json({
             message: 'Готово',
           });
         })
         .catch((err) => {
-          res.status(400).json({
+          res.json({
             message: err.message,
           });
         });
@@ -147,7 +148,7 @@ function init({ data }) {
       const { groups } = req.body;
 
       if (!groups || !Array.isArray(groups) || groups.length < 1) {
-        return res.status(500).json({
+        return res.json({
           message: 'Невалидни данни!',
         });
       }
@@ -156,7 +157,7 @@ function init({ data }) {
       /* eslint no-restricted-syntax: 0 */
       for (const group of groups) {
         if (!group.subjects || !Array.isArray(group.subjects)) {
-          return res.status(400).json({
+          return res.json({
             message: 'Невалидни данни!',
           });
         }
@@ -169,12 +170,12 @@ function init({ data }) {
 
       Promise.all(updates)
         .then(() => {
-          res.status(200).json({
+          res.json({
             message: 'Готово',
           });
         })
         .catch((err) => {
-          res.status(400).json({
+          res.json({
             message: err.message,
           });
         });

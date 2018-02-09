@@ -1,7 +1,7 @@
 const roleTypes = require('../../utils/roletypes');
 
 function init({ app, controllers, middlewares }) {
-  const settingsRoute = '/school/settings/';
+  const settingsRoute = '/api/school/settings/';
   const controller = controllers.timetable;
 
   app.get('/api/groups', controller.getAllGroups);
