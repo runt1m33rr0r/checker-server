@@ -17,7 +17,7 @@ class Timeslot {
       day < 1 ||
       day > 7
     ) {
-      throw new Error('Невалидни данни!');
+      throw new Error('Невалиден часови диапазон!');
     }
 
     this.fromHour = fromHour;

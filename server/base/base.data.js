@@ -40,6 +40,10 @@ class BaseData {
   getAll() {
     return this.collection.find().toArray();
   }
+
+  getFirst() {
+    return this.collection.findOne({});
+  }
 }
 
 module.exports = BaseData;

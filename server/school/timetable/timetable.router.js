@@ -13,21 +13,6 @@ function init({ app, controllers, middlewares }) {
     controller.saveBaseSettings,
   );
   app.post(
-    `${settingsRoute}subjects`,
-    middlewares.user.isInRole(roleTypes.Teacher),
-    controller.saveSubjectSettings,
-  );
-  app.post(
-    `${settingsRoute}groups`,
-    middlewares.user.isInRole(roleTypes.Teacher),
-    controller.saveGroupsSettings,
-  );
-  app.post(
-    `${settingsRoute}timetable`,
-    middlewares.user.isInRole(roleTypes.Teacher),
-    controller.saveTimetableSettings,
-  );
-  app.post(
     `${settingsRoute}timetable/generate`,
     middlewares.user.isInRole(roleTypes.Teacher),
     controller.generateTimetable,

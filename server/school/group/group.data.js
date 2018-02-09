@@ -54,7 +54,7 @@ class GroupData extends BaseData {
 
     for (const group of groupsArray) {
       const groupName = group.name;
-      const { subjects } = group.subjects;
+      const { subjects } = group;
 
       const check = this.getGroupByName(groupName).then((result) => {
         if (result) {

@@ -1,27 +1,26 @@
 class Subject {
   constructor(name, code, teachers) {
     if (typeof name !== 'string' || name.length < 3 || name.length > 30) {
-      throw new Error('Невалидни данни!');
+      throw new Error('Невалидно име на предмет!');
     }
 
     if (typeof code !== 'string' || code.length < 3 || code.length > 30) {
-      throw new Error('Невалидни данни!');
+      throw new Error('Невалиден код на предмет!');
     }
 
-    if (!teachers || !Array.isArray(teachers)) {
-      throw new Error('Невалидни данни!');
+    if (!Array.isArray(teachers)) {
+      this.teachers = [];
     }
 
     /* eslint no-restricted-syntax: 0 */
-    for (const teacher of teachers) {
+    for (const teacher of this.teachers) {
       if (typeof teacher !== 'string' || teacher.length < 3) {
-        throw new Error('Невалидни данни!');
+        throw new Error('Невалиден учител!');
       }
     }
 
     this.name = name;
     this.code = code;
-    this.teachers = teachers;
   }
 }
 

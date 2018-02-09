@@ -18,26 +18,23 @@ class TimeslotData extends BaseData {
 
     /* eslint no-restricted-syntax: 0 */
     for (const timeslot of timeslotArray) {
+      const {
+        fromHour, fromMinute, toHour, toMinute, day,
+      } = timeslot;
       const check = this.collection
         .findOne({
-          fromHour: timeslot.fromHour,
-          fromMinute: timeslot.fromMinute,
-          toHour: timeslot.toHour,
-          toMinute: timeslot.toMinute,
-          day: timeslot.day,
+          fromHour,
+          fromMinute,
+          toHour,
+          toMinute,
+          day,
         })
         .then((result) => {
           if (result) {
             return Promise.reject(new Error('Такива предмети вече съществуват!'));
           }
 
-          timeslotModels.push(new this.Timeslot(
-            timeslot.fromHour,
-            timeslot.fromMinute,
-            timeslot.toHour,
-            timeslot.toMinute,
-            timeslot.day,
-          ));
+          timeslotModels.push(new this.Timeslot(fromHour, fromMinute, toHour, toMinute, day));
         });
       checks.push(check);
     }

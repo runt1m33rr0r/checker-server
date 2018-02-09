@@ -2,19 +2,14 @@ const Generator = require('../../utils/timetable-generator');
 
 function init({ data }) {
   const {
-    GroupData, SubjectData, TimeslotData, TeacherData, LessonData,
+    GroupData, SubjectData, TimeslotData, TeacherData, LessonData, SettingsData,
   } = data;
 
   return {
     deleteTimetable(req, res) {
       LessonData.clean()
-        .then(() => {
-          res.redirect('/school/settings/timetable/create');
-        })
-        .catch(err =>
-          res.render('base/error', {
-            error: err,
-          }));
+        .then(() => res.redirect('/school/settings/timetable/create'))
+        .catch(err => res.render('base/error', { error: err }));
     },
     createLesson(req, res) {
       const groupName = req.body.group;
@@ -43,26 +38,13 @@ function init({ data }) {
         })
         .then(timeslot =>
           LessonData.createLesson(groupName, subjectCode, teacherUsername, timeslot))
-        .then(() => {
-          res.redirect('/school/settings/timetable/create');
-        })
-        .catch(err =>
-          res.render('base/error', {
-            error: err,
-          }));
+        .then(() => res.redirect('/school/settings/timetable/create'))
+        .catch(err => res.render('base/error', { error: err }));
     },
     getAllGroups(req, res) {
       GroupData.getAll()
-        .then((groupData) => {
-          res.json({
-            groups: groupData,
-          });
-        })
-        .catch((err) => {
-          res.json({
-            message: err.message,
-          });
-        });
+        .then(groupData => res.json({ groups: groupData }))
+        .catch(err => res.json({ message: err.message }));
     },
     getAllSubjects(req, res) {
       SubjectData.getAll()
@@ -78,107 +60,17 @@ function init({ data }) {
         });
     },
     saveBaseSettings(req, res) {
-      const { groups } = req.body;
-      console.log(req.body);
-      return res.json({ success: true, message: 'cool' });
-      // if (!groups) {
-      //   return res.status(500).json({
-      //     message: 'Невалидни данни!',
-      //   });
-      // }
+      const { groups, timeslots, subjects } = req.body;
 
-      // GroupData.clean()
-      //   .then(() => GroupData.createGroups(groups))
-      //   .then(() => {
-      //     res.status(200).json({
-      //       message: 'Готово',
-      //     });
-      //   })
-      //   .catch((err) => {
-      //     res.status(400).json({
-      //       message: err.message,
-      //     });
-      //   });
-    },
-    saveSubjectSettings(req, res) {
-      const { subjects } = req.body;
-
-      if (!subjects) {
-        return res.json({
-          message: 'Невалидни данни!',
-        });
-      }
-
-      SubjectData.clean()
+      GroupData.clean()
+        .then(() => TimeslotData.clean())
+        .then(() => SubjectData.clean())
         .then(() => SubjectData.createSubjects(subjects))
-        .then(() => {
-          res.json({
-            message: 'Готово',
-          });
-        })
-        .catch((err) => {
-          res.json({
-            message: err.message,
-          });
-        });
-    },
-    saveTimetableSettings(req, res) {
-      const { timeslots } = req.body;
-
-      if (!timeslots) {
-        return res.json({
-          message: 'Невалидни данни!',
-        });
-      }
-
-      TimeslotData.clean()
         .then(() => TimeslotData.createTimeslots(timeslots))
-        .then(() => {
-          res.json({
-            message: 'Готово',
-          });
-        })
-        .catch((err) => {
-          res.json({
-            message: err.message,
-          });
-        });
-    },
-    saveGroupsSettings(req, res) {
-      const { groups } = req.body;
-
-      if (!groups || !Array.isArray(groups) || groups.length < 1) {
-        return res.json({
-          message: 'Невалидни данни!',
-        });
-      }
-
-      const updates = [];
-      /* eslint no-restricted-syntax: 0 */
-      for (const group of groups) {
-        if (!group.subjects || !Array.isArray(group.subjects)) {
-          return res.json({
-            message: 'Невалидни данни!',
-          });
-        }
-
-        const update = SubjectData.getSubjectsByCodes(group.subjects).then(subjects =>
-          GroupData.updateGroupSubjects(group.name, subjects));
-
-        updates.push(update);
-      }
-
-      Promise.all(updates)
-        .then(() => {
-          res.json({
-            message: 'Готово',
-          });
-        })
-        .catch((err) => {
-          res.json({
-            message: err.message,
-          });
-        });
+        .then(() => GroupData.createGroups(groups))
+        .then(() => res.json({ success: true, message: 'Настройките бяха успешно запазени!' }))
+        .then(() => SettingsData.updateSettings({ setupFinished: true }))
+        .catch(err => res.json({ success: false, message: err.message }));
     },
     generateTimetable(req, res) {
       const timeslotsPromise = TimeslotData.getAll();
@@ -213,7 +105,8 @@ function init({ data }) {
           }
 
           const checks = [];
-          for (const lesson of lessons) {
+          for (let i = 0; i < lessons.length; i += 1) {
+            const lesson = lessons[i];
             if (!lesson.timeslot) {
               return Promise.reject(new Error('Невалидно време!'));
             }
