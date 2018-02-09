@@ -13,7 +13,7 @@ function getHash(salt, password) {
   }
 
   const hash = crypto
-    .createHmac('sha256', salt)
+    .createHmac('sha512', salt)
     .update(password)
     .digest('hex');
 
@@ -23,12 +23,13 @@ function getHash(salt, password) {
 function getToken(data, secret, expiration) {
   return jwt.sign(data, secret, {
     expiresIn: expiration,
+    algorithm: 'HS512',
   });
 }
 
 function verifyToken(token) {
   try {
-    return jwt.verify(token, settings.secret);
+    return jwt.verify(token, settings.secret, { algorithms: ['HS512'] });
   } catch (err) {
     return null;
   }

@@ -1,8 +1,7 @@
 const roleTypes = require('../utils/roletypes');
 const settings = require('../config/settings');
 
-const STATUS = 200;
-const TOKEN_EXPIRATION = 86400;
+const TOKEN_EXPIRATION = '7d';
 
 function init({ data, encryption }) {
   const {
@@ -61,31 +60,31 @@ function init({ data, encryption }) {
       if (req.roles.includes('Student')) {
         StudentData.getStudentByUsername(req.username)
           .then(user =>
-            res.status(STATUS).json({
+            res.json({
               success: true,
               message: 'Student profile sent.',
               user,
             }))
           .catch(() =>
-            res.status(STATUS).json({
+            res.json({
               success: false,
               message: 'Internal error!',
             }));
       } else if (req.roles.includes('Teacher')) {
         TeacherData.getTeacherByUsername(req.username)
           .then(user =>
-            res.status(STATUS).json({
+            res.json({
               success: true,
               message: 'Teacher profile sent.',
               user,
             }))
           .catch(() =>
-            res.status(STATUS).json({
+            res.json({
               success: false,
               message: 'Internal error!',
             }));
       } else {
-        res.status(STATUS).json({
+        res.json({
           success: false,
           message: 'Internal error!',
         });
@@ -102,7 +101,7 @@ function init({ data, encryption }) {
           !req.files.photo[0] ||
           !req.files.photo[0].buffer
         ) {
-          return res.status(STATUS).json({
+          return res.json({
             success: false,
             message: 'Invalid data!',
           });
@@ -114,13 +113,13 @@ function init({ data, encryption }) {
         StudentData.createEncoding(photo)
           .then(encoding => StudentData.saveEncoding(username, encoding))
           .then(() => {
-            res.status(STATUS).json({
+            res.json({
               success: true,
               message: 'Settings saved!',
             });
           })
           .catch(() =>
-            res.status(STATUS).json({
+            res.json({
               success: false,
               message: 'Internal error!',
             }));
@@ -159,7 +158,7 @@ function init({ data, encryption }) {
         registerStudent(firstName, lastName, username, group)
           .then(() => UserData.createUser(username, roles, salt, hash))
           .then(() => {
-            res.status(STATUS).json({
+            res.json({
               success: true,
               message: 'Registered!',
               roles,
@@ -167,14 +166,14 @@ function init({ data, encryption }) {
             });
           })
           .catch((err) => {
-            res.status(STATUS).json({
+            res.json({
               success: false,
               message: err.message,
             });
           });
       } else if (userType === roleTypes.Teacher) {
         if (typeof leadTeacher !== 'boolean') {
-          return res.status(STATUS).json({
+          return res.json({
             success: false,
             message: 'Invalid user!',
           });
@@ -185,7 +184,7 @@ function init({ data, encryption }) {
         registerTeacher(firstName, lastName, username, leadTeacher, group, subjects)
           .then(() => UserData.createUser(username, roles, salt, hash))
           .then(() => {
-            res.status(STATUS).json({
+            res.json({
               success: true,
               message: 'Registered',
               roles,
@@ -194,13 +193,13 @@ function init({ data, encryption }) {
             });
           })
           .catch(() => {
-            res.status(STATUS).json({
+            res.json({
               success: false,
               message: 'Internal error!',
             });
           });
       } else {
-        res.status(STATUS).json({
+        res.json({
           success: false,
           message: 'Invalid data!',
         });
@@ -212,14 +211,14 @@ function init({ data, encryption }) {
       UserData.getUserByUsername(username)
         .then((user) => {
           if (!user) {
-            return res.status(STATUS).json({
+            return res.json({
               success: false,
               message: 'Invalid user!',
             });
           }
 
           if (!UserData.checkPassword(password, user.salt, user.hashedPass, encryption)) {
-            return res.status(STATUS).json({
+            return res.json({
               success: false,
               message: 'Invalid user!',
             });
@@ -233,7 +232,7 @@ function init({ data, encryption }) {
             settings.secret,
             TOKEN_EXPIRATION,
           );
-          res.status(STATUS).send({
+          res.send({
             success: true,
             message: 'Logged in!',
             roles: user.roles,
@@ -242,7 +241,7 @@ function init({ data, encryption }) {
           });
         })
         .catch(() =>
-          res.status(STATUS).json({
+          res.json({
             success: false,
             message: 'Invalid data!',
           }));

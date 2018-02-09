@@ -4,7 +4,7 @@ class Subject {
       throw new Error('Невалидни данни!');
     }
 
-    if (typeof name !== 'string' || name.length < 3 || name.length > 30) {
+    if (typeof code !== 'string' || code.length < 3 || code.length > 30) {
       throw new Error('Невалидни данни!');
     }
 

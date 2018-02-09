@@ -1,15 +1,19 @@
 const encryption = require('../utils/encryption');
 
-const STATUS = 200;
-
 function init(data) {
   const { UserData } = data;
 
   return {
     isAuthenticated(req, res, next) {
-      const token = req.headers['x-access-token'];
-      if (!token) {
-        return res.status(STATUS).send({
+      if (!req.headers.authorization) {
+        return res.send({ success: false, message: 'Ivalid headers!' });
+      }
+
+      const tokenData = req.headers.authorization.split(' ');
+      const type = tokenData[0];
+      const token = tokenData[1];
+      if (!token || !type || type !== 'Bearer') {
+        return res.send({
           success: false,
           message: 'No token provided.',
         });
@@ -17,7 +21,7 @@ function init(data) {
 
       const decoded = encryption.verifyToken(token);
       if (!decoded) {
-        return res.status(STATUS).send({
+        return res.send({
           success: false,
           message: 'Failed to authenticate token.',
         });
@@ -26,7 +30,7 @@ function init(data) {
       UserData.getUserByUsername(decoded.username)
         .then((user) => {
           if (!user) {
-            return res.status(STATUS).send({
+            return res.send({
               success: false,
               message: 'Failed to authenticate token.',
             });
@@ -38,20 +42,22 @@ function init(data) {
           next();
         })
         .catch(() =>
-          res.status(STATUS).send({
+          res.send({
             success: false,
             message: 'Failed to authenticate token.',
           }));
     },
     isInRole(role) {
       return (req, res, next) => {
-        if (req.isAuthenticated && req.roles.indexOf(role) !== -1) {
-          return next();
-        }
+        this.isAuthenticated(req, res, () => {
+          if (req.isAuthenticated && req.roles.indexOf(role) !== -1) {
+            return next();
+          }
 
-        res.status(STATUS).send({
-          success: false,
-          message: 'Unauthorized!',
+          res.send({
+            success: false,
+            message: 'Unauthorized!',
+          });
         });
       };
     },
