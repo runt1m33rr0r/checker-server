@@ -1,4 +1,4 @@
-const BaseData = require('../base/base.data');
+const BaseData = require('../../base/base.data');
 
 class SettingsData extends BaseData {
   constructor(db, models) {
