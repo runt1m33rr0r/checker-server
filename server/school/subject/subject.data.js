@@ -9,6 +9,7 @@ class SubjectData extends BaseData {
   }
 
   createSubjects(subjectsArray) {
+    // input data duplicate check missing
     const subjectModels = [];
     const checks = [];
 

@@ -43,21 +43,13 @@ function init({ data }) {
     },
     getAllGroups(req, res) {
       GroupData.getAll()
-        .then(groupData => res.json({ groups: groupData }))
-        .catch(err => res.json({ message: err.message }));
+        .then(groupData => res.json({ success: true, groups: groupData }))
+        .catch(err => res.json({ success: false, message: err.message }));
     },
     getAllSubjects(req, res) {
       SubjectData.getAll()
-        .then((subjectData) => {
-          res.json({
-            subjects: subjectData,
-          });
-        })
-        .catch((err) => {
-          res.json({
-            message: err.message,
-          });
-        });
+        .then(subjectData => res.json({ success: true, subjects: subjectData }))
+        .catch(err => res.json({ success: false, message: err.message }));
     },
     saveBaseSettings(req, res) {
       const { groups, timeslots, subjects } = req.body;
@@ -78,7 +70,7 @@ function init({ data }) {
       const subjectsPromise = SubjectData.getAll();
       const groupsPromise = GroupData.getAll();
 
-      const lessons = [];
+      let lessons = [];
 
       Promise.all([timeslotsPromise, teachersPromise, subjectsPromise, groupsPromise])
         .then((result) => {
@@ -87,43 +79,34 @@ function init({ data }) {
           const subjects = result[2];
           const groups = result[3];
 
+          for (let i = 0; i < subjects.length; i += 1) {
+            const subject = subjects[i];
+            if (subject.teachers.length < 1) {
+              return Promise.reject(new Error('Не може да има предмети без преподаватели!'));
+            }
+          }
+
           if (
             timeslots.length < 1 ||
             teachers.length < 1 ||
             subjects.length < 1 ||
             groups.length < 1
           ) {
-            return Promise.reject(new Error('Невалидни данни!'));
+            return Promise.reject(new Error('Липсват данни(часови диапазони/учители/предмети/групи)!'));
           }
 
           const generator = new Generator(timeslots, teachers, subjects, groups);
-          return generator.getReadyTimetable().lessons;
-        })
-        .then((result) => {
-          if (!Array.isArray(result)) {
+          ({ lessons } = generator.getReadyTimetable());
+
+          if (!Array.isArray(lessons) || lessons.length < 1) {
             return Promise.reject(new Error('Невалидна програма!'));
           }
-
-          const checks = [];
-          for (let i = 0; i < lessons.length; i += 1) {
-            const lesson = lessons[i];
-            if (!lesson.timeslot) {
-              return Promise.reject(new Error('Невалидно време!'));
-            }
-
-            const check = TimeslotData.getByID(lesson.timeslot._id).then(() => {
-              if (!result) {
-                return Promise.reject(new Error('Невалидно време!'));
-              }
-            });
-            checks.push(check);
-          }
-          return Promise.all(checks);
         })
         .then(() => LessonData.clean())
         .then(() => LessonData.createLessons(lessons))
-        .then(() => res.redirect('/school/settings/timetable/generate'))
-        .catch(err => res.render('base/error', { error: err }));
+        .then(result =>
+          res.json({ success: true, message: 'Успешно генерирана програма!', lessons: result }))
+        .catch(err => res.json({ success: false, message: err.message }));
     },
   };
 }

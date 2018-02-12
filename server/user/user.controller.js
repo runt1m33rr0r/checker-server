@@ -46,13 +46,12 @@ function init({ data, encryption }) {
   }
 
   function registerStudent(firstName, lastName, username, group) {
-    return StudentData.createStudent(firstName, lastName, username, group);
-    // return GroupData.getGroupByName(group).then((result) => {
-    //   if (result) {
-    //     return StudentData.createStudent(firstName, lastName, username, group);
-    //   }
-    //   return Promise.reject(new Error('Невалидна група!'));
-    // });
+    return GroupData.getGroupByName(group).then((result) => {
+      if (result) {
+        return StudentData.createStudent(firstName, lastName, username, group);
+      }
+      return Promise.reject(new Error('Невалидна група!'));
+    });
   }
 
   return {
@@ -157,26 +156,17 @@ function init({ data, encryption }) {
         roles.push(roleTypes.Student);
         registerStudent(firstName, lastName, username, group)
           .then(() => UserData.createUser(username, roles, salt, hash))
-          .then(() => {
+          .then(() =>
             res.json({
               success: true,
-              message: 'Registered!',
+              message: 'Успешна регистрация!',
               roles,
               token,
-            });
-          })
-          .catch((err) => {
-            res.json({
-              success: false,
-              message: err.message,
-            });
-          });
+            }))
+          .catch(err => res.json({ success: false, message: err.message }));
       } else if (userType === roleTypes.Teacher) {
         if (typeof leadTeacher !== 'boolean') {
-          return res.json({
-            success: false,
-            message: 'Invalid user!',
-          });
+          return res.json({ success: false, message: 'Невалидни потребителски данни!' });
         }
 
         roles.push(roleTypes.Teacher);
@@ -186,23 +176,17 @@ function init({ data, encryption }) {
           .then(() => {
             res.json({
               success: true,
-              message: 'Registered',
+              message: 'Успешна регистрация!',
               roles,
               username,
               token,
             });
           })
-          .catch(() => {
-            res.json({
-              success: false,
-              message: 'Internal error!',
-            });
+          .catch((err) => {
+            res.json({ success: false, message: err.message });
           });
       } else {
-        res.json({
-          success: false,
-          message: 'Invalid data!',
-        });
+        res.json({ success: false, message: 'Невалидни данни!' });
       }
     },
     loginUser(req, res) {
