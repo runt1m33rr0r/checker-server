@@ -44,6 +44,16 @@ class BaseData {
   getFirst() {
     return this.collection.findOne({});
   }
+
+  getAllPropVals(propName) {
+    return this.getAll().then((items) => {
+      const vals = [];
+      items.forEach((item) => {
+        vals.push(item[propName]);
+      });
+      return Promise.resolve(vals);
+    });
+  }
 }
 
 module.exports = BaseData;

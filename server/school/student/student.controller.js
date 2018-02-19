@@ -45,32 +45,16 @@ function init({ data }) {
       });
     },
     createEncoding(req, res) {
-      if (
-        !req.files ||
-        !Array.isArray(req.files.photo) ||
-        req.files.photo.length < 1 ||
-        !req.files.photo[0] ||
-        !req.files.photo[0].buffer ||
-        !req.user.username
-      ) {
-        return res.render('base/error', {
-          error: {
-            message: 'Невалидни данни!',
-          },
-        });
+      const photo = req.body.image;
+      if (typeof photo !== 'string' || photo < 1) {
+        return res.json({ success: false, message: 'Невалидно изображение!' });
       }
-      const photo = req.files.photo[0].buffer;
-      const { username } = req.user;
+      const { username } = req;
 
       StudentData.createEncoding(photo)
         .then(encoding => StudentData.saveEncoding(username, encoding))
-        .then(() => {
-          res.redirect('/');
-        })
-        .catch(err =>
-          res.render('base/error', {
-            error: err,
-          }));
+        .then(() => res.json({ success: true, message: 'Запазено успешно!' }))
+        .catch(err => res.json({ success: false, message: err.message }));
     },
     check(req, res) {
       const { username } = req.user;

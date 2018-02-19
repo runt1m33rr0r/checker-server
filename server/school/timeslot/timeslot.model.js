@@ -15,7 +15,7 @@ class Timeslot {
       toMinute < 0 ||
       toMinute > 60 ||
       day < 1 ||
-      day > 7
+      day > 5
     ) {
       throw new Error('Невалиден часови диапазон!');
     }

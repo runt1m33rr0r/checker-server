@@ -11,9 +11,7 @@ class StudentData extends BaseData {
 
   createEncoding(image) {
     return axios
-      .post('http://localhost:3000/encode', {
-        image: new Buffer(image).toString('base64'),
-      })
+      .post('http://localhost:4000/encode', { image })
       .catch(() => Promise.reject(new Error('Сървъра не работи!')))
       .then((res) => {
         if (res.data && res.data.encoding) {

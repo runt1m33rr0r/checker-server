@@ -12,10 +12,9 @@ function init({ data }) {
         .catch(err => res.render('base/error', { error: err }));
     },
     createLesson(req, res) {
-      const groupName = req.body.group;
-      const subjectCode = req.body.subject;
-      const teacherUsername = req.body.teacher;
-      const timeslotID = req.body.timeslot;
+      const {
+        groupName, subjectCode, teacherUsername, timeslotID,
+      } = req.body;
 
       const promises = [
         GroupData.getGroupByName(groupName),
@@ -38,17 +37,37 @@ function init({ data }) {
         })
         .then(timeslot =>
           LessonData.createLesson(groupName, subjectCode, teacherUsername, timeslot))
-        .then(() => res.redirect('/school/settings/timetable/create'))
-        .catch(err => res.render('base/error', { error: err }));
-    },
-    getAllGroups(req, res) {
-      GroupData.getAll()
-        .then(groupData => res.json({ success: true, groups: groupData }))
+        .then(() => res.json({ success: true, message: 'Урока беше успешно добавен!' }))
         .catch(err => res.json({ success: false, message: err.message }));
     },
-    getAllSubjects(req, res) {
-      SubjectData.getAll()
-        .then(subjectData => res.json({ success: true, subjects: subjectData }))
+    getAllGroupNames(req, res) {
+      GroupData.getAllPropVals('name')
+        .then(groupNames =>
+          res.json({ success: true, groupNames, message: 'Данни получени успешно!' }))
+        .catch(err => res.json({ success: false, message: err.message }));
+    },
+    getAllSubjectCodes(req, res) {
+      SubjectData.getAllPropVals('code')
+        .then(subjectCodes =>
+          res.json({ success: true, subjectCodes, message: 'Данни получени успешно!' }))
+        .catch(err => res.json({ success: false, message: err.message }));
+    },
+    getAllTimeslots(req, res) {
+      TimeslotData.getAll()
+        .then(timeslots =>
+          res.json({ success: true, timeslots, message: 'Данни получени успешно!' }))
+        .catch(err => res.json({ success: false, message: err.message }));
+    },
+    getAllTeacherUsernames(req, res) {
+      TeacherData.getAllPropVals('username')
+        .then(usernames =>
+          res.json({ success: true, usernames, message: 'Данни получени успешно!' }))
+        .catch(err => res.json({ success: false, message: err.message }));
+    },
+    getGroupTimetable(req, res) {
+      const { name } = req.params;
+      LessonData.getLessonsByGroupName(name)
+        .then(lessons => res.json({ success: true, lessons, message: 'Данни получени успешно!' }))
         .catch(err => res.json({ success: false, message: err.message }));
     },
     saveBaseSettings(req, res) {
@@ -60,8 +79,8 @@ function init({ data }) {
         .then(() => SubjectData.createSubjects(subjects))
         .then(() => TimeslotData.createTimeslots(timeslots))
         .then(() => GroupData.createGroups(groups))
-        .then(() => res.json({ success: true, message: 'Настройките бяха успешно запазени!' }))
         .then(() => SettingsData.updateSettings({ setupFinished: true }))
+        .then(() => res.json({ success: true, message: 'Настройките бяха успешно запазени!' }))
         .catch(err => res.json({ success: false, message: err.message }));
     },
     generateTimetable(req, res) {

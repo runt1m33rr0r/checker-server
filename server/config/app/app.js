@@ -6,7 +6,7 @@ const settings = require('../settings');
 function init() {
   const app = express();
 
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({ limit: '50mb' }));
 
   // if (settings.environment === 'development') {
   //   app.use(cors());

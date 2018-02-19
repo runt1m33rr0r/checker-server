@@ -17,11 +17,7 @@ function init({ app, controllers, middlewares }) {
     middlewares.user.isInRole(roles.Student),
     controller.getAbsencesPage,
   );
-  app.post(
-    '/students/checker',
-    middlewares.user.isInRole(roles.Student),
-    controller.check,
-  );
+  app.post('/students/check', middlewares.user.isInRole(roles.Normal), controller.createEncoding);
 }
 
 module.exports = { init };
