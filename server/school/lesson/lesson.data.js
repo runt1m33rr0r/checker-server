@@ -69,6 +69,24 @@ class LessonData extends BaseData {
       })
       .toArray();
   }
+
+  deleteLesson({
+    groupName, subjectCode, teacherUsername, timeslot,
+  }) {
+    const {
+      fromHour, fromMinute, toHour, toMinute, day,
+    } = timeslot;
+    return this.deleteOne({
+      groupName,
+      subjectCode,
+      teacherUsername,
+      'timeslot.fromHour': fromHour,
+      'timeslot.fromMinute': fromMinute,
+      'timeslot.toHour': toHour,
+      'timeslot.toMinute': toMinute,
+      'timeslot.day': day,
+    });
+  }
 }
 
 module.exports = LessonData;

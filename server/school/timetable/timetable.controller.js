@@ -40,6 +40,11 @@ function init({ data }) {
         .then(() => res.json({ success: true, message: 'Урока беше успешно добавен!' }))
         .catch(err => res.json({ success: false, message: err.message }));
     },
+    deleteLesson(req, res) {
+      LessonData.deleteLesson(req.body.lesson)
+        .then(() => res.json({ success: true, message: 'Урока беше успешно премахнат!' }))
+        .catch(err => res.json({ success: false, message: err.message }));
+    },
     getAllGroupNames(req, res) {
       GroupData.getAllPropVals('name')
         .then(groupNames =>

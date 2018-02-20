@@ -27,6 +27,10 @@ class BaseData {
     return this.collection.insertMany(entries).then(() => entries);
   }
 
+  deleteOne(criteria) {
+    return this.collection.remove(criteria, { justOne: true });
+  }
+
   getByID(id) {
     if (!ObjectID.isValid(id)) {
       return Promise.reject(new Error('Невалидни данни!'));

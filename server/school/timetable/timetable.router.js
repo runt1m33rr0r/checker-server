@@ -25,6 +25,8 @@ function init({ app, controllers, middlewares }) {
     middlewares.user.isInRole(roleTypes.Teacher),
     controller.generateTimetable,
   );
+
+  app.delete('/api/lessons', middlewares.user.isInRole(roleTypes.Teacher), controller.deleteLesson);
 }
 
 module.exports = { init };
