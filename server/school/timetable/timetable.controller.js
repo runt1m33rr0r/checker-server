@@ -2,15 +2,17 @@ const Generator = require('../../utils/timetable-generator');
 
 function init({ data }) {
   const {
-    GroupData, SubjectData, TimeslotData, TeacherData, LessonData, SettingsData,
+    GroupData,
+    SubjectData,
+    TimeslotData,
+    TeacherData,
+    LessonData,
+    SettingsData,
+    StudentData,
+    UserData,
   } = data;
 
   return {
-    deleteTimetable(req, res) {
-      LessonData.clean()
-        .then(() => res.redirect('/school/settings/timetable/create'))
-        .catch(err => res.render('base/error', { error: err }));
-    },
     createLesson(req, res) {
       const {
         groupName, subjectCode, teacherUsername, timeslotID,
@@ -46,16 +48,33 @@ function init({ data }) {
         .catch(err => res.json({ success: false, message: err.message }));
     },
     getAllGroupNames(req, res) {
-      GroupData.getAllPropVals('name')
-        .then(groupNames =>
-          res.json({ success: true, groupNames, message: 'Данни получени успешно!' }))
-        .catch(err => res.json({ success: false, message: err.message }));
+      if (req.query.count === 'true') {
+        GroupData.getCount()
+          .then(count => res.json({ success: true, count, message: 'Данни получени успешно!' }))
+          .catch(err => res.json({ success: false, message: err.message }));
+      } else {
+        GroupData.getAllPropVals('name')
+          .then(groupNames =>
+            res.json({ success: true, groupNames, message: 'Данни получени успешно!' }))
+          .catch(err => res.json({ success: false, message: err.message }));
+      }
     },
     getAllSubjectCodes(req, res) {
-      SubjectData.getAllPropVals('code')
-        .then(subjectCodes =>
-          res.json({ success: true, subjectCodes, message: 'Данни получени успешно!' }))
-        .catch(err => res.json({ success: false, message: err.message }));
+      if (req.query.count === 'true') {
+        SubjectData.getCount()
+          .then(count => res.json({ success: true, count, message: 'Данни получени успешно!' }))
+          .catch(err => res.json({ success: false, message: err.message }));
+      } else if (req.query.free === 'true') {
+        SubjectData.getFreeSubjects()
+          .then(subjectCodes =>
+            res.json({ success: true, subjectCodes, message: 'Свободни предмети получени!' }))
+          .catch(err => res.json({ success: false, message: err.message }));
+      } else {
+        SubjectData.getAllPropVals('code')
+          .then(subjectCodes =>
+            res.json({ success: true, subjectCodes, message: 'Данни получени успешно!' }))
+          .catch(err => res.json({ success: false, message: err.message }));
+      }
     },
     getAllTimeslots(req, res) {
       TimeslotData.getAll()
@@ -64,9 +83,29 @@ function init({ data }) {
         .catch(err => res.json({ success: false, message: err.message }));
     },
     getAllTeacherUsernames(req, res) {
-      TeacherData.getAllPropVals('username')
-        .then(usernames =>
-          res.json({ success: true, usernames, message: 'Данни получени успешно!' }))
+      if (req.query.count === 'true') {
+        TeacherData.getCount()
+          .then(count => res.json({ success: true, count, message: 'Данни получени успешно!' }))
+          .catch(err => res.json({ success: false, message: err.message }));
+      } else {
+        TeacherData.getAllPropVals('username')
+          .then(usernames =>
+            res.json({ success: true, usernames, message: 'Данни получени успешно!' }))
+          .catch(err => res.json({ success: false, message: err.message }));
+      }
+    },
+    getAllStudents(req, res) {
+      if (req.query.count === 'true') {
+        StudentData.getCount()
+          .then(count => res.json({ success: true, count, message: 'Данни получени успешно!' }))
+          .catch(err => res.json({ success: false, message: err.message }));
+      } else {
+        res.json({ success: true, message: 'Данни получени успешно!' });
+      }
+    },
+    getNumberOfStudents(req, res) {
+      StudentData.getCount()
+        .then(count => res.json({ success: true, count, message: 'Данни получени успешно!' }))
         .catch(err => res.json({ success: false, message: err.message }));
     },
     getGroupTimetable(req, res) {
@@ -79,6 +118,12 @@ function init({ data }) {
       const { groups, timeslots, subjects } = req.body;
 
       GroupData.clean()
+        .then(() => TeacherData.clean())
+        .then(() => StudentData.clean())
+        .then(() => UserData.cleanTeachers())
+        .then(() => UserData.cleanStudents())
+        .then(() => GroupData.clean())
+        .then(() => LessonData.clean())
         .then(() => TimeslotData.clean())
         .then(() => SubjectData.clean())
         .then(() => SubjectData.createSubjects(subjects))

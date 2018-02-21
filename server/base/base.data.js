@@ -31,6 +31,10 @@ class BaseData {
     return this.collection.remove(criteria, { justOne: true });
   }
 
+  deleteMany(criteria) {
+    return this.collection.remove(criteria, { justOne: false });
+  }
+
   getByID(id) {
     if (!ObjectID.isValid(id)) {
       return Promise.reject(new Error('Невалидни данни!'));
@@ -39,6 +43,10 @@ class BaseData {
     return this.collection.findOne({
       _id: new ObjectID(id),
     });
+  }
+
+  getCount() {
+    return this.collection.count();
   }
 
   getAll() {

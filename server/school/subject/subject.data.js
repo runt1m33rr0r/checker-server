@@ -90,6 +90,19 @@ class SubjectData extends BaseData {
 
     return this.collection.findOne({ name });
   }
+
+  getFreeSubjects() {
+    return this.collection
+      .find({ teachers: { $size: 0 } })
+      .toArray()
+      .then((subjects) => {
+        const codes = [];
+        subjects.forEach((subject) => {
+          codes.push(subject.code);
+        });
+        return codes;
+      });
+  }
 }
 
 module.exports = SubjectData;

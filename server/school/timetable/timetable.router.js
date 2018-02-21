@@ -13,6 +13,7 @@ function init({ app, controllers, middlewares }) {
   );
   app.get('/api/timeslots', middlewares.user.isAuthenticated, controller.getAllTimeslots);
   app.get('/api/teachers', middlewares.user.isAuthenticated, controller.getAllTeacherUsernames);
+  app.get('/api/students', middlewares.user.isAuthenticated, controller.getAllStudents);
 
   app.post('/api/lessons', middlewares.user.isInRole(roleTypes.Teacher), controller.createLesson);
   app.post(

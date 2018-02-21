@@ -42,6 +42,14 @@ class UserData extends BaseData {
     const result = testHash === hash;
     return result;
   }
+
+  cleanTeachers() {
+    return this.deleteMany({ roles: { $in: ['Teacher'] } });
+  }
+
+  cleanStudents() {
+    return this.deleteMany({ roles: { $in: ['Student'] } });
+  }
 }
 
 module.exports = UserData;
