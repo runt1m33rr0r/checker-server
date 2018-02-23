@@ -58,11 +58,11 @@ function init({ data, encryption }) {
     getProfile(req, res) {
       if (req.roles.includes('Student')) {
         StudentData.getStudentByUsername(req.username)
-          .then(user =>
+          .then(profile =>
             res.json({
               success: true,
               message: 'Student profile sent.',
-              user,
+              profile,
             }))
           .catch(() =>
             res.json({
@@ -71,11 +71,11 @@ function init({ data, encryption }) {
             }));
       } else if (req.roles.includes('Teacher')) {
         TeacherData.getTeacherByUsername(req.username)
-          .then(user =>
+          .then(profile =>
             res.json({
               success: true,
               message: 'Teacher profile sent.',
-              user,
+              profile,
             }))
           .catch(() =>
             res.json({

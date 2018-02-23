@@ -70,6 +70,14 @@ class LessonData extends BaseData {
       .toArray();
   }
 
+  getLessonsByTeacher(username) {
+    return this.collection
+      .find({
+        teacherUsername: username,
+      })
+      .toArray();
+  }
+
   deleteLesson({
     groupName, subjectCode, teacherUsername, timeslot,
   }) {

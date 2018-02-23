@@ -6,11 +6,7 @@ function init({ app, controllers, middlewares }) {
 
   app.get('/api/groups', controller.getAllGroupNames);
   app.get('/api/subjects', controller.getAllSubjectCodes);
-  app.get(
-    '/api/groups/:name/lessons',
-    middlewares.user.isAuthenticated,
-    controller.getGroupTimetable,
-  );
+  app.get('/api/lessons', middlewares.user.isAuthenticated, controller.getLessons);
   app.get('/api/timeslots', middlewares.user.isAuthenticated, controller.getAllTimeslots);
   app.get('/api/teachers', middlewares.user.isAuthenticated, controller.getAllTeacherUsernames);
   app.get('/api/students', middlewares.user.isAuthenticated, controller.getAllStudents);

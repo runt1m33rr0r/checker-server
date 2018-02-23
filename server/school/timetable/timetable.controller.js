@@ -114,6 +114,24 @@ function init({ data }) {
         .then(lessons => res.json({ success: true, lessons, message: 'Данни получени успешно!' }))
         .catch(err => res.json({ success: false, message: err.message }));
     },
+    getLessons(req, res) {
+      if (req.query.mine === 'true' && req.roles.includes('Teacher')) {
+        LessonData.getLessonsByTeacher(req.username)
+          .then(lessons => res.json({ success: true, lessons, message: 'Данни получени успешно!' }))
+          .catch(err => res.json({ success: false, message: err.message }));
+      } else if (req.query.mine === 'true' && req.roles.includes('Student')) {
+        StudentData.getStudentByUsername(req.username)
+          .then(student => LessonData.getLessonsByGroupName(student.group))
+          .then(lessons => res.json({ success: true, lessons, message: 'Данни получени успешно!' }))
+          .catch(err => res.json({ success: false, message: err.message }));
+      } else if (req.query.group) {
+        LessonData.getLessonsByGroupName(req.query.group)
+          .then(lessons => res.json({ success: true, lessons, message: 'Данни получени успешно!' }))
+          .catch(err => res.json({ success: false, message: err.message }));
+      } else {
+        res.json({ success: true, lessons: [], message: 'Данни получени успешно!' });
+      }
+    },
     saveBaseSettings(req, res) {
       const { groups, timeslots, subjects } = req.body;
 
