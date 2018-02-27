@@ -75,7 +75,7 @@ function init({ data, encryption }) {
             res.json({
               success: true,
               message: 'Teacher profile sent.',
-              profile,
+              profile: profile || {},
             }))
           .catch(() =>
             res.json({
