@@ -74,16 +74,12 @@ function init({ data }) {
         })
         .then((student) => {
           const date = new Date();
-          const currentDay = date.getDay();
-          const currentHour = date.getHours();
-          const currentMinute = date.getMinutes();
-          const check = {
-            day: currentDay,
-            hour: currentHour,
-            minute: currentMinute,
-          };
-
-          return StudentData.addCheck(student.username, check);
+          return StudentData.addCheck(
+            student.username,
+            date.getDay(),
+            date.getHours(),
+            date.getMinutes(),
+          );
         })
         .then(() => {
           res.render('base/success', {

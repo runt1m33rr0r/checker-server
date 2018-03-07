@@ -42,13 +42,13 @@ function init({ data }) {
       const absences = [];
       for (const lesson of lessons) {
         if (wasAbscent(studentChecks, lesson)) {
-          const absence = {
-            day: lesson.timeslot.day,
-            hour: lesson.timeslot.fromHour,
-            minute: lesson.timeslot.fromMinute,
-            subject: lesson.subjectCode,
-          };
-          absences.push(StudentData.addAbsence(student.username, absence));
+          absences.push(StudentData.addAbsence(
+            student.username,
+            lesson.timeslot.day,
+            lesson.timeslot.fromHour,
+            lesson.timeslot.fromMinute,
+            lesson.subjectCode,
+          ));
         }
       }
 

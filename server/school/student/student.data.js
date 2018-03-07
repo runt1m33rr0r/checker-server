@@ -5,8 +5,10 @@ class StudentData extends BaseData {
   constructor(db, models) {
     super(db);
 
-    const { Student } = models;
+    const { Student, Absence, Check } = models;
     this.Student = Student;
+    this.Absence = Absence;
+    this.Check = Check;
   }
 
   createEncoding(image) {
@@ -42,7 +44,7 @@ class StudentData extends BaseData {
 
         return axios
           .post('http://localhost:3000/verify', {
-            image: new Buffer(image).toString('base64'),
+            image,
             encoding: student.encoding,
           })
           .catch(() => Promise.reject(new Error('Сървъра не работи!')));
@@ -74,14 +76,9 @@ class StudentData extends BaseData {
     );
   }
 
-  addCheck(username, check) {
-    if (
-      typeof username !== 'string' ||
-      typeof check.day !== 'number' ||
-      typeof check.hour !== 'number' ||
-      typeof check.minute !== 'number'
-    ) {
-      return Promise.reject(new Error('Невалидни данни!'));
+  addCheck(username, day, hour, minute) {
+    if (!username) {
+      return Promise.reject(new Error('Невалидно потребителски име!'));
     }
 
     return this.collection.findOneAndUpdate(
@@ -90,15 +87,15 @@ class StudentData extends BaseData {
       },
       {
         $push: {
-          checks: check,
+          checks: new this.Check(day, hour, minute),
         },
       },
     );
   }
 
   clearChecks(username) {
-    if (typeof username !== 'string') {
-      return Promise.reject(new Error('Невалидни данни!'));
+    if (!username) {
+      return Promise.reject(new Error('Невалидно потребителски име!'));
     }
 
     return this.collection.findOneAndUpdate(
@@ -126,15 +123,15 @@ class StudentData extends BaseData {
 
   getStudentByUsername(username) {
     if (!username) {
-      return Promise.reject(new Error('Невалидни данни!'));
+      return Promise.reject(new Error('Невалидно потребителски име!'));
     }
 
     return this.collection.findOne({ username });
   }
 
-  addAbsence(username, abscence) {
-    if (!abscence || !username) {
-      return Promise.reject(new Error('Невалидни данни!'));
+  addAbsence(username, day, hour, minute, subject) {
+    if (!username) {
+      return Promise.reject(new Error('Невалидно потребителски име!'));
     }
 
     return this.collection.findOneAndUpdate(
@@ -143,7 +140,7 @@ class StudentData extends BaseData {
       },
       {
         $push: {
-          absences: abscence,
+          absences: new this.Absence(day, hour, minute, subject),
         },
       },
     );
