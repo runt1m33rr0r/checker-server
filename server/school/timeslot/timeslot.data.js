@@ -1,13 +1,6 @@
 const BaseData = require('../../base/base.data');
 
 class TimeslotData extends BaseData {
-  constructor(db, models) {
-    super(db);
-
-    const { Timeslot } = models;
-    this.Timeslot = Timeslot;
-  }
-
   createTimeslots(timeslotArray) {
     if (!Array.isArray(timeslotArray)) {
       return Promise.reject(new Error('Невалидни данни!'));
@@ -15,6 +8,7 @@ class TimeslotData extends BaseData {
 
     const timeslotModels = [];
     const checks = [];
+    const { Timeslot } = this.models;
 
     /* eslint no-restricted-syntax: 0 */
     for (const timeslot of timeslotArray) {
@@ -34,7 +28,7 @@ class TimeslotData extends BaseData {
             return Promise.reject(new Error('Такива предмети вече съществуват!'));
           }
 
-          timeslotModels.push(new this.Timeslot(fromHour, fromMinute, toHour, toMinute, day));
+          timeslotModels.push(new Timeslot(fromHour, fromMinute, toHour, toMinute, day));
         });
       checks.push(check);
     }

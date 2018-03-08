@@ -1,20 +1,14 @@
 const BaseData = require('../../base/base.data');
 
 class TeacherData extends BaseData {
-  constructor(db, models) {
-    super(db);
-
-    const { Teacher } = models;
-    this.Teacher = Teacher;
-  }
-
   createTeacher(firstName, lastName, username, isLead, group, subjects) {
     return this.getTeacherByUsername(username).then((result) => {
       if (result) {
         return Promise.reject(new Error('Невалидни данни!'));
       }
 
-      const teacherModel = new this.Teacher(firstName, lastName, username, isLead, group, subjects);
+      const { Teacher } = this.models;
+      const teacherModel = new Teacher(firstName, lastName, username, isLead, group, subjects);
       return this.createEntry(teacherModel);
     });
   }

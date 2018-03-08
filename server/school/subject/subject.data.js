@@ -1,17 +1,11 @@
 const BaseData = require('../../base/base.data');
 
 class SubjectData extends BaseData {
-  constructor(db, models) {
-    super(db);
-
-    const { Subject } = models;
-    this.Subject = Subject;
-  }
-
   createSubjects(subjectsArray) {
     // input data duplicate check missing
     const subjectModels = [];
     const checks = [];
+    const { Subject } = this.models;
 
     /* eslint no-restricted-syntax: 0 */
     for (const subject of subjectsArray) {
@@ -24,7 +18,7 @@ class SubjectData extends BaseData {
           return Promise.reject(new Error('Такива предмети вече съществуват!'));
         }
 
-        subjectModels.push(new this.Subject(subjectName, subjectCode, teachers));
+        subjectModels.push(new Subject(subjectName, subjectCode, teachers));
       });
       checks.push(check);
     }

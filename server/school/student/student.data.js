@@ -2,15 +2,6 @@ const BaseData = require('../../base/base.data');
 const axios = require('axios');
 
 class StudentData extends BaseData {
-  constructor(db, models) {
-    super(db);
-
-    const { Student, Absence, Check } = models;
-    this.Student = Student;
-    this.Absence = Absence;
-    this.Check = Check;
-  }
-
   createEncoding(image) {
     return axios
       .post('http://localhost:4000/encode', { image })
@@ -81,13 +72,14 @@ class StudentData extends BaseData {
       return Promise.reject(new Error('Невалидно потребителски име!'));
     }
 
+    const { Check } = this.models;
     return this.collection.findOneAndUpdate(
       {
         username,
       },
       {
         $push: {
-          checks: new this.Check(day, hour, minute),
+          checks: new Check(day, hour, minute),
         },
       },
     );
@@ -116,7 +108,8 @@ class StudentData extends BaseData {
         return Promise.reject(new Error('Невалидни данни!'));
       }
 
-      const studentModel = new this.Student(firstName, lastName, username, group);
+      const { Student } = this.models;
+      const studentModel = new Student(firstName, lastName, username, group);
       return this.createEntry(studentModel);
     });
   }
@@ -134,13 +127,14 @@ class StudentData extends BaseData {
       return Promise.reject(new Error('Невалидно потребителски име!'));
     }
 
+    const { Absence } = this.models;
     return this.collection.findOneAndUpdate(
       {
         username,
       },
       {
         $push: {
-          absences: new this.Absence(day, hour, minute, subject),
+          absences: new Absence(day, hour, minute, subject),
         },
       },
     );

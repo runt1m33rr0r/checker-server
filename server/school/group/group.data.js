@@ -1,20 +1,14 @@
 const BaseData = require('../../base/base.data');
 
 class GroupData extends BaseData {
-  constructor(db, models) {
-    super(db);
-
-    const { Group } = models;
-    this.Group = Group;
-  }
-
   createGroup(name, subjects) {
     return this.getGroupByName(name).then((result) => {
       if (result) {
         return Promise.reject(new Error('Невалидни данни!'));
       }
 
-      const groupModel = new this.Group(name, subjects);
+      const { Group } = this.models;
+      const groupModel = new Group(name, subjects);
       return this.createEntry(groupModel);
     });
   }
@@ -51,6 +45,7 @@ class GroupData extends BaseData {
   createGroups(groupsArray) {
     const groupModels = [];
     const checks = [];
+    const { Group } = this.models;
 
     for (const group of groupsArray) {
       const groupName = group.name;
@@ -61,7 +56,7 @@ class GroupData extends BaseData {
           return Promise.reject(new Error('Невалидни данни!'));
         }
 
-        groupModels.push(new this.Group(groupName, subjects));
+        groupModels.push(new Group(groupName, subjects));
       });
       checks.push(check);
     }

@@ -1,13 +1,6 @@
 const BaseData = require('../../base/base.data');
 
 class SettingsData extends BaseData {
-  constructor(db, models) {
-    super(db);
-
-    const { Setting } = models;
-    this.Setting = Setting;
-  }
-
   updateSettings(newSettings) {
     if (typeof newSettings !== 'object' || typeof newSettings.setupFinished !== 'boolean') {
       return Promise.reject(new Error('Невалидни настройки!'));
@@ -17,7 +10,8 @@ class SettingsData extends BaseData {
 
     return this.getFirst().then((settings) => {
       if (!settings) {
-        return this.createEntry(new this.Setting(setupFinished));
+        const { Setting } = this.models;
+        return this.createEntry(new Setting(setupFinished));
       }
       return this.collection.findOneAndUpdate({}, { $set: { setupFinished } });
     });

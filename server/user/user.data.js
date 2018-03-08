@@ -1,20 +1,14 @@
 const BaseData = require('../base/base.data');
 
 class UserData extends BaseData {
-  constructor(db, models) {
-    super(db);
-
-    const { User } = models;
-    this.User = User;
-  }
-
   createUser(username, roles, salt, hash) {
     return this.getUserByUsername(username).then((result) => {
       if (result) {
         return Promise.reject(new Error('Потребителското име е заето!'));
       }
 
-      const userModel = new this.User(username, roles, salt, hash);
+      const { User } = this.models;
+      const userModel = new User(username, roles, salt, hash);
       return this.createEntry(userModel);
     });
   }

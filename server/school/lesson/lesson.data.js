@@ -1,13 +1,6 @@
 const BaseData = require('../../base/base.data');
 
 class LessonData extends BaseData {
-  constructor(db, models) {
-    super(db);
-
-    const { Lesson } = models;
-    this.Lesson = Lesson;
-  }
-
   checkUnique(groupName, subjectCode, teacherUsername, timeslot) {
     return this.collection
       .findOne({
@@ -36,6 +29,7 @@ class LessonData extends BaseData {
       return Promise.reject(new Error('Невалидни данни!'));
     }
 
+    const { Lesson } = this.models;
     const checks = [];
     const lessonModels = [];
     /* eslint no-restricted-syntax: 0 */
@@ -44,7 +38,7 @@ class LessonData extends BaseData {
         .then(() => this.checkFreeTimeslot(lesson.group, lesson.timeslot))
         .then(() => {
           /* eslint max-len: 0 */
-          lessonModels.push(new this.Lesson(lesson.group, lesson.subject, lesson.teacher, lesson.timeslot));
+          lessonModels.push(new Lesson(lesson.group, lesson.subject, lesson.teacher, lesson.timeslot));
         });
       checks.push(check);
     }
@@ -56,7 +50,8 @@ class LessonData extends BaseData {
     return this.checkUnique(groupName, subjectCode, teacherUsername, timeslot)
       .then(() => this.checkFreeTimeslot(groupName, timeslot))
       .then(() => {
-        const model = new this.Lesson(groupName, subjectCode, teacherUsername, timeslot);
+        const { Lesson } = this.models;
+        const model = new Lesson(groupName, subjectCode, teacherUsername, timeslot);
 
         return this.createEntry(model);
       });
