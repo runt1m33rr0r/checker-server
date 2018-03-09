@@ -28,7 +28,7 @@ class SubjectData extends BaseData {
 
   addTeacherToSubject(username, subjectCode) {
     if (!username || typeof username !== 'string' || username.length < 5) {
-      return Promise.reject(new Error('Невалидни данни!'));
+      return Promise.reject(new Error('Невалидно потребителско име!'));
     }
 
     return this.getSubjectByCode(subjectCode).then((subject) => {
@@ -55,7 +55,7 @@ class SubjectData extends BaseData {
 
   getSubjectByCode(code) {
     if (!code) {
-      return Promise.reject(new Error('Невалидни данни!'));
+      return Promise.reject(new Error('Невалиден код на предмет!'));
     }
 
     return this.collection.findOne({ code });
@@ -79,7 +79,7 @@ class SubjectData extends BaseData {
 
   getSubjectByName(name) {
     if (!name) {
-      return Promise.reject(new Error('Невалидни данни!'));
+      return Promise.reject(new Error('Невалидно име'));
     }
 
     return this.collection.findOne({ name });

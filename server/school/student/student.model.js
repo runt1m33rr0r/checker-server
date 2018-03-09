@@ -1,19 +1,19 @@
 class Student {
   constructor(firstName, lastName, username, group) {
     if (typeof firstName !== 'string' || firstName.length < 3) {
-      throw new Error('Невалидни данни!');
+      throw new Error('Невалидно име!');
     }
 
     if (typeof lastName !== 'string' || lastName.length < 3) {
-      throw new Error('Невалидни данни!');
+      throw new Error('Невалидно фамилно име!');
     }
 
     if (typeof username !== 'string' || username.length < 6) {
-      throw new Error('Невалидни данни!');
+      throw new Error('Невалидно потребителско име!');
     }
 
     if (typeof group !== 'string' || group.length < 2) {
-      throw new Error('Невалидни данни!');
+      throw new Error('Невалидно група!');
     }
 
     this.firstName = firstName;

@@ -3,7 +3,7 @@ const BaseData = require('../../base/base.data');
 class TimeslotData extends BaseData {
   createTimeslots(timeslotArray) {
     if (!Array.isArray(timeslotArray)) {
-      return Promise.reject(new Error('Невалидни данни!'));
+      return Promise.reject(new Error('Невалидни времеви диапазони!'));
     }
 
     const timeslotModels = [];

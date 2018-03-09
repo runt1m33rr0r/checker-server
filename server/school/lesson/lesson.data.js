@@ -26,7 +26,7 @@ class LessonData extends BaseData {
 
   createLessons(lessons) {
     if (!Array.isArray(lessons)) {
-      return Promise.reject(new Error('Невалидни данни!'));
+      return Promise.reject(new Error('Невалидни уроци!'));
     }
 
     const { Lesson } = this.models;

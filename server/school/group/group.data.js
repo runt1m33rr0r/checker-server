@@ -4,7 +4,7 @@ class GroupData extends BaseData {
   createGroup(name, subjects) {
     return this.getGroupByName(name).then((result) => {
       if (result) {
-        return Promise.reject(new Error('Невалидни данни!'));
+        return Promise.reject(new Error('Няма такава група!'));
       }
 
       const { Group } = this.models;
@@ -20,13 +20,13 @@ class GroupData extends BaseData {
       groupName.length < 1 ||
       !Array.isArray(subjects)
     ) {
-      return Promise.reject(new Error('Невалидни данни!'));
+      return Promise.reject(new Error('Невалидна група или предмети!'));
     }
 
     /* eslint no-restricted-syntax: 0 */
     for (const subject of subjects) {
       if (typeof subject !== 'string' || subject.length < 3) {
-        return Promise.reject(new Error('Невалидни данни!'));
+        return Promise.reject(new Error('Невалиден предмет!'));
       }
     }
 
@@ -53,7 +53,7 @@ class GroupData extends BaseData {
 
       const check = this.getGroupByName(groupName).then((result) => {
         if (result) {
-          return Promise.reject(new Error('Невалидни данни!'));
+          return Promise.reject(new Error('Няма такава група!'));
         }
 
         groupModels.push(new Group(groupName, subjects));
@@ -66,7 +66,7 @@ class GroupData extends BaseData {
 
   getGroupByName(name) {
     if (!name) {
-      return Promise.reject(new Error('Невалидни данни!'));
+      return Promise.reject(new Error('Невалидно име!'));
     }
 
     return this.collection.findOne({ name });

@@ -69,7 +69,7 @@ class StudentData extends BaseData {
 
   addCheck(username, day, hour, minute) {
     if (!username) {
-      return Promise.reject(new Error('Невалидно потребителски име!'));
+      return Promise.reject(new Error('Невалидно потребителско име!'));
     }
 
     const { Check } = this.models;
@@ -87,7 +87,7 @@ class StudentData extends BaseData {
 
   clearChecks(username) {
     if (!username) {
-      return Promise.reject(new Error('Невалидно потребителски име!'));
+      return Promise.reject(new Error('Невалидно потребителско име!'));
     }
 
     return this.collection.findOneAndUpdate(
@@ -105,7 +105,7 @@ class StudentData extends BaseData {
   createStudent(firstName, lastName, username, group) {
     return this.getStudentByUsername(username).then((result) => {
       if (result) {
-        return Promise.reject(new Error('Невалидни данни!'));
+        return Promise.reject(new Error('Вече има такъв ученик!'));
       }
 
       const { Student } = this.models;
@@ -116,7 +116,7 @@ class StudentData extends BaseData {
 
   getStudentByUsername(username) {
     if (!username) {
-      return Promise.reject(new Error('Невалидно потребителски име!'));
+      return Promise.reject(new Error('Невалидно потребителско име!'));
     }
 
     return this.collection.findOne({ username });
@@ -124,7 +124,7 @@ class StudentData extends BaseData {
 
   addAbsence(username, day, hour, minute, subject) {
     if (!username) {
-      return Promise.reject(new Error('Невалидно потребителски име!'));
+      return Promise.reject(new Error('Невалидно потребителско име!'));
     }
 
     const { Absence } = this.models;

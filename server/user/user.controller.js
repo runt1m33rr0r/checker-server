@@ -59,34 +59,19 @@ function init({ data, encryption }) {
       if (req.roles.includes('Student')) {
         StudentData.getStudentByUsername(req.username)
           .then(profile =>
-            res.json({
-              success: true,
-              message: 'Student profile sent.',
-              profile,
-            }))
-          .catch(() =>
-            res.json({
-              success: false,
-              message: 'Internal error!',
-            }));
+            res.json({ success: true, message: 'Данни изпратени успешно!', profile }))
+          .catch(() => res.json({ success: false, message: 'Вътрешна грешка!' }));
       } else if (req.roles.includes('Teacher')) {
         TeacherData.getTeacherByUsername(req.username)
           .then(profile =>
             res.json({
               success: true,
-              message: 'Teacher profile sent.',
+              message: 'Данни изпратени успешно!',
               profile: profile || {},
             }))
-          .catch(() =>
-            res.json({
-              success: false,
-              message: 'Internal error!',
-            }));
+          .catch(() => res.json({ success: false, message: 'ВЪтрешна грешка!' }));
       } else {
-        res.json({
-          success: false,
-          message: 'Internal error!',
-        });
+        res.json({ success: false, message: 'Вътрешна грешка!' });
       }
     },
     saveProfile(req, res) {
@@ -100,10 +85,7 @@ function init({ data, encryption }) {
           !req.files.photo[0] ||
           !req.files.photo[0].buffer
         ) {
-          return res.json({
-            success: false,
-            message: 'Invalid data!',
-          });
+          return res.json({ success: false, message: 'Невалидни данни!' });
         }
 
         const photo = req.files.photo[0].buffer;
@@ -111,17 +93,8 @@ function init({ data, encryption }) {
 
         StudentData.createEncoding(photo)
           .then(encoding => StudentData.saveEncoding(username, encoding))
-          .then(() => {
-            res.json({
-              success: true,
-              message: 'Settings saved!',
-            });
-          })
-          .catch(() =>
-            res.json({
-              success: false,
-              message: 'Internal error!',
-            }));
+          .then(() => res.json({ success: true, message: 'Настойките бяха успешно запазени!' }))
+          .catch(() => res.json({ success: false, message: 'Вътрешна грешка!' }));
       } else {
         // add other stuff later
         res.redirect('/');
@@ -195,17 +168,11 @@ function init({ data, encryption }) {
       UserData.getUserByUsername(username)
         .then((user) => {
           if (!user) {
-            return res.json({
-              success: false,
-              message: 'Invalid user!',
-            });
+            return res.json({ success: false, message: 'Невалиден потребител!' });
           }
 
           if (!UserData.checkPassword(password, user.salt, user.hashedPass, encryption)) {
-            return res.json({
-              success: false,
-              message: 'Invalid user!',
-            });
+            return res.json({ success: false, message: 'Невалиден потребител!' });
           }
 
           const token = encryption.getToken(
@@ -218,17 +185,13 @@ function init({ data, encryption }) {
           );
           res.send({
             success: true,
-            message: 'Logged in!',
+            message: 'Успешен вход!',
             roles: user.roles,
             username,
             token,
           });
         })
-        .catch(() =>
-          res.json({
-            success: false,
-            message: 'Invalid data!',
-          }));
+        .catch(() => res.json({ success: false, message: 'Невалидни данни' }));
     },
   };
 }

@@ -1,15 +1,15 @@
 class Lesson {
   constructor(groupName, subjectCode, teacherUsername, timeslot) {
     if (typeof groupName !== 'string' || groupName.length < 2) {
-      throw new Error('Невалидни данни!');
+      throw new Error('Невалидно име!');
     }
 
     if (typeof subjectCode !== 'string' || subjectCode.length < 3) {
-      throw new Error('Невалидни данни!');
+      throw new Error('Невалиден предмет!');
     }
 
     if (typeof teacherUsername !== 'string' || teacherUsername.length < 6) {
-      throw new Error('Невалидни данни!');
+      throw new Error('Невалиден преподавател!');
     }
 
     if (
@@ -27,9 +27,9 @@ class Lesson {
       timeslot.toMinute < 0 ||
       timeslot.toMinute > 60 ||
       timeslot.day < 1 ||
-      timeslot.day > 7
+      timeslot.day > 5
     ) {
-      throw new Error('Невалидни данни!');
+      throw new Error('Невалидно време!');
     }
 
     this.groupName = groupName;

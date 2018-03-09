@@ -38,7 +38,7 @@ class BaseData {
 
   getByID(id) {
     if (!ObjectID.isValid(id)) {
-      return Promise.reject(new Error('Невалидни данни!'));
+      return Promise.reject(new Error('Невалидно id!'));
     }
 
     return this.collection.findOne({

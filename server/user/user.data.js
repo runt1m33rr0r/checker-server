@@ -19,12 +19,10 @@ class UserData extends BaseData {
 
   getUserByUsername(username) {
     if (!username) {
-      return Promise.reject(new Error('Невалидни данни!'));
+      return Promise.reject(new Error('Невалидно потребителско име!'));
     }
 
-    return this.collection.findOne({
-      username,
-    });
+    return this.collection.findOne({ username });
   }
 
   checkPassword(password, salt, hash, encryption) {

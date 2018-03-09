@@ -1,7 +1,7 @@
 class Subject {
   constructor(name, code, teachers) {
     if (typeof name !== 'string' || name.length < 3 || name.length > 30) {
-      throw new Error('Невалидно име на предмет!');
+      throw new Error('Невалидно име!');
     }
 
     if (typeof code !== 'string' || code.length < 3 || code.length > 30) {

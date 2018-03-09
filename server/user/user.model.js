@@ -8,16 +8,16 @@ class User {
       username.length > 15 ||
       username !== username.toLowerCase()
     ) {
-      throw new Error('Невалидни данни!');
+      throw new Error('Невалидно потребителско име!');
     }
 
     if (!Array.isArray(roles) || roles.length === 0) {
-      throw new Error('Невалидни данни!');
+      throw new Error('Невалидни роли!');
     } else {
       roles.forEach((role) => {
         const types = Object.values(roleTypes);
         if (!types.includes(role)) {
-          throw new Error('Невалидни данни!');
+          throw new Error('Невалидна роля!');
         }
       });
     }

@@ -4,7 +4,7 @@ class TeacherData extends BaseData {
   createTeacher(firstName, lastName, username, isLead, group, subjects) {
     return this.getTeacherByUsername(username).then((result) => {
       if (result) {
-        return Promise.reject(new Error('Невалидни данни!'));
+        return Promise.reject(new Error('Вече има такъв преподавател!'));
       }
 
       const { Teacher } = this.models;
@@ -15,7 +15,7 @@ class TeacherData extends BaseData {
 
   getTeacherByUsername(username) {
     if (!username) {
-      return Promise.reject(new Error('Невалидни данни!'));
+      return Promise.reject(new Error('Невалидно потребителско име!'));
     }
 
     return this.collection.findOne({ username });

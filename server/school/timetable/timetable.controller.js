@@ -32,7 +32,7 @@ function init({ data }) {
           const timeslot = result[3];
 
           if (!group || !subject || !teacher || !timeslot) {
-            return Promise.reject(new Error('Невалидни данни!'));
+            return Promise.reject(new Error('Невалидни данни за урок!'));
           }
 
           return Promise.resolve(timeslot);
