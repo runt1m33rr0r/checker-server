@@ -23,26 +23,24 @@ function init({ data }) {
   }
 
   return {
-    getStudentChecker(req, res) {
-      res.render('school/students/checker');
-    },
-    getTimetablePage(req, res) {
+    getTimetable(req, res) {
       const { username } = req.user;
       StudentData.getStudentByUsername(username)
         .then(student => LessonData.getLessonsByGroupName(student.group))
-        .then((lessons) => {
-          res.render('school/students/timetable', {
-            lessons,
-          });
-        });
+        .then(result =>
+          res.json({ success: true, message: 'Успешно получени данни.', lessons: result }))
+        .catch(err => res.json({ success: false, message: err.message }));
     },
-    getAbsencesPage(req, res) {
+    getAbsences(req, res) {
       const { username } = req.user;
-      StudentData.getStudentByUsername(username).then((student) => {
-        res.render('school/students/absences', {
-          absences: student.absences,
-        });
-      });
+      StudentData.getStudentByUsername(username)
+        .then(student =>
+          res.json({
+            success: true,
+            message: 'Успешно получени данни.',
+            absences: student.absences,
+          }))
+        .catch(err => res.json({ success: false, message: err.message }));
     },
     createEncoding(req, res) {
       const photo = req.body.image;
@@ -63,11 +61,7 @@ function init({ data }) {
         .then(() => StudentData.getStudentByUsername(username))
         .then((student) => {
           if (!student) {
-            res.render('base/error', {
-              error: {
-                message: 'Вътрешна грешка!',
-              },
-            });
+            return Promise.reject(new Error('Вътрешна грешка!'));
           }
 
           return Promise.resolve(student);
@@ -81,17 +75,8 @@ function init({ data }) {
             date.getMinutes(),
           );
         })
-        .then(() => {
-          res.render('base/success', {
-            success: {
-              message: 'Успешно отбелязано присъствие!',
-            },
-          });
-        })
-        .catch(err =>
-          res.render('base/error', {
-            error: err,
-          }));
+        .then(() => res.json({ success: true, message: 'Успешно отбелязано присъствие!' }))
+        .catch(err => res.json({ success: false, message: err.message }));
     },
   };
 }

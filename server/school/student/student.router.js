@@ -2,11 +2,7 @@ const roles = require('../../utils/roletypes');
 
 function init({ app, controllers, middlewares }) {
   const controller = controllers.student;
-  app.get(
-    '/students/checker',
-    middlewares.user.isInRole(roles.Student),
-    controller.getStudentChecker,
-  );
+
   app.get(
     '/students/timetable',
     middlewares.user.isInRole(roles.Student),
