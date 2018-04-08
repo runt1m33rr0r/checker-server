@@ -11,16 +11,19 @@ setInterval(() => {
 
 require('./server/config').init();
 
-const { User } = require('./server/user/user.model.js');
+const { User } = require('./server/user/user.model');
 
 const user = new User({
-  username: '',
-  roles: ['Student'],
-  salt: '',
+  username: 'tdedd',
+  roles: ['Student', 'Teacher'],
+  salt: 'dweded',
   hash: 'test',
 });
 
+console.log('saving');
 user
   .save()
-  .then(s => console.log(s))
-  .catch(e => console.log(e.message));
+  .then(() => console.log('saved'))
+  .catch((e) => {
+    console.log(e.message);
+  });
