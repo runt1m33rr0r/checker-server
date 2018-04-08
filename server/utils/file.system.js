@@ -1,17 +1,9 @@
-const fs = require('fs');
 const path = require('path');
+const glob = require('glob');
 
-function walkDirectorySync(currentDirPath, callback) {
-  fs.readdirSync(currentDirPath).forEach((name) => {
-    const filePath = path.join(currentDirPath, name);
-    const stat = fs.statSync(filePath);
-
-    if (stat.isFile()) {
-      return callback(filePath);
-    } else if (stat.isDirectory()) {
-      walkDirectorySync(filePath, callback);
-    }
-  });
+function getFilesIncluding(inc) {
+  const searchPath = path.join(__dirname, '../');
+  return glob.sync(`${searchPath}/**/*${inc}*`);
 }
 
-module.exports = { walkDirectorySync };
+module.exports = { getFilesIncluding };

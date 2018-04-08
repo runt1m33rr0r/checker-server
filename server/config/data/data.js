@@ -1,20 +1,12 @@
-const path = require('path');
-const modelsLoader = require('./models');
-const fileWalker = require('../../utils/file.system').walkDirectorySync;
+const { getFilesIncluding } = require('../../utils/file.system');
 
-function init(db) {
+function init(models) {
   const data = {};
-  const models = modelsLoader.init();
-  const searchPath = path.join(__dirname, '../../');
+  const dataFiles = getFilesIncluding('.data');
 
-  fileWalker(searchPath, (file) => {
-    if (file.includes('.data')) {
-      const modulePath = file;
-      const DataModule = require(modulePath);
-      const dataObject = new DataModule(db, models);
-      const moduleName = dataObject.constructor.name;
-      data[moduleName] = dataObject;
-    }
+  dataFiles.forEach((fileName) => {
+    const DataModule = require(dataFiles[fileName]);
+    data.push(new DataModule(models));
   });
 
   return data;

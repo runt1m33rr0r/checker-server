@@ -1,4 +1,4 @@
-class Setting {
+class Settings {
   constructor(setupFinished) {
     if (setupFinished === null || setupFinished === undefined) {
       this.setupFinished = false;
@@ -10,4 +10,4 @@ class Setting {
   }
 }
 
-module.exports = Setting;
+module.exports = Settings;

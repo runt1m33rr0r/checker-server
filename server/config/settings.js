@@ -13,10 +13,12 @@ const secrets = {
   development: 'secret_fikret',
 };
 
+const dbName = 'sys';
+
 module.exports = {
-  dbName: 'sys',
+  dbName,
   environment: env,
-  connectionString: connectionStrings[env],
+  connectionString: `${connectionStrings[env]}${dbName}`,
   secret: secrets[env],
   port: process.env.PORT || 8080,
   rootPath,

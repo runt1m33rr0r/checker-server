@@ -25,6 +25,10 @@ class Student {
     this.checks = [];
     this.absences = [];
   }
+
+  static getSchema() {
+    return {};
+  }
 }
 
 module.exports = Student;

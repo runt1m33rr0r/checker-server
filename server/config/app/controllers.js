@@ -1,22 +1,19 @@
 const path = require('path');
 const encryption = require('../../utils/encryption');
-const fileWalker = require('../../utils/file.system').walkDirectorySync;
+const { getFilesIncluding } = require('../../utils/file.system');
 
 function init(data) {
   const controllers = {};
-  const searchPath = path.join(__dirname, '../../');
+  const files = getFilesIncluding('.controller');
 
-  fileWalker(searchPath, (file) => {
-    if (file.includes('.controller')) {
-      const modulePath = file;
-      const controllerModule = require(modulePath).init({
-        data,
-        encryption,
-      });
-      let moduleName = path.parse(modulePath).base;
-      moduleName = moduleName.substring(0, moduleName.indexOf('.controller'));
-      controllers[moduleName] = controllerModule;
-    }
+  files.forEach((modulePath) => {
+    const controllerModule = require(modulePath).init({
+      data,
+      encryption,
+    });
+    let moduleName = path.parse(modulePath).base;
+    moduleName = moduleName.substring(0, moduleName.indexOf('.controller'));
+    controllers[moduleName] = controllerModule;
   });
 
   return controllers;

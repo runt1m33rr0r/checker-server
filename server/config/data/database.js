@@ -1,9 +1,7 @@
-const { MongoClient } = require('mongodb');
+const mongoose = require('mongoose');
 
-async function init(connectionString, dbName, callback) {
-  MongoClient.connect(connectionString, (err, client) => {
-    callback(client.db(dbName), err);
-  });
+function init(connectionString) {
+  mongoose.connect(connectionString);
 }
 
 module.exports = { init };

@@ -1,40 +1,59 @@
+const mongoose = require('mongoose');
+
 const roleTypes = require('../utils/roletypes');
+const { castPlugin } = require('../utils/mongoose/cast.plugin');
 
-class User {
-  constructor(username, roles, salt, hashedPass) {
-    if (
-      typeof username !== 'string' ||
-      username.length < 5 ||
-      username.length > 15 ||
-      username !== username.toLowerCase()
-    ) {
-      throw new Error('Невалидно потребителско име!');
-    }
+const invalidUser = 'Невалидно потребителско име.';
+const userSchema = mongoose.Schema({
+  username: {
+    type: String,
+    unique: true,
+    required: [true, invalidUser],
+    minlength: [5, invalidUser],
+    maxlength: [15, invalidUser],
+  },
+  roles: [{ type: String, enum: [...Object.values(roleTypes)], required: true }],
+  salt: { type: String, required: true },
+  hash: { type: String, required: true },
+});
 
-    if (!Array.isArray(roles) || roles.length === 0) {
-      throw new Error('Невалидни роли!');
-    } else {
-      roles.forEach((role) => {
-        const types = Object.values(roleTypes);
-        if (!types.includes(role)) {
-          throw new Error('Невалидна роля!');
-        }
-      });
-    }
+// class User {
+//   constructor(username, roles, salt, hashedPass) {
+//     if (
+//       typeof username !== 'string' ||
+//       username.length < 5 ||
+//       username.length > 15 ||
+//       username !== username.toLowerCase()
+//     ) {
+//       throw new Error('Невалидно потребителско име!');
+//     }
 
-    if (typeof salt !== 'string') {
-      throw new Error('Невалидни данни!');
-    }
+//     if (!Array.isArray(roles) || roles.length === 0) {
+//       throw new Error('Невалидни роли!');
+//     } else {
+//       roles.forEach((role) => {
+//         const types = Object.values(roleTypes);
+//         if (!types.includes(role)) {
+//           throw new Error('Невалидна роля!');
+//         }
+//       });
+//     }
 
-    if (typeof hashedPass !== 'string') {
-      throw new Error('Невалидни данни!');
-    }
+//     if (typeof salt !== 'string') {
+//       throw new Error('Невалидни данни!');
+//     }
 
-    this.username = username;
-    this.hashedPass = hashedPass;
-    this.salt = salt;
-    this.roles = roles;
-  }
-}
+//     if (typeof hashedPass !== 'string') {
+//       throw new Error('Невалидни данни!');
+//     }
 
-module.exports = User;
+//     this.username = username;
+//     this.hashedPass = hashedPass;
+//     this.salt = salt;
+//     this.roles = roles;
+//   }
+// }
+
+userSchema.plugin(castPlugin);
+const User = mongoose.model('user', userSchema, 'users');
+module.exports = { User };

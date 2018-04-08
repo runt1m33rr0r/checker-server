@@ -1,5 +1,7 @@
 const https = require('https');
 
+const { User } = require('./server/user/user.model.js');
+
 // keep heroku from putting our server to sleep
 setInterval(() => {
   try {

@@ -1,17 +1,14 @@
-const path = require('path');
-const fileWalker = require('../../utils/file.system').walkDirectorySync;
+const { getFilesIncluding } = require('../../utils/file.system');
 
 const init = () => {
   const models = {};
-  const searchPath = path.join(__dirname, '../../');
+  const files = getFilesIncluding('.model');
 
-  fileWalker(searchPath, (file) => {
-    if (file.includes('.model')) {
-      const modelPath = file;
-      const modelModule = require(modelPath);
-      const moduleName = modelModule.name;
-      models[moduleName] = modelModule;
-    }
+  files.forEach((file) => {
+    const modelPath = file;
+    const modelModule = require(modelPath);
+    const moduleName = modelModule.name;
+    models[moduleName] = modelModule;
   });
 
   return models;

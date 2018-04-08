@@ -1,18 +1,15 @@
 const path = require('path');
-const fileWalker = require('../../utils/file.system').walkDirectorySync;
+const { getFilesIncluding } = require('../../utils/file.system');
 
 function init(data) {
   const middlewares = {};
-  const searchPath = path.join(__dirname, '../../');
+  const files = getFilesIncluding('.middleware');
 
-  fileWalker(searchPath, (file) => {
-    if (file.includes('.middleware')) {
-      const modulePath = file;
-      const middlewareModule = require(modulePath).init(data);
-      let moduleName = path.parse(modulePath).base;
-      moduleName = moduleName.substring(0, moduleName.indexOf('.middleware'));
-      middlewares[moduleName] = middlewareModule;
-    }
+  files.forEach((modulePath) => {
+    const middlewareModule = require(modulePath).init(data);
+    let moduleName = path.parse(modulePath).base;
+    moduleName = moduleName.substring(0, moduleName.indexOf('.middleware'));
+    middlewares[moduleName] = middlewareModule;
   });
 
   return middlewares;
