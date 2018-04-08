@@ -1,7 +1,5 @@
 const https = require('https');
 
-const { User } = require('./server/user/user.model.js');
-
 // keep heroku from putting our server to sleep
 setInterval(() => {
   try {
@@ -12,3 +10,17 @@ setInterval(() => {
 }, 300000); // ping it every 5 minutes (300000)
 
 require('./server/config').init();
+
+const { User } = require('./server/user/user.model.js');
+
+const user = new User({
+  username: '',
+  roles: ['Student'],
+  salt: '',
+  hash: 'test',
+});
+
+user
+  .save()
+  .then(s => console.log(s))
+  .catch(e => console.log(e.message));

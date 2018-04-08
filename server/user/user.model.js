@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const roleTypes = require('../utils/roletypes');
-const { castPlugin } = require('../utils/mongoose/cast.plugin');
 
 const invalidUser = 'Невалидно потребителско име.';
 const userSchema = mongoose.Schema({
@@ -54,6 +53,5 @@ const userSchema = mongoose.Schema({
 //   }
 // }
 
-userSchema.plugin(castPlugin);
 const User = mongoose.model('user', userSchema, 'users');
 module.exports = { User };
