@@ -1,19 +1,21 @@
+const { validateString, validateStrArray } = require('../../utils/validators');
+const constants = require('../../utils/constants');
+
 class Group {
   constructor(name, subjects) {
-    if (typeof name !== 'string' || name.length < 1 || name.length > 5) {
-      throw new Error('Невалидно име на група!');
-    }
+    validateString({
+      input: name,
+      errorMessage: 'Невалидно име на група!',
+      minLen: constants.MIN_GROUP_LEN,
+      maxLen: constants.MAX_GROUP_LEN,
+    });
 
-    if (!subjects || !Array.isArray(subjects)) {
-      throw new Error('Не може да има група без предмети!');
-    }
-
-    /* eslint no-restricted-syntax: 0 */
-    for (const subject of subjects) {
-      if (typeof subject !== 'string' || subject.length < 3) {
-        throw new Error('Невалидно име на предмет!');
-      }
-    }
+    validateStrArray({
+      input: subjects,
+      errorMessage: 'Не може да има група без предмети!',
+      minLen: constants.MIN_SUBJECT_LEN,
+      maxLen: constants.MAX_SUBJECT_LEN,
+    });
 
     this.name = name;
     this.subjects = subjects;

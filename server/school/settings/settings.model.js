@@ -1,12 +1,14 @@
+const { validateBool } = require('../../utils/validators');
+
 class Settings {
   constructor(setupFinished) {
-    if (setupFinished === null || setupFinished === undefined) {
+    if (!setupFinished) {
       this.setupFinished = false;
-    } else if (typeof setupFinished !== 'boolean') {
-      throw new Error('Невалидни настройки!');
-    } else {
-      this.setupFinished = setupFinished;
     }
+
+    validateBool({ input: setupFinished, errorMessage: 'Невалидни настройки!' });
+
+    this.setupFinished = setupFinished;
   }
 }
 

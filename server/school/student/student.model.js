@@ -1,20 +1,36 @@
+const { validateString } = require('../../utils/validators');
+const constants = require('../../utils/constants');
+
 class Student {
   constructor(firstName, lastName, username, group) {
-    if (typeof firstName !== 'string' || firstName.length < 3) {
-      throw new Error('Невалидно име!');
-    }
+    validateString({
+      input: firstName,
+      errorMessage: 'Невалидно име!',
+      minLen: constants.MIN_NAME_LEN,
+      maxLen: constants.MAX_NAME_LEN,
+    });
 
-    if (typeof lastName !== 'string' || lastName.length < 3) {
-      throw new Error('Невалидно фамилно име!');
-    }
+    validateString({
+      input: lastName,
+      errorMessage: 'Невалидно фамилно име!',
+      minLen: constants.MIN_NAME_LEN,
+      maxLen: constants.MAX_NAME_LEN,
+    });
 
-    if (typeof username !== 'string' || username.length < 6) {
-      throw new Error('Невалидно потребителско име!');
-    }
+    validateString({
+      input: username,
+      errorMessage: 'Невалидно потребителско име!',
+      minLen: constants.MIN_USERNAME_LEN,
+      maxLen: constants.MAX_USERNAME_LEN,
+      checkLowerCase: true,
+    });
 
-    if (typeof group !== 'string' || group.length < 2) {
-      throw new Error('Невалидно група!');
-    }
+    validateString({
+      input: group,
+      errorMessage: 'Невалидна група!',
+      minLen: constants.MIN_GROUP_LEN,
+      maxLen: constants.MAX_GROUP_LEN,
+    });
 
     this.firstName = firstName;
     this.lastName = lastName;
@@ -24,10 +40,6 @@ class Student {
     this.marks = [];
     this.checks = [];
     this.absences = [];
-  }
-
-  static getSchema() {
-    return {};
   }
 }
 

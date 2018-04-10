@@ -1,22 +1,32 @@
+const { validateString, validateStrArray } = require('../../utils/validators');
+const constants = require('../../utils/constants');
+
 class Subject {
   constructor(name, code, teachers) {
-    if (typeof name !== 'string' || name.length < 3 || name.length > 30) {
-      throw new Error('Невалидно име!');
-    }
+    validateString({
+      input: name,
+      errorMessage: 'Невалидно име!',
+      minLen: constants.MIN_NAME_LEN,
+      maxLen: constants.MAX_NAME_LEN,
+    });
 
-    if (typeof code !== 'string' || code.length < 3 || code.length > 30) {
-      throw new Error('Невалиден код на предмет!');
-    }
+    validateString({
+      input: code,
+      errorMessage: 'Невалиден код на предмет!',
+      minLen: constants.MIN_SUBJECT_LEN,
+      maxLen: constants.MAX_SUBJECT_LEN,
+    });
 
     if (!Array.isArray(teachers)) {
       this.teachers = [];
-    }
-
-    /* eslint no-restricted-syntax: 0 */
-    for (const teacher of this.teachers) {
-      if (typeof teacher !== 'string' || teacher.length < 3) {
-        throw new Error('Невалиден учител!');
-      }
+    } else {
+      validateStrArray({
+        input: teachers,
+        errorMessage: 'Невалидни учители!',
+        minLen: constants.MIN_USERNAME_LEN,
+        maxLen: constants.MAX_USERNAME_LEN,
+        checkLowerCase: true,
+      });
     }
 
     this.name = name;

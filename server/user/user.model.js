@@ -1,5 +1,6 @@
 const roleTypes = require('../utils/roletypes');
-const { validateString, validateArray } = require('../utils/validators');
+const { validateString, validateStrArray } = require('../utils/validators');
+const constants = require('../utils/constants');
 
 class User {
   constructor(username, roles, salt, hashedPass) {
@@ -7,11 +8,11 @@ class User {
       input: username,
       errorMessage: 'Невалидно потребителско име',
       checkLowerCase: true,
-      minLen: 5,
-      maxLen: 15,
+      minLen: constants.MIN_USERNAME_LEN,
+      maxLen: constants.MAX_USERNAME_LEN,
     });
 
-    validateArray({
+    validateStrArray({
       input: roles,
       errorMessage: 'Невалидни роли!',
       contentType: 'string',

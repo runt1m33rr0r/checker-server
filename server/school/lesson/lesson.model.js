@@ -1,36 +1,63 @@
+const { validateString, validateObject, validateNumber } = require('../../utils/validators');
+const constants = require('../../utils/constants');
+
+const invalidTime = 'Невалидно време!';
+
 class Lesson {
   constructor(groupName, subjectCode, teacherUsername, timeslot) {
-    if (typeof groupName !== 'string' || groupName.length < 2) {
-      throw new Error('Невалидно име!');
-    }
+    validateString({
+      input: groupName,
+      errorMessage: 'Невалидно име!',
+      minLen: constants.MIN_GROUP_LEN,
+      maxLen: constants.MAX_GROUP_LEN,
+    });
 
-    if (typeof subjectCode !== 'string' || subjectCode.length < 3) {
-      throw new Error('Невалиден предмет!');
-    }
+    validateString({
+      input: subjectCode,
+      errorMessage: 'Невалиден предмет!',
+      minLen: constants.MIN_SUBJECT_LEN,
+      maxLen: constants.MAX_SUBJECT_LEN,
+    });
 
-    if (typeof teacherUsername !== 'string' || teacherUsername.length < 6) {
-      throw new Error('Невалиден преподавател!');
-    }
+    validateString({
+      input: teacherUsername,
+      errorMessage: 'Невалиден преподавател!',
+      minLen: constants.MIN_USERNAME_LEN,
+      maxLen: constants.MAX_USERNAME_LEN,
+      checkLowerCase: true,
+    });
 
-    if (
-      typeof timeslot.fromHour !== 'number' ||
-      typeof timeslot.fromMinute !== 'number' ||
-      typeof timeslot.toHour !== 'number' ||
-      typeof timeslot.toMinute !== 'number' ||
-      typeof timeslot.day !== 'number' ||
-      timeslot.fromHour < 0 ||
-      timeslot.fromHour > 24 ||
-      timeslot.fromMinute < 0 ||
-      timeslot.fromMinute > 60 ||
-      timeslot.toHour < 0 ||
-      timeslot.toHour > 24 ||
-      timeslot.toMinute < 0 ||
-      timeslot.toMinute > 60 ||
-      timeslot.day < 1 ||
-      timeslot.day > 5
-    ) {
-      throw new Error('Невалидно време!');
-    }
+    validateObject({ input: timeslot, errorMessage: invalidTime });
+    validateNumber({
+      input: timeslot.fromHour,
+      errorMessage: invalidTime,
+      min: constants.MIN_HOUR,
+      max: constants.MAX_HOUR,
+    });
+    validateNumber({
+      input: timeslot.fromMinute,
+      errorMessage: invalidTime,
+      min: constants.MIN_MINUTE,
+      max: constants.MAX_MINUTE,
+    });
+    validateNumber({
+      input: timeslot.toHour,
+      errorMessage: invalidTime,
+      min: constants.MIN_HOUR,
+      max: constants.MAX_HOUR,
+    });
+    validateNumber({
+      input: timeslot.toMinute,
+      errorMessage: invalidTime,
+      min: constants.MIN_MINUTE,
+      max: constants.MAX_MINUTE,
+    });
+    validateNumber({
+      input: timeslot.day,
+      errorMessage: invalidTime,
+      min: constants.MIN_DAY,
+      max: constants.MAX_DAY,
+    });
 
     this.groupName = groupName;
     this.subjectCode = subjectCode;

@@ -43,26 +43,60 @@ const validateNumber = ({
   }
 };
 
-const validateArray = ({
-  input, errorMessage, contentType = null, acceptableValues = [],
-}) => {
+const validateArray = ({ input, errorMessage }) => {
   if (!Array.isArray(input) || input.length === 0) {
     throw new Error(errorMessage);
   }
+};
 
-  if (contentType === null && acceptableValues.length === 0) {
-    return;
-  }
+const validateStrArray = ({
+  input,
+  errorMessage,
+  acceptableValues = [],
+  checkUppercase = false,
+  checkLowerCase = false,
+  minLen = null,
+  maxLen = null,
+}) => {
+  validateArray({ input, errorMessage });
 
-  /* eslint valid-typeof: 0 */
   input.forEach((el) => {
-    if (
-      (contentType && typeof el !== contentType) ||
-      (acceptableValues.length > 0 && !acceptableValues.includes(el))
-    ) {
+    validateString({
+      input: el,
+      errorMessage,
+      minLen,
+      maxLen,
+      checkUppercase,
+      checkLowerCase,
+    });
+
+    if (acceptableValues.length > 0 && !acceptableValues.includes(el)) {
       throw new Error(errorMessage);
     }
   });
 };
 
-module.exports = { validateString, validateNumber, validateArray };
+const validateBool = ({ input, errorMessage, expectedValue = null }) => {
+  if (typeof input !== 'boolean') {
+    throw new Error(errorMessage);
+  }
+
+  if (expectedValue !== null && input !== expectedValue) {
+    throw new Error(errorMessage);
+  }
+};
+
+const validateObject = ({ input, errorMessage }) => {
+  if (typeof input !== 'object') {
+    throw new Error(errorMessage);
+  }
+};
+
+module.exports = {
+  validateString,
+  validateNumber,
+  validateStrArray,
+  validateArray,
+  validateBool,
+  validateObject,
+};

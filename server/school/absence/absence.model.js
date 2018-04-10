@@ -1,20 +1,35 @@
+const { validateString, validateNumber } = require('../../utils/validators');
+const constants = require('../../utils/constants');
+
 class Absence {
   constructor(day, hour, minute, subject) {
-    if (typeof day !== 'number' || day < 1 || day > 5) {
-      throw new Error('Невалиден ден!');
-    }
+    validateNumber({
+      input: day,
+      errorMessage: 'Невалиден ден!',
+      min: constants.MIN_DAY,
+      max: constants.MAX_DAY,
+    });
 
-    if (typeof hour !== 'number' || hour < 1 || hour > 23) {
-      throw new Error('Невалиден час!');
-    }
+    validateNumber({
+      input: hour,
+      errorMessage: 'Невалиден час!',
+      min: constants.MIN_HOUR,
+      max: constants.MAX_HOUR,
+    });
 
-    if (typeof minute !== 'number' || minute < 1 || minute > 60) {
-      throw new Error('Невалидна минута!');
-    }
+    validateNumber({
+      input: minute,
+      errorMessage: 'Невалидна минута!',
+      min: constants.MIN_MINUTE,
+      max: constants.MAX_MINUTE,
+    });
 
-    if (typeof subject !== 'string' || subject.length < 6 || subject.length > 30) {
-      throw new Error('Невалиден предмет!');
-    }
+    validateString({
+      input: subject,
+      errorMessage: 'Невалиден предмет!',
+      minLen: constants.MIN_SUBJECT_LEN,
+      maxLen: constants.MAX_SUBJECT_LEN,
+    });
 
     this.day = day;
     this.hour = hour;

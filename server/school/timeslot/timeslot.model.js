@@ -1,4 +1,5 @@
 const { validateNumber } = require('../../utils/validators');
+const constants = require('../../utils/constants');
 
 const errorMessage = 'Невалиден часови диапазон!';
 
@@ -7,36 +8,36 @@ class Timeslot {
     validateNumber({
       input: fromHour,
       errorMessage,
-      min: 0,
-      max: 24,
+      min: constants.MIN_HOUR,
+      max: constants.MAX_HOUR,
     });
 
     validateNumber({
       input: fromMinute,
       errorMessage,
-      min: 0,
-      max: 60,
+      min: constants.MIN_MINUTE,
+      max: constants.MAX_MINUTE,
     });
 
     validateNumber({
       input: toHour,
       errorMessage,
-      min: 0,
-      max: 24,
+      min: constants.MIN_HOUR,
+      max: constants.MAX_HOUR,
     });
 
     validateNumber({
       input: toMinute,
       errorMessage,
-      min: 0,
-      max: 60,
+      min: constants.MIN_MINUTE,
+      max: constants.MAX_MINUTE,
     });
 
     validateNumber({
       input: day,
       errorMessage,
-      min: 1,
-      max: 5,
+      min: constants.MIN_DAY,
+      max: constants.MAX_DAY,
     });
 
     this.fromHour = fromHour;
