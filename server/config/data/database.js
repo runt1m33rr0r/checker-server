@@ -1,12 +1,9 @@
-const mongoose = require('mongoose');
+const { MongoClient } = require('mongodb');
 
-const { modifyErrors } = require('../../utils/mongoose/errors.plugin');
-const beautifyUnique = require('mongoose-beautiful-unique-validation');
+const settings = require('../settings');
 
-function init(connectionString) {
-  mongoose.connect(connectionString);
-  mongoose.plugin(beautifyUnique);
-  mongoose.plugin(modifyErrors);
+function init() {
+  return MongoClient.connect(settings.connectionString).then(client => client.db(settings.dbName));
 }
 
 module.exports = { init };

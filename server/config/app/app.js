@@ -1,7 +1,7 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const cors = require('cors');
-const settings = require('../settings');
+// const settings = require('../settings');
 
 function init() {
   const app = express();

@@ -1,10 +1,11 @@
 const { ObjectID } = require('mongodb');
 
 class BaseData {
-  constructor(db, models, collection) {
+  constructor(db, models) {
     this.db = db;
     this.models = models;
-    this.collection = collection;
+    this.collectionName = `${this.constructor.name}Collection`;
+    this.collection = this.db.collection(this.collectionName);
   }
 
   clean() {

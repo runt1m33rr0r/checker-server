@@ -1,24 +1,43 @@
+const { validateNumber } = require('../../utils/validators');
+
+const errorMessage = 'Невалиден часови диапазон!';
+
 class Timeslot {
   constructor(fromHour, fromMinute, toHour, toMinute, day) {
-    if (
-      typeof fromHour !== 'number' ||
-      typeof fromMinute !== 'number' ||
-      typeof toHour !== 'number' ||
-      typeof toMinute !== 'number' ||
-      typeof day !== 'number' ||
-      fromHour < 0 ||
-      fromHour > 24 ||
-      fromMinute < 0 ||
-      fromMinute > 60 ||
-      toHour < 0 ||
-      toHour > 24 ||
-      toMinute < 0 ||
-      toMinute > 60 ||
-      day < 1 ||
-      day > 5
-    ) {
-      throw new Error('Невалиден часови диапазон!');
-    }
+    validateNumber({
+      input: fromHour,
+      errorMessage,
+      min: 0,
+      max: 24,
+    });
+
+    validateNumber({
+      input: fromMinute,
+      errorMessage,
+      min: 0,
+      max: 60,
+    });
+
+    validateNumber({
+      input: toHour,
+      errorMessage,
+      min: 0,
+      max: 24,
+    });
+
+    validateNumber({
+      input: toMinute,
+      errorMessage,
+      min: 0,
+      max: 60,
+    });
+
+    validateNumber({
+      input: day,
+      errorMessage,
+      min: 1,
+      max: 5,
+    });
 
     this.fromHour = fromHour;
     this.fromMinute = fromMinute;

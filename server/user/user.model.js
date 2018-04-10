@@ -1,26 +1,31 @@
-const mongoose = require('mongoose');
-
 const roleTypes = require('../utils/roletypes');
+const { validateString, validateArray } = require('../utils/validators');
 
-const invalidUser = 'Невалидно потребителско име.';
-const userSchema = mongoose.Schema({
-  username: {
-    type: String,
-    unique: 'Вече има потребител със същото потребителско име.',
-    required: [true, invalidUser],
-    minlength: [5, invalidUser],
-    maxlength: [15, invalidUser],
-  },
-  roles: [
-    {
-      type: String,
-      enum: { values: [...Object.values(roleTypes)], message: 'Невалидна роля.' },
-      required: true,
-    },
-  ],
-  salt: { type: String, required: true },
-  hash: { type: String, required: true },
-});
+class User {
+  constructor(username, roles, salt, hashedPass) {
+    validateString({
+      input: username,
+      errorMessage: 'Невалидно потребителско име',
+      checkLowerCase: true,
+      minLen: 5,
+      maxLen: 15,
+    });
 
-const User = mongoose.model('user', userSchema, 'users');
-module.exports = { User };
+    validateArray({
+      input: roles,
+      errorMessage: 'Невалидни роли!',
+      contentType: 'string',
+      acceptableValues: Object.values(roleTypes),
+    });
+
+    validateString({ input: salt, errorMessage: 'Невалидни данни!' });
+    validateString({ input: hashedPass, errorMessage: 'Невалидни данни!' });
+
+    this.username = username;
+    this.hashedPass = hashedPass;
+    this.salt = salt;
+    this.roles = roles;
+  }
+}
+
+module.exports = User;

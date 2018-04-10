@@ -1,4 +1,4 @@
-const Generator = require('../../utils/timetable-generator');
+const Generator = require('../../utils/timetable.generator');
 
 function init({ data }) {
   const {

@@ -1,12 +1,14 @@
 const { getFilesIncluding } = require('../../utils/file.system');
 
-function init(models) {
+function init(db, models) {
   const data = {};
   const dataFiles = getFilesIncluding('.data');
 
-  dataFiles.forEach((fileName) => {
-    const DataModule = require(dataFiles[fileName]);
-    data.push(new DataModule(models));
+  dataFiles.forEach((file) => {
+    const DataModule = require(file);
+    const dataObject = new DataModule(db, models);
+    const moduleName = dataObject.constructor.name;
+    data[moduleName] = dataObject;
   });
 
   return data;
