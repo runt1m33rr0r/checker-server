@@ -1,10 +1,13 @@
 const { validateNumber } = require('../../utils/validators');
 const constants = require('../../utils/constants');
+const BaseModel = require('../../base/base.model');
 
 const errorMessage = 'Невалиден часови диапазон!';
 
-class Timeslot {
+class Timeslot extends BaseModel {
   constructor(fromHour, fromMinute, toHour, toMinute, day) {
+    super();
+
     validateNumber({
       input: fromHour,
       errorMessage,

@@ -4,7 +4,7 @@ class GroupData extends BaseData {
   createGroup(name, subjects) {
     return this.getGroupByName(name).then((result) => {
       if (result) {
-        return Promise.reject(new Error('Няма такава група!'));
+        return Promise.reject(new Error('Вече има такава група!'));
       }
 
       const { Group } = this.models;

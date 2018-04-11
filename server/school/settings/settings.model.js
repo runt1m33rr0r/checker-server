@@ -1,7 +1,10 @@
 const { validateBool } = require('../../utils/validators');
+const BaseModel = require('../../base/base.model');
 
-class Settings {
+class Settings extends BaseModel {
   constructor(setupFinished) {
+    super();
+
     if (!setupFinished) {
       this.setupFinished = false;
     }

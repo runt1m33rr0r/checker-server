@@ -1,8 +1,11 @@
 const { validateNumber } = require('../../utils/validators');
 const constants = require('../../utils/constants');
+const BaseModel = require('../../base/base.model');
 
-class Check {
+class Check extends BaseModel {
   constructor(day, hour, minute) {
+    super();
+
     validateNumber({
       input: day,
       errorMessage: 'Невалиден ден!',

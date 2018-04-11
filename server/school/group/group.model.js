@@ -1,8 +1,11 @@
 const { validateString, validateStrArray } = require('../../utils/validators');
 const constants = require('../../utils/constants');
+const BaseModel = require('../../base/base.model');
 
-class Group {
+class Group extends BaseModel {
   constructor(name, subjects) {
+    super();
+
     validateString({
       input: name,
       errorMessage: 'Невалидно име на група!',

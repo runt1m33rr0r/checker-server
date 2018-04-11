@@ -1,9 +1,12 @@
 const roleTypes = require('../utils/roletypes');
 const { validateString, validateStrArray } = require('../utils/validators');
 const constants = require('../utils/constants');
+const BaseModel = require('../base/base.model');
 
-class User {
+class User extends BaseModel {
   constructor(username, roles, salt, hashedPass) {
+    super();
+
     validateString({
       input: username,
       errorMessage: 'Невалидно потребителско име',

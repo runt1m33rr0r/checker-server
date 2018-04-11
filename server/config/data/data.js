@@ -1,17 +1,23 @@
+const path = require('path');
+
 const { getFilesIncluding } = require('../../utils/file.system');
 
-function init(db, models) {
+const getBaseName = file => path.basename(file, path.extname(file)).replace('.data', '');
+
+const init = (db, models) => {
   const data = {};
   const dataFiles = getFilesIncluding('.data');
 
   dataFiles.forEach((file) => {
-    const DataModule = require(file);
-    const dataObject = new DataModule(db, models);
-    const moduleName = dataObject.constructor.name;
-    data[moduleName] = dataObject;
+    if (getBaseName(file) !== 'base') {
+      const DataModule = require(file);
+      const dataObject = new DataModule(db, models);
+      const moduleName = dataObject.constructor.name;
+      data[moduleName] = dataObject;
+    }
   });
 
   return data;
-}
+};
 
 module.exports = { init };

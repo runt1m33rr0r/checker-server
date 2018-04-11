@@ -5,7 +5,7 @@ module.exports = {
   MAX_MINUTE: 60,
   MIN_DAY: 1,
   MAX_DAY: 5,
-  MIN_USERNAME_LEN: 6,
+  MIN_USERNAME_LEN: 5,
   MAX_USERNAME_LEN: 15,
   MIN_NAME_LEN: 3,
   MAX_NAME_LEN: 20,

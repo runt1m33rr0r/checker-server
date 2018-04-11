@@ -1,8 +1,11 @@
 const { validateString } = require('../../utils/validators');
 const constants = require('../../utils/constants');
+const BaseModel = require('../../base/base.model');
 
-class Student {
+class Student extends BaseModel {
   constructor(firstName, lastName, username, group) {
+    super();
+
     validateString({
       input: firstName,
       errorMessage: 'Невалидно име!',

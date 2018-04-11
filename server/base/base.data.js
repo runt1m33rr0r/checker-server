@@ -4,7 +4,7 @@ class BaseData {
   constructor(db, models) {
     this.db = db;
     this.models = models;
-    this.collectionName = `${this.constructor.name}Collection`;
+    this.collectionName = `${this.constructor.name.replace('Data', '')}Collection`;
     this.collection = this.db.collection(this.collectionName);
   }
 

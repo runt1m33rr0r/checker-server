@@ -1,10 +1,13 @@
 const { validateString, validateObject, validateNumber } = require('../../utils/validators');
 const constants = require('../../utils/constants');
+const BaseModel = require('../../base/base.model');
 
 const invalidTime = 'Невалидно време!';
 
-class Lesson {
+class Lesson extends BaseModel {
   constructor(groupName, subjectCode, teacherUsername, timeslot) {
+    super();
+
     validateString({
       input: groupName,
       errorMessage: 'Невалидно име!',
