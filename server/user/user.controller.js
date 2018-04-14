@@ -8,7 +8,7 @@ function init({ data, encryption }) {
     UserData, TeacherData, GroupData, SubjectData, StudentData,
   } = data;
 
-  function seedAdmin() {
+  const seedAdmin = () => {
     UserData.getUserByUsername('admin')
       .then((user) => {
         if (!user) {
@@ -22,59 +22,76 @@ function init({ data, encryption }) {
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
 
   seedAdmin();
 
-  function registerTeacher(firstName, lastName, username, isLead, group, subjects) {
+  const registerTeacher = async (firstName, lastName, username, isLead, groupName, subjects) => {
     if (isLead) {
-      return GroupData.getGroupByName(group)
-        .then((result) => {
-          if (result) {
-            return SubjectData.getSubjectsByCodes(subjects);
-          }
-          return Promise.reject(new Error('Невалидна група!'));
-        })
-        .then(subjectCodes =>
-          TeacherData.createTeacher(firstName, lastName, username, true, group, subjectCodes))
-        .then(result => SubjectData.addTeacherToSubjects(username, result.subjects));
-    }
-    return SubjectData.getSubjectsByCodes(subjects)
-      .then(subjectCodes =>
-        TeacherData.createTeacher(firstName, lastName, username, false, '', subjectCodes))
-      .then(result => SubjectData.addTeacherToSubjects(username, result.subjects));
-  }
+      const group = await GroupData.getGroupByName(groupName);
+      if (group) {
+        const subjectCodes = await SubjectData.getSubjectsByCodes(subjects);
+        const teacher = await TeacherData.createTeacher(
+          firstName,
+          lastName,
+          username,
+          true,
+          group,
+          subjectCodes,
+        );
 
-  function registerStudent(firstName, lastName, username, group) {
-    return GroupData.getGroupByName(group).then((result) => {
-      if (result) {
-        return StudentData.createStudent(firstName, lastName, username, group);
+        return SubjectData.addTeacherToSubjects(username, teacher.subjects);
       }
+
       return Promise.reject(new Error('Невалидна група!'));
-    });
-  }
+    }
+
+    const subjectCodes = await SubjectData.getSubjectsByCodes(subjects);
+    const teacher = await TeacherData.createTeacher(
+      firstName,
+      lastName,
+      username,
+      false,
+      '',
+      subjectCodes,
+    );
+    return SubjectData.addTeacherToSubjects(username, teacher.subjects);
+  };
+
+  const registerStudent = async (firstName, lastName, username, groupName) => {
+    const group = await GroupData.getGroupByName(groupName);
+    if (group) {
+      return StudentData.createStudent(firstName, lastName, username, group);
+    }
+
+    return Promise.reject(new Error('Невалидна група!'));
+  };
 
   return {
-    getProfile(req, res) {
+    getProfile: async (req, res) => {
       if (req.roles.includes('Student')) {
-        StudentData.getStudentByUsername(req.username)
-          .then(profile =>
-            res.json({ success: true, message: 'Данни изпратени успешно!', profile }))
-          .catch(() => res.json({ success: false, message: 'Вътрешна грешка!' }));
+        try {
+          const profile = await StudentData.getStudentByUsername(req.username);
+          res.json({ success: true, message: 'Данни изпратени успешно!', profile });
+        } catch (error) {
+          res.json({ success: false, message: 'Вътрешна грешка!' });
+        }
       } else if (req.roles.includes('Teacher')) {
-        TeacherData.getTeacherByUsername(req.username)
-          .then(profile =>
-            res.json({
-              success: true,
-              message: 'Данни изпратени успешно!',
-              profile: profile || {},
-            }))
-          .catch(() => res.json({ success: false, message: 'ВЪтрешна грешка!' }));
+        try {
+          const profile = await TeacherData.getTeacherByUsername(req.username);
+          res.json({
+            success: true,
+            message: 'Данни изпратени успешно!',
+            profile: profile || {},
+          });
+        } catch (error) {
+          res.json({ success: false, message: 'ВЪтрешна грешка!' });
+        }
       } else {
         res.json({ success: false, message: 'Вътрешна грешка!' });
       }
     },
-    saveProfile(req, res) {
+    saveProfile: async (req, res) => {
       const { roles } = req.user;
 
       if (roles.includes('Student')) {
@@ -91,16 +108,19 @@ function init({ data, encryption }) {
         const photo = req.files.photo[0].buffer;
         const { username } = req.user;
 
-        StudentData.createEncoding(photo)
-          .then(encoding => StudentData.saveEncoding(username, encoding))
-          .then(() => res.json({ success: true, message: 'Настойките бяха успешно запазени!' }))
-          .catch(() => res.json({ success: false, message: 'Вътрешна грешка!' }));
+        try {
+          const encoding = await StudentData.createEncoding(photo);
+          await StudentData.saveEncoding(username, encoding);
+          res.json({ success: true, message: 'Настойките бяха успешно запазени!' });
+        } catch (error) {
+          res.json({ success: false, message: 'Вътрешна грешка!' });
+        }
       } else {
         // add other stuff later
         res.redirect('/');
       }
     },
-    registerUser(req, res) {
+    registerUser: async (req, res) => {
       const {
         username,
         password,
@@ -127,16 +147,20 @@ function init({ data, encryption }) {
 
       if (userType === roleTypes.Student) {
         roles.push(roleTypes.Student);
-        registerStudent(firstName, lastName, username, group)
-          .then(() => UserData.createUser(username, roles, salt, hash))
-          .then(() =>
-            res.json({
-              success: true,
-              message: 'Успешна регистрация!',
-              roles,
-              token,
-            }))
-          .catch(err => res.json({ success: false, message: err.message }));
+
+        try {
+          await registerStudent(firstName, lastName, username, group);
+          await UserData.createUser(username, roles, salt, hash);
+
+          res.json({
+            success: true,
+            message: 'Успешна регистрация!',
+            roles,
+            token,
+          });
+        } catch (error) {
+          res.json({ success: false, message: error.message });
+        }
       } else if (userType === roleTypes.Teacher) {
         if (typeof leadTeacher !== 'boolean') {
           return res.json({ success: false, message: 'Невалидни потребителски данни!' });
@@ -144,54 +168,62 @@ function init({ data, encryption }) {
 
         roles.push(roleTypes.Teacher);
 
-        registerTeacher(firstName, lastName, username, leadTeacher, group, subjects)
-          .then(() => UserData.createUser(username, roles, salt, hash))
-          .then(() => {
-            res.json({
-              success: true,
-              message: 'Успешна регистрация!',
-              roles,
-              username,
-              token,
-            });
-          })
-          .catch((err) => {
-            res.json({ success: false, message: err.message });
+        try {
+          await registerTeacher({
+            firstName,
+            lastName,
+            username,
+            leadTeacher,
+            group,
+            subjects,
           });
+          await UserData.createUser(username, roles, salt, hash);
+
+          res.json({
+            success: true,
+            message: 'Успешна регистрация!',
+            roles,
+            username,
+            token,
+          });
+        } catch (error) {
+          res.json({ success: false, message: error.message });
+        }
       } else {
         res.json({ success: false, message: 'Невалидни данни!' });
       }
     },
-    loginUser(req, res) {
+    loginUser: async (req, res) => {
       const { username, password } = req.body;
 
-      UserData.getUserByUsername(username)
-        .then((user) => {
-          if (!user) {
-            return res.json({ success: false, message: 'Невалиден потребител!' });
-          }
+      try {
+        const user = await UserData.getUserByUsername(username);
+        if (!user) {
+          return res.json({ success: false, message: 'Невалиден потребител!' });
+        }
 
-          if (!UserData.checkPassword(password, user.salt, user.hashedPass, encryption)) {
-            return res.json({ success: false, message: 'Невалиден потребител!' });
-          }
+        if (!await UserData.checkPassword(password, user.salt, user.hashedPass, encryption)) {
+          return res.json({ success: false, message: 'Невалиден потребител!' });
+        }
 
-          const token = encryption.getToken(
-            {
-              roles: user.roles,
-              username,
-            },
-            settings.secret,
-            TOKEN_EXPIRATION,
-          );
-          res.send({
-            success: true,
-            message: 'Успешен вход!',
+        const token = encryption.getToken(
+          {
             roles: user.roles,
             username,
-            token,
-          });
-        })
-        .catch(() => res.json({ success: false, message: 'Невалидни данни' }));
+          },
+          settings.secret,
+          TOKEN_EXPIRATION,
+        );
+        res.send({
+          success: true,
+          message: 'Успешен вход!',
+          roles: user.roles,
+          username,
+          token,
+        });
+      } catch (error) {
+        res.json({ success: false, message: 'Невалидни данни' });
+      }
     },
   };
 }

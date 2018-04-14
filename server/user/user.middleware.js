@@ -4,7 +4,7 @@ function init(data) {
   const { UserData } = data;
 
   return {
-    isAuthenticated(req, res, next) {
+    isAuthenticated: (req, res, next) => {
       if (!req.headers.authorization) {
         return res.send({ success: false, message: 'Ivalid headers!' });
       }
@@ -47,19 +47,17 @@ function init(data) {
             message: 'Failed to authenticate token.',
           }));
     },
-    isInRole(role) {
-      return (req, res, next) => {
-        this.isAuthenticated(req, res, () => {
-          if (req.isAuthenticated && req.roles.indexOf(role) !== -1) {
-            return next();
-          }
+    isInRole: role => (req, res, next) => {
+      this.isAuthenticated(req, res, () => {
+        if (req.isAuthenticated && req.roles.indexOf(role) !== -1) {
+          return next();
+        }
 
-          res.send({
-            success: false,
-            message: 'Unauthorized!',
-          });
+        res.send({
+          success: false,
+          message: 'Unauthorized!',
         });
-      };
+      });
     },
   };
 }
