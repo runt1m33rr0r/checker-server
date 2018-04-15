@@ -1,25 +1,11 @@
 const schedule = require('node-schedule');
-const BaseController = require('../base/base.controller');
 
-class TasksController extends BaseController {
-  constructor(...args) {
-    super(...args);
+const init = ({ data: { StudentData, LessonData } }) => {
+  const rule = new schedule.RecurrenceRule();
+  rule.hour = 18;
 
-    const rule = new schedule.RecurrenceRule();
-    rule.hour = 18;
-
-    // const job = schedule.scheduleJob('*/1 * * * *', () => {
-    //     checkAbscences();
-    // });
-
-    /* eslint no-unused-vars: 0 */
-    const job = schedule.scheduleJob(rule, () => {
-      this.checkAbscences();
-    });
-  }
-
-  wasAbscent(checks, lesson) {
-    let abscent = false;
+  const wasAbsent = (checks, lesson) => {
+    let absent = false;
     /* eslint no-restricted-syntax: 0 */
     for (const check of checks) {
       const now = new Date();
@@ -40,48 +26,60 @@ class TasksController extends BaseController {
       const diff = (checkDate - lessonDate) / 1000 / 60;
 
       if (check.day === lesson.timeslot.day && diff <= 10 && diff >= 0) {
-        abscent = false;
+        absent = false;
       } else {
-        abscent = true;
+        absent = true;
       }
     }
 
-    return abscent;
-  }
+    return absent;
+  };
 
-  performChecks(group, studentChecks, student) {
-    this.data.lesson.getLessonsByGroupName(group).then((lessons) => {
+  const performChecks = async (group, studentChecks, student) => {
+    try {
+      const lessons = await LessonData.getLessonsByGroupName(group);
       const absences = [];
+
       for (const lesson of lessons) {
-        if (this.wasAbscent(studentChecks, lesson)) {
-          absences.push(this.data.student.addAbsence(
+        if (wasAbsent(studentChecks, lesson)) {
+          const absence = StudentData.addAbsence(
             student.username,
             lesson.timeslot.day,
             lesson.timeslot.fromHour,
             lesson.timeslot.fromMinute,
             lesson.subjectCode,
-          ));
+          );
+          absences.push(absence);
         }
       }
 
-      Promise.all(absences)
-        .catch((err) => {
-          console.log(err.message);
-        })
-        .then((e) => {
-          this.data.student.clearChecks(student.username);
-        });
-    });
-  }
+      await Promise.all(absences);
+      await StudentData.clearChecks(student.username);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  checkAbscences() {
-    this.data.student.getAll().then((students) => {
+  const checkAbsences = async () => {
+    try {
+      const students = await StudentData.getAll();
+
       for (const student of students) {
         const { checks, group } = student;
-        this.performChecks(group, checks, student);
+        performChecks(group, checks, student);
       }
-    });
-  }
-}
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-module.exports = TasksController;
+  // const job = schedule.scheduleJob('*/1 * * * *', () => {
+  //     checkAbscences();
+  // });
+  /* eslint no-unused-vars: 0 */
+  const job = schedule.scheduleJob(rule, () => {
+    checkAbsences();
+  });
+};
+
+module.exports = { init };

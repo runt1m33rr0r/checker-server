@@ -1,7 +1,5 @@
-const BaseController = require('../../base/base.controller');
-
-class StudentController extends BaseController {
-  verifyIdentity(req) {
+const init = ({ data: { StudentData, LessonData } }) => {
+  const verifyIdentity = async (req) => {
     if (
       !req.files ||
       !Array.isArray(req.files.photo) ||
@@ -15,74 +13,77 @@ class StudentController extends BaseController {
     const photo = req.files.photo[0].buffer;
     const { username } = req.user;
 
-    return this.data.student.verifyIdentity(username, photo).then((studData) => {
-      if (studData.same !== 'True') {
-        return Promise.reject(new Error('Лицето на снимката не е ваше!'));
+    const studData = await StudentData.verifyIdentity(username, photo);
+    if (studData.same !== 'True') {
+      return Promise.reject(new Error('Лицето на снимката не е ваше!'));
+    }
+  };
+
+  return {
+    async getTimetable(req, res) {
+      try {
+        const { username } = req.user;
+        const student = await StudentData.getStudentByUsername(username);
+        const lessons = await LessonData.getLessonsByGroupName(student.group);
+        return res.json({ success: true, message: 'Успешно получени данни.', lessons });
+      } catch (error) {
+        return res.json({ success: false, message: error.message });
       }
-    });
-  }
-
-  getTimetable(req, res) {
-    const { username } = req.user;
-    this.data.student
-      .getStudentByUsername(username)
-      .then(student => this.data.lesson.getLessonsByGroupName(student.group))
-      .then(result =>
-        res.json({ success: true, message: 'Успешно получени данни.', lessons: result }))
-      .catch(err => res.json({ success: false, message: err.message }));
-  }
-
-  getAbsences(req, res) {
-    const { username } = req.user;
-    this.data.student
-      .getStudentByUsername(username)
-      .then(student =>
-        res.json({
+    },
+    async getAbsences(req, res) {
+      try {
+        const { username } = req.user;
+        const student = await StudentData.getStudentByUsername(username);
+        return res.json({
           success: true,
           message: 'Успешно получени данни.',
           absences: student.absences,
-        }))
-      .catch(err => res.json({ success: false, message: err.message }));
-  }
+        });
+      } catch (error) {
+        return res.json({ success: false, message: error.message });
+      }
+    },
+    async createEncoding(req, res) {
+      try {
+        const photo = req.body.image;
+        if (typeof photo !== 'string' || photo < 1) {
+          return res.json({ success: false, message: 'Невалидно изображение!' });
+        }
+        const { username } = req;
 
-  createEncoding(req, res) {
-    const photo = req.body.image;
-    if (typeof photo !== 'string' || photo < 1) {
-      return res.json({ success: false, message: 'Невалидно изображение!' });
-    }
-    const { username } = req;
+        const encoding = await StudentData.createEncoding(photo);
+        await StudentData.saveEncoding(username, encoding);
 
-    this.data.student
-      .createEncoding(photo)
-      .then(encoding => this.data.student.saveEncoding(username, encoding))
-      .then(() => res.json({ success: true, message: 'Запазено успешно!' }))
-      .catch(err => res.json({ success: false, message: err.message }));
-  }
+        return res.json({ success: true, message: 'Запазено успешно!' });
+      } catch (error) {
+        return res.json({ success: false, message: error.message });
+      }
+    },
+    async check(req, res) {
+      try {
+        const { username } = req.user;
 
-  check(req, res) {
-    const { username } = req.user;
+        await verifyIdentity(req);
+        const student = await StudentData.getStudentByUsername(username);
 
-    return this.verifyIdentity(req)
-      .then(() => this.data.StudentData.getStudentByUsername(username))
-      .then((student) => {
         if (!student) {
-          return Promise.reject(new Error('Вътрешна грешка!'));
+          return res.json({ success: false, message: 'Вътрешна грешка!' });
         }
 
-        return Promise.resolve(student);
-      })
-      .then((student) => {
         const date = new Date();
-        return this.data.StudentData.addCheck(
+        await StudentData.addCheck(
           student.username,
           date.getDay(),
           date.getHours(),
           date.getMinutes(),
         );
-      })
-      .then(() => res.json({ success: true, message: 'Успешно отбелязано присъствие!' }))
-      .catch(err => res.json({ success: false, message: err.message }));
-  }
-}
 
-module.exports = StudentController;
+        return res.json({ success: true, message: 'Успешно отбелязано присъствие!' });
+      } catch (error) {
+        return res.json({ success: false, message: error.message });
+      }
+    },
+  };
+};
+
+module.exports = { init };

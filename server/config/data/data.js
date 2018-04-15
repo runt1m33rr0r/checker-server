@@ -9,7 +9,7 @@ const init = (db, models) => {
     if (getBaseName(file) !== 'base') {
       const DataModule = require(file);
       const dataObject = new DataModule(db, models);
-      data[getBaseName(file, ext)] = dataObject;
+      data[DataModule.name] = dataObject;
     }
   });
 

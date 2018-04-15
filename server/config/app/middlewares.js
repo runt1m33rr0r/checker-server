@@ -6,9 +6,8 @@ function init(data) {
   const files = getFilesIncluding(ext);
 
   files.forEach((file) => {
-    const MiddlewareModule = require(file);
-    const middlewareObject = new MiddlewareModule(data);
-    middlewares[getBaseName(file, ext)] = middlewareObject;
+    const middlewareModule = require(file).init(data);
+    middlewares[getBaseName(file, ext)] = middlewareModule;
   });
 
   return middlewares;

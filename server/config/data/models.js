@@ -1,17 +1,13 @@
-const path = require('path');
-
-const { getFilesIncluding } = require('../../utils/file.system');
-
-const getBaseName = file => path.basename(file, path.extname(file)).replace('.model', '');
+const { getFilesIncluding, getBaseName } = require('../../utils/file.system');
 
 const init = () => {
   const models = {};
-  const files = getFilesIncluding('.model');
+  const ext = '.model';
+  const files = getFilesIncluding(ext);
 
   files.forEach((file) => {
     if (getBaseName(file) !== 'base') {
-      const modelPath = file;
-      const modelModule = require(modelPath);
+      const modelModule = require(file);
       models[modelModule.name] = modelModule;
     }
   });

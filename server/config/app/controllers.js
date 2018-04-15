@@ -7,9 +7,11 @@ function init(data) {
   const files = getFilesIncluding(ext);
 
   files.forEach((file) => {
-    const ControllerModule = require(file);
-    const controllerObject = new ControllerModule(data, encryption);
-    controllers[getBaseName(file, ext)] = controllerObject;
+    const controllerModule = require(file).init({
+      data,
+      encryption,
+    });
+    controllers[getBaseName(file, ext)] = controllerModule;
   });
 
   return controllers;

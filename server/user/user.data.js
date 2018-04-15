@@ -3,12 +3,10 @@ const BaseData = require('../base/base.data');
 class UserData extends BaseData {
   async createUser(username, roles, salt, hash) {
     if (await this.getUserByUsername(username)) {
-      return Promise.reject(new Error('Потребителското име е заето!'));
+      throw new Error('Потребителското име е заето!');
     }
     const { User } = this.models;
-    const userModel = new User(username, roles, salt, hash);
-    await User.validate(userModel);
-    return this.createEntry(userModel);
+    return this.createEntry(new User(username, roles, salt, hash));
   }
 
   async getUserById(id) {
@@ -17,7 +15,7 @@ class UserData extends BaseData {
 
   async getUserByUsername(username) {
     if (!username) {
-      return Promise.reject(new Error('Невалидно потребителско име!'));
+      throw new Error('Невалидно потребителско име!');
     }
 
     return this.collection.findOne({ username });
@@ -25,12 +23,12 @@ class UserData extends BaseData {
 
   async checkPassword(password, salt, hash, encryption) {
     if (!password || !salt || !hash || !encryption) {
-      return Promise.reject(new Error('Невалидни данни!'));
+      throw new Error('Невалидни данни!');
     }
 
     const testHash = encryption.getHash(salt, password);
     const result = testHash === hash;
-    return Promise.resolve(result);
+    return result;
   }
 
   async cleanTeachers() {

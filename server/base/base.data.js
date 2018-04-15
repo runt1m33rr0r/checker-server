@@ -8,11 +8,11 @@ class BaseData {
     this.collection = this.db.collection(this.collectionName);
   }
 
-  clean() {
+  async clean() {
     return this.collection.deleteMany({});
   }
 
-  createEntry(entry) {
+  async createEntry(entry) {
     if (!entry) {
       return Promise.reject(new Error('Невалидни данни!'));
     }
@@ -20,7 +20,7 @@ class BaseData {
     return this.collection.insertOne(entry).then(() => entry);
   }
 
-  createManyEntries(entries) {
+  async createManyEntries(entries) {
     if (!Array.isArray(entries) || entries.length < 1) {
       return Promise.reject(new Error('Невалидни данни!'));
     }
@@ -28,15 +28,15 @@ class BaseData {
     return this.collection.insertMany(entries).then(() => entries);
   }
 
-  deleteOne(criteria) {
+  async deleteOne(criteria) {
     return this.collection.remove(criteria, { justOne: true });
   }
 
-  deleteMany(criteria) {
+  async deleteMany(criteria) {
     return this.collection.remove(criteria, { justOne: false });
   }
 
-  getByID(id) {
+  async getByID(id) {
     if (!ObjectID.isValid(id)) {
       return Promise.reject(new Error('Невалидно id!'));
     }
@@ -46,19 +46,19 @@ class BaseData {
     });
   }
 
-  getCount() {
+  async getCount() {
     return this.collection.count();
   }
 
-  getAll() {
+  async getAll() {
     return this.collection.find().toArray();
   }
 
-  getFirst() {
+  async getFirst() {
     return this.collection.findOne({});
   }
 
-  getAllPropVals(propName) {
+  async getAllPropVals(propName) {
     return this.getAll().then((items) => {
       const vals = [];
       items.forEach((item) => {

@@ -2,12 +2,12 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const settings = require('../config/settings');
 
-function getSalt() {
+const getSalt = () => {
   const salt = crypto.randomBytes(128).toString('base64');
   return salt;
-}
+};
 
-function getHash(salt, password) {
+const getHash = (salt, password) => {
   if (!salt || !password) {
     return null;
   }
@@ -18,22 +18,21 @@ function getHash(salt, password) {
     .digest('hex');
 
   return hash;
-}
+};
 
-function getToken(data, secret, expiration) {
-  return jwt.sign(data, secret, {
+const getToken = (data, secret, expiration) =>
+  jwt.sign(data, secret, {
     expiresIn: expiration,
     algorithm: 'HS512',
   });
-}
 
-function verifyToken(token) {
+const verifyToken = (token) => {
   try {
     return jwt.verify(token, settings.secret, { algorithms: ['HS512'] });
   } catch (err) {
     return null;
   }
-}
+};
 
 module.exports = {
   getSalt,

@@ -1,35 +1,33 @@
-const BaseController = require('../../base/base.controller');
+const init = ({ data: { SettingsData } }) => ({
+  async checkSetup(req, res) {
+    try {
+      const settings = await SettingsData.getFirst();
+      if (!settings) {
+        return res.json({ success: true, message: 'Данни получени.', setupFinished: false });
+      }
 
-class SettingsController extends BaseController {
-  checkSetup(req, res) {
-    this.data.settings
-      .getFirst()
-      .then((settings) => {
-        if (!settings) {
-          return res.json({ success: true, message: 'Данни получени.', setupFinished: false });
-        }
-        res.json({
-          success: true,
-          message: 'Данни получени.',
-          setupFinished: settings.setupFinished,
-        });
-      })
-      .catch(err => res.json({ success: false, message: err.message }));
-  }
+      return res.json({
+        success: true,
+        message: 'Данни получени.',
+        setupFinished: settings.setupFinished,
+      });
+    } catch (error) {
+      return res.json({ success: false, message: error.message });
+    }
+  },
+  async resetSetup(req, res) {
+    try {
+      const settings = await SettingsData.getFirst();
+      if (!settings) {
+        return res.json({ success: false, message: 'Няма настройки!' });
+      }
 
-  resetSetup(req, res) {
-    this.data.settings
-      .getFirst()
-      .then((settings) => {
-        if (!settings) {
-          return res.json({ success: false, message: 'Няма настройки!' });
-        }
+      await SettingsData.updateSettings({ setupFinished: false });
+      return res.json({ success: true, message: 'Настройките бяха обновени!' });
+    } catch (error) {
+      return res.json({ success: false, message: error.message });
+    }
+  },
+});
 
-        return this.data.settings.updateSettings({ setupFinished: false });
-      })
-      .then(() => res.json({ success: true, message: 'Настройките бяха обновени!' }))
-      .catch(err => res.json({ success: false, message: err.message }));
-  }
-}
-
-module.exports = SettingsController;
+module.exports = { init };

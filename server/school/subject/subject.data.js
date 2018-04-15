@@ -1,13 +1,12 @@
 const BaseData = require('../../base/base.data');
 
 class SubjectData extends BaseData {
-  createSubjects(subjectsArray) {
+  async createSubjects(subjectsArray) {
     // input data duplicate check missing
     const subjectModels = [];
     const checks = [];
     const { Subject } = this.models;
 
-    /* eslint no-restricted-syntax: 0 */
     for (const subject of subjectsArray) {
       const subjectCode = subject.code;
       const subjectName = subject.name;

@@ -1,21 +1,18 @@
 const BaseData = require('../../base/base.data');
 
 class TeacherData extends BaseData {
-  createTeacher(firstName, lastName, username, isLead, group, subjects) {
-    return this.getTeacherByUsername(username).then((result) => {
-      if (result) {
-        return Promise.reject(new Error('Вече има такъв преподавател!'));
-      }
+  async createTeacher(firstName, lastName, username, isLead, group, subjects) {
+    if (await this.getTeacherByUsername(username)) {
+      throw new Error('Вече има такъв преподавател!');
+    }
 
-      const { Teacher } = this.models;
-      const teacherModel = new Teacher(firstName, lastName, username, isLead, group, subjects);
-      return this.createEntry(teacherModel);
-    });
+    const { Teacher } = this.models;
+    return this.createEntry(new Teacher(firstName, lastName, username, isLead, group, subjects));
   }
 
-  getTeacherByUsername(username) {
+  async getTeacherByUsername(username) {
     if (!username) {
-      return Promise.reject(new Error('Невалидно потребителско име!'));
+      throw new Error('Невалидно потребителско име!');
     }
 
     return this.collection.findOne({ username });
