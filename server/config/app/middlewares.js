@@ -1,15 +1,14 @@
-const path = require('path');
-const { getFilesIncluding } = require('../../utils/file.system');
+const { getFilesIncluding, getBaseName } = require('../../utils/file.system');
 
 function init(data) {
   const middlewares = {};
-  const files = getFilesIncluding('.middleware');
+  const ext = '.middleware';
+  const files = getFilesIncluding(ext);
 
-  files.forEach((modulePath) => {
-    const middlewareModule = require(modulePath).init(data);
-    let moduleName = path.parse(modulePath).base;
-    moduleName = moduleName.substring(0, moduleName.indexOf('.middleware'));
-    middlewares[moduleName] = middlewareModule;
+  files.forEach((file) => {
+    const MiddlewareModule = require(file);
+    const middlewareObject = new MiddlewareModule(data);
+    middlewares[getBaseName(file, ext)] = middlewareObject;
   });
 
   return middlewares;

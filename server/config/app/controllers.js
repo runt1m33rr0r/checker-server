@@ -1,19 +1,15 @@
-const path = require('path');
 const encryption = require('../../utils/encryption');
-const { getFilesIncluding } = require('../../utils/file.system');
+const { getFilesIncluding, getBaseName } = require('../../utils/file.system');
 
 function init(data) {
   const controllers = {};
-  const files = getFilesIncluding('.controller');
+  const ext = '.controller';
+  const files = getFilesIncluding(ext);
 
-  files.forEach((modulePath) => {
-    const controllerModule = require(modulePath).init({
-      data,
-      encryption,
-    });
-    let moduleName = path.parse(modulePath).base;
-    moduleName = moduleName.substring(0, moduleName.indexOf('.controller'));
-    controllers[moduleName] = controllerModule;
+  files.forEach((file) => {
+    const ControllerModule = require(file);
+    const controllerObject = new ControllerModule(data, encryption);
+    controllers[getBaseName(file, ext)] = controllerObject;
   });
 
   return controllers;

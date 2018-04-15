@@ -1,12 +1,24 @@
 const schedule = require('node-schedule');
+const BaseController = require('../base/base.controller');
 
-function init({ data }) {
-  const { StudentData, LessonData } = data;
+class TasksController extends BaseController {
+  constructor(...args) {
+    super(...args);
 
-  const rule = new schedule.RecurrenceRule();
-  rule.hour = 18;
+    const rule = new schedule.RecurrenceRule();
+    rule.hour = 18;
 
-  function wasAbscent(checks, lesson) {
+    // const job = schedule.scheduleJob('*/1 * * * *', () => {
+    //     checkAbscences();
+    // });
+
+    /* eslint no-unused-vars: 0 */
+    const job = schedule.scheduleJob(rule, () => {
+      this.checkAbscences();
+    });
+  }
+
+  wasAbscent(checks, lesson) {
     let abscent = false;
     /* eslint no-restricted-syntax: 0 */
     for (const check of checks) {
@@ -37,12 +49,12 @@ function init({ data }) {
     return abscent;
   }
 
-  function performChecks(group, studentChecks, student) {
-    LessonData.getLessonsByGroupName(group).then((lessons) => {
+  performChecks(group, studentChecks, student) {
+    this.data.lesson.getLessonsByGroupName(group).then((lessons) => {
       const absences = [];
       for (const lesson of lessons) {
-        if (wasAbscent(studentChecks, lesson)) {
-          absences.push(StudentData.addAbsence(
+        if (this.wasAbscent(studentChecks, lesson)) {
+          absences.push(this.data.student.addAbsence(
             student.username,
             lesson.timeslot.day,
             lesson.timeslot.fromHour,
@@ -57,26 +69,19 @@ function init({ data }) {
           console.log(err.message);
         })
         .then((e) => {
-          StudentData.clearChecks(student.username);
+          this.data.student.clearChecks(student.username);
         });
     });
   }
 
-  function checkAbscences() {
-    StudentData.getAll().then((students) => {
+  checkAbscences() {
+    this.data.student.getAll().then((students) => {
       for (const student of students) {
         const { checks, group } = student;
-        performChecks(group, checks, student);
+        this.performChecks(group, checks, student);
       }
     });
   }
-
-  // const job = schedule.scheduleJob('*/1 * * * *', () => {
-  //     checkAbscences();
-  // });
-  const job = schedule.scheduleJob(rule, () => {
-    checkAbscences();
-  });
 }
 
-module.exports = { init };
+module.exports = TasksController;

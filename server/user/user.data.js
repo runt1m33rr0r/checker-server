@@ -7,6 +7,7 @@ class UserData extends BaseData {
     }
     const { User } = this.models;
     const userModel = new User(username, roles, salt, hash);
+    await User.validate(userModel);
     return this.createEntry(userModel);
   }
 

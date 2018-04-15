@@ -15,6 +15,13 @@ class BaseModel {
   static getIndexes() {
     return {};
   }
+
+  static async validate(model) {
+    if (!model) {
+      return Promise.reject(new Error('Invalid!'));
+    }
+    return Promise.resolve('Valid!');
+  }
 }
 
 module.exports = BaseModel;

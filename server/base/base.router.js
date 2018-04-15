@@ -1,7 +1,5 @@
 function init({ app, controllers }) {
-  const controller = controllers.base;
-
-  app.get('/', controller.getHome);
+  app.get('/', controllers.base.getHome);
 }
 
 module.exports = { init };
