@@ -10,7 +10,6 @@ class TimeslotData extends BaseData {
     const { Timeslot } = this.models;
 
     const checks = [];
-    /* eslint no-await-in-loop: 0 */
     for (const timeslot of timeslotArray) {
       const {
         fromHour, fromMinute, toHour, toMinute, day,

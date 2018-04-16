@@ -1,6 +1,6 @@
 const roleTypes = require('../../utils/roletypes');
 
-function init({ app, controllers, middlewares }) {
+const init = ({ app, controllers, middlewares }) => {
   const settingsRoute = '/api/school/settings/';
   const controller = controllers.timetable;
 
@@ -24,6 +24,6 @@ function init({ app, controllers, middlewares }) {
   );
 
   app.delete('/api/lessons', middlewares.user.isInRole(roleTypes.Teacher), controller.deleteLesson);
-}
+};
 
 module.exports = { init };

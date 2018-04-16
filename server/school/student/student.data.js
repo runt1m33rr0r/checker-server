@@ -2,57 +2,59 @@ const BaseData = require('../../base/base.data');
 const axios = require('axios');
 
 class StudentData extends BaseData {
-  createEncoding(image) {
-    return axios
-      .post('http://localhost:4000/encode', { image })
-      .catch(() => Promise.reject(new Error('Сървъра не работи!')))
-      .then((res) => {
-        if (res.data && res.data.encoding) {
-          const result = res.data.encoding;
-          return Promise.resolve(result);
-        } else if (res.data && res.data.message) {
-          return Promise.reject(new Error('Не виждам лице на снимката!'));
-        }
-        return Promise.reject(new Error('Вътрешна грешка!'));
-      })
-      .catch(err => Promise.reject(new Error(err.message)));
-  }
-
-  verifyIdentity(username, image) {
-    if (!image) {
-      return Promise.reject(new Error('Вътрешна грешка!'));
+  async createEncoding(image) {
+    let res = {};
+    try {
+      res = await axios.post('http://localhost:4000/encode', { image });
+    } catch (error) {
+      throw new Error('Сървъра не работи!');
     }
 
-    return this.getStudentByUsername(username)
-      .then((student) => {
-        if (!student) {
-          return Promise.reject(new Error('Вътрешна грешка!'));
-        }
+    if (res.data && res.data.encoding) {
+      return res.data.encoding;
+    }
 
-        if (!student.encoding) {
-          return Promise.reject(new Error('Нямате снимка в профила си!'));
-        }
+    if (res.data && res.data.message) {
+      throw new Error('Не виждам лице на снимката!');
+    }
 
-        return axios
-          .post('http://localhost:3000/verify', {
-            image,
-            encoding: student.encoding,
-          })
-          .catch(() => Promise.reject(new Error('Сървъра не работи!')));
-      })
-      .then((res) => {
-        if (res.data && typeof res.data.same === 'string') {
-          return Promise.resolve(res.data);
-        } else if (res.data && typeof res.data.message === 'string') {
-          return Promise.reject(new Error('Не виждам лице на снимката!'));
-        }
-        return Promise.reject(new Error('Вътрешна грешка!'));
-      });
+    throw new Error('Вътрешна грешка!');
   }
 
-  saveEncoding(username, encoding) {
+  async verifyIdentity(username, image) {
+    if (!image) {
+      throw new Error('Липсва изображение!');
+    }
+
+    const student = await this.getStudentByUsername(username);
+    if (!student) {
+      throw new Error('Няма такъв ученик!');
+    }
+
+    if (!student.encoding) {
+      throw new Error('Нямате снимка в профила си!');
+    }
+
+    let res = {};
+    try {
+      res = axios.post('http://localhost:3000/verify', { image, encoding: student.encoding });
+    } catch (error) {
+      throw new Error('Сървъра не работи!');
+    }
+
+    if (res.data && typeof res.data.same === 'string') {
+      return res.data;
+    }
+
+    if (res.data && typeof res.data.message === 'string') {
+      throw new Error('Не виждам лице на снимката!');
+    }
+    throw new Error('Вътрешна грешка!');
+  }
+
+  async saveEncoding(username, encoding) {
     if (typeof username !== 'string' || typeof encoding !== 'string') {
-      return Promise.reject(new Error('Вътрешна грешка!'));
+      throw new Error('Невалидни данни!');
     }
 
     return this.collection.findOneAndUpdate(
@@ -67,9 +69,9 @@ class StudentData extends BaseData {
     );
   }
 
-  addCheck(username, day, hour, minute) {
+  async addCheck(username, day, hour, minute) {
     if (!username) {
-      return Promise.reject(new Error('Невалидно потребителско име!'));
+      throw new Error('Невалидно потребителско име!');
     }
 
     const { Check } = this.models;
@@ -85,9 +87,9 @@ class StudentData extends BaseData {
     );
   }
 
-  clearChecks(username) {
+  async clearChecks(username) {
     if (!username) {
-      return Promise.reject(new Error('Невалидно потребителско име!'));
+      throw new Error('Невалидно потребителско име!');
     }
 
     return this.collection.findOneAndUpdate(
@@ -102,29 +104,27 @@ class StudentData extends BaseData {
     );
   }
 
-  createStudent(firstName, lastName, username, group) {
-    return this.getStudentByUsername(username).then((result) => {
-      if (result) {
-        return Promise.reject(new Error('Вече има такъв ученик!'));
-      }
+  async createStudent(firstName, lastName, username, group) {
+    if (await this.getStudentByUsername(username)) {
+      throw new Error('Вече има такъв ученик!');
+    }
 
-      const { Student } = this.models;
-      const studentModel = new Student(firstName, lastName, username, group);
-      return this.createEntry(studentModel);
-    });
+    const { Student } = this.models;
+    const studentModel = new Student(firstName, lastName, username, group);
+    return this.createEntry(studentModel);
   }
 
-  getStudentByUsername(username) {
+  async getStudentByUsername(username) {
     if (!username) {
-      return Promise.reject(new Error('Невалидно потребителско име!'));
+      throw new Error('Невалидно потребителско име!');
     }
 
     return this.collection.findOne({ username });
   }
 
-  addAbsence(username, day, hour, minute, subject) {
+  async addAbsence(username, day, hour, minute, subject) {
     if (!username) {
-      return Promise.reject(new Error('Невалидно потребителско име!'));
+      throw new Error('Невалидно потребителско име!');
     }
 
     const { Absence } = this.models;

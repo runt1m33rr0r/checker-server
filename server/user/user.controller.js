@@ -44,7 +44,7 @@ const init = ({
         await SubjectData.addTeacherToSubjects(username, teacher.subjects);
       }
 
-      return Promise.reject(new Error('Невалидна група!'));
+      throw new Error('Невалидна група!');
     }
 
     const subjectCodes = await SubjectData.getSubjectsByCodes(subjects);
@@ -65,7 +65,7 @@ const init = ({
       return StudentData.createStudent(firstName, lastName, username, group);
     }
 
-    return Promise.reject(new Error('Невалидна група!'));
+    throw new Error('Невалидна група!');
   };
 
   return {

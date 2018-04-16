@@ -12,39 +12,35 @@ class SubjectData extends BaseData {
       const subjectName = subject.name;
       const { teachers } = subject;
 
-      const check = this.getSubjectByCode(subjectCode).then((result) => {
-        if (result) {
-          return Promise.reject(new Error('Такива предмети вече съществуват!'));
-        }
-
-        subjectModels.push(new Subject(subjectName, subjectCode, teachers));
-      });
-      checks.push(check);
+      subjectModels.push(new Subject(subjectName, subjectCode, teachers));
+      checks.push(this.getSubjectByCode(subjectCode));
     }
 
-    return Promise.all(checks).then(() => this.createManyEntries(subjectModels));
+    if ((await Promise.all(checks)).length > 0) {
+      throw new Error('Такива предмети вече съществуват!');
+    }
+    return this.createManyEntries(subjectModels);
   }
 
-  addTeacherToSubject(username, subjectCode) {
+  async addTeacherToSubject(username, subjectCode) {
     if (!username || typeof username !== 'string' || username.length < 5) {
-      return Promise.reject(new Error('Невалидно потребителско име!'));
+      throw new Error('Невалидно потребителско име!');
     }
 
-    return this.getSubjectByCode(subjectCode).then((subject) => {
-      this.collection.updateOne(
-        {
-          code: subject.code,
+    const subject = await this.getSubjectByCode(subjectCode);
+    return this.collection.updateOne(
+      {
+        code: subject.code,
+      },
+      {
+        $push: {
+          teachers: username,
         },
-        {
-          $push: {
-            teachers: username,
-          },
-        },
-      );
-    });
+      },
+    );
   }
 
-  addTeacherToSubjects(username, subjectCodes) {
+  async addTeacherToSubjects(username, subjectCodes) {
     const updates = [];
     for (const subject of subjectCodes) {
       updates.push(this.addTeacherToSubject(username, subject));
@@ -52,15 +48,15 @@ class SubjectData extends BaseData {
     return Promise.all(updates);
   }
 
-  getSubjectByCode(code) {
+  async getSubjectByCode(code) {
     if (!code) {
-      return Promise.reject(new Error('Невалиден код на предмет!'));
+      throw new Error('Невалиден код на предмет!');
     }
 
     return this.collection.findOne({ code });
   }
 
-  getSubjectsByCodes(codes) {
+  async getSubjectsByCodes(codes) {
     const validSubjectCodes = [];
     const subjectPromises = [];
 
@@ -73,28 +69,26 @@ class SubjectData extends BaseData {
       subjectPromises.push(promise);
     });
 
-    return Promise.all(subjectPromises).then(() => Promise.resolve(validSubjectCodes));
+    await Promise.all(subjectPromises);
+    return validSubjectCodes;
   }
 
-  getSubjectByName(name) {
+  async getSubjectByName(name) {
     if (!name) {
-      return Promise.reject(new Error('Невалидно име'));
+      throw new Error('Невалидно име');
     }
 
     return this.collection.findOne({ name });
   }
 
-  getFreeSubjects() {
-    return this.collection
-      .find({ teachers: { $size: 0 } })
-      .toArray()
-      .then((subjects) => {
-        const codes = [];
-        subjects.forEach((subject) => {
-          codes.push(subject.code);
-        });
-        return codes;
-      });
+  async getFreeSubjects() {
+    const subjects = await this.collection.find({ teachers: { $size: 0 } }).toArray();
+
+    const codes = [];
+    subjects.forEach((subject) => {
+      codes.push(subject.code);
+    });
+    return codes;
   }
 }
 

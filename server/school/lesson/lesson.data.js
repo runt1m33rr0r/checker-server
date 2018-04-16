@@ -1,79 +1,71 @@
 const BaseData = require('../../base/base.data');
 
 class LessonData extends BaseData {
-  checkUnique(groupName, subjectCode, teacherUsername, timeslot) {
-    return this.collection
-      .findOne({
-        groupName,
-        subjectCode,
-        teacherUsername,
-        timeslot,
-      })
-      .then((result) => {
-        if (result) {
-          return Promise.reject(new Error('Такъв час вече съществува!'));
-        }
-      });
-  }
-
-  checkFreeTimeslot(groupName, timeslot) {
-    return this.collection.findOne({ groupName, timeslot }).then((result) => {
-      if (result) {
-        return Promise.reject(new Error('Това време е заето!'));
-      }
+  async checkUniqueLesson(groupName, subjectCode, teacherUsername, timeslot) {
+    const lesson = await this.collection.findOne({
+      groupName,
+      subjectCode,
+      teacherUsername,
+      timeslot,
     });
+    if (lesson) {
+      throw new Error('Такъв час вече съществува!');
+    }
   }
 
-  createLessons(lessons) {
+  async checkFreeTimeslot(groupName, timeslot) {
+    if (await this.collection.findOne({ groupName, timeslot })) {
+      throw new Error('Това време е заето!');
+    }
+  }
+
+  async checkLesson(lesson) {
+    return Promise.all([
+      this.checkUniqueLesson(lesson.group, lesson.subject, lesson.teacher, lesson.timeslot),
+      this.checkFreeTimeslot(lesson.group, lesson.timeslot),
+    ]);
+  }
+
+  async createLessons(lessons) {
     if (!Array.isArray(lessons)) {
-      return Promise.reject(new Error('Невалидни уроци!'));
+      throw new Error('Невалидни уроци!');
     }
 
     const { Lesson } = this.models;
     const checks = [];
     const lessonModels = [];
-    /* eslint no-restricted-syntax: 0 */
+
     for (const lesson of lessons) {
-      const check = this.checkUnique(lesson.group, lesson.subject, lesson.teacher, lesson.timeslot)
-        .then(() => this.checkFreeTimeslot(lesson.group, lesson.timeslot))
-        .then(() => {
-          /* eslint max-len: 0 */
-          lessonModels.push(new Lesson(lesson.group, lesson.subject, lesson.teacher, lesson.timeslot));
-        });
-      checks.push(check);
+      lessonModels.push(new Lesson(lesson.group, lesson.subject, lesson.teacher, lesson.timeslot));
+      checks.push(this.checkLesson(lesson));
     }
 
-    return Promise.all(checks).then(() => this.createManyEntries(lessonModels));
+    await Promise.all(checks);
+    return this.createManyEntries(lessonModels);
   }
 
-  createLesson(groupName, subjectCode, teacherUsername, timeslot) {
-    return this.checkUnique(groupName, subjectCode, teacherUsername, timeslot)
-      .then(() => this.checkFreeTimeslot(groupName, timeslot))
-      .then(() => {
-        const { Lesson } = this.models;
-        const model = new Lesson(groupName, subjectCode, teacherUsername, timeslot);
+  async createLesson(groupName, subjectCode, teacherUsername, timeslot) {
+    await this.checkLesson({
+      groupName,
+      subjectCode,
+      teacherUsername,
+      timeslot,
+    });
 
-        return this.createEntry(model);
-      });
+    const { Lesson } = this.models;
+    const model = new Lesson(groupName, subjectCode, teacherUsername, timeslot);
+    return this.createEntry(model);
   }
 
-  getLessonsByGroupName(groupName) {
-    return this.collection
-      .find({
-        groupName,
-      })
-      .toArray();
+  async getLessonsByGroupName(groupName) {
+    return this.collection.find({ groupName }).toArray();
   }
 
-  getLessonsByTeacher(username) {
-    return this.collection
-      .find({
-        teacherUsername: username,
-      })
-      .toArray();
+  async getLessonsByTeacher(username) {
+    return this.collection.find({ teacherUsername: username }).toArray();
   }
 
-  deleteLesson({
+  async deleteLesson({
     groupName, subjectCode, teacherUsername, timeslot,
   }) {
     const {

@@ -1,5 +1,5 @@
-function init({ app, controllers }) {
+const init = ({ app, controllers }) => {
   app.get('/', controllers.base.getHome);
-}
+};
 
 module.exports = { init };

@@ -6,7 +6,7 @@ const init = ({ data: { StudentData, LessonData } }) => {
 
   const wasAbsent = (checks, lesson) => {
     let absent = false;
-    /* eslint no-restricted-syntax: 0 */
+
     for (const check of checks) {
       const now = new Date();
       const checkDate = new Date(
@@ -56,6 +56,7 @@ const init = ({ data: { StudentData, LessonData } }) => {
       await Promise.all(absences);
       await StudentData.clearChecks(student.username);
     } catch (error) {
+      /* eslint no-console: 0 */
       console.log(error);
     }
   };

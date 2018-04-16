@@ -1,6 +1,6 @@
 const init = () => ({
-  getHome(req, res) {
-    res.status(200).json({ success: 'true', message: 'Hello!' });
+  async getHome(req, res) {
+    return res.status(200).json({ success: 'true', message: 'Hello!' });
   },
 });
 

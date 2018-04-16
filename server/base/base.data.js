@@ -14,7 +14,7 @@ class BaseData {
 
   async createEntry(entry) {
     if (!entry) {
-      return Promise.reject(new Error('Невалидни данни!'));
+      throw new Error('Невалидни данни!');
     }
 
     return this.collection.insertOne(entry).then(() => entry);
@@ -22,7 +22,7 @@ class BaseData {
 
   async createManyEntries(entries) {
     if (!Array.isArray(entries) || entries.length < 1) {
-      return Promise.reject(new Error('Невалидни данни!'));
+      throw new Error('Невалидни данни!');
     }
 
     return this.collection.insertMany(entries).then(() => entries);
@@ -38,7 +38,7 @@ class BaseData {
 
   async getByID(id) {
     if (!ObjectID.isValid(id)) {
-      return Promise.reject(new Error('Невалидно id!'));
+      throw new Error('Невалидно id!');
     }
 
     return this.collection.findOne({
@@ -59,13 +59,12 @@ class BaseData {
   }
 
   async getAllPropVals(propName) {
-    return this.getAll().then((items) => {
-      const vals = [];
-      items.forEach((item) => {
-        vals.push(item[propName]);
-      });
-      return Promise.resolve(vals);
+    const items = await this.getAll();
+    const vals = [];
+    items.forEach((item) => {
+      vals.push(item[propName]);
     });
+    return vals;
   }
 }
 
