@@ -61,7 +61,6 @@ class Timetable {
     let chromosomePos = 0;
     let lessonIndex = 0;
 
-    /* eslint no-restricted-syntax: 0 */
     for (const group of this.getGroupsAsArray()) {
       const subjectIds = group.getSubjectIds();
 

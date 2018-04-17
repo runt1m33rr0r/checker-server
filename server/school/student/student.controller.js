@@ -7,7 +7,7 @@ const init = ({ data: { StudentData, LessonData } }) => {
       !req.files.photo[0].buffer ||
       !req.user.username
     ) {
-      return Promise.reject(new Error('Невалидни данни!'));
+      throw new Error('Невалидни данни!');
     }
 
     const photo = req.files.photo[0].buffer;
@@ -15,7 +15,7 @@ const init = ({ data: { StudentData, LessonData } }) => {
 
     const studData = await StudentData.verifyIdentity(username, photo);
     if (studData.same !== 'True') {
-      return Promise.reject(new Error('Лицето на снимката не е ваше!'));
+      throw new Error('Лицето на снимката не е ваше!');
     }
   };
 

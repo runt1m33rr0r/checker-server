@@ -149,19 +149,21 @@ const init = ({
     try {
       const { groups, timeslots, subjects } = req.body;
 
-      await GroupData.clean();
-      await TeacherData.clean();
-      await StudentData.clean();
-      await UserData.cleanTeachers();
-      await UserData.cleanStudents();
-      await GroupData.clean();
-      await LessonData.clean();
-      await TimeslotData.clean();
-      await SubjectData.clean();
-      await SubjectData.createSubjects(subjects);
-      await TimeslotData.createTimeslots(timeslots);
-      await GroupData.createGroups(groups);
-      await SettingsData.updateSettings({ setupFinished: true });
+      await Promise.all([
+        GroupData.clean(),
+        TeacherData.clean(),
+        StudentData.clean(),
+        UserData.cleanTeachers(),
+        UserData.cleanStudents(),
+        GroupData.clean(),
+        LessonData.clean(),
+        TimeslotData.clean(),
+        SubjectData.clean(),
+        SubjectData.createSubjects(subjects),
+        TimeslotData.createTimeslots(timeslots),
+        GroupData.createGroups(groups),
+        SettingsData.updateSettings({ setupFinished: true }),
+      ]);
 
       return res.json({ success: true, message: 'Настройките бяха успешно запазени!' });
     } catch (error) {
