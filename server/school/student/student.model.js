@@ -1,9 +1,9 @@
-const { validateString } = require('../../utils/validators');
+const { validateString, validateStrArray } = require('../../utils/validators');
 const constants = require('../../utils/constants');
 const BaseModel = require('../../base/base.model');
 
 class Student extends BaseModel {
-  constructor(firstName, lastName, username, group) {
+  constructor(firstName, lastName, username, groups) {
     super();
 
     validateString({
@@ -28,9 +28,9 @@ class Student extends BaseModel {
       checkLowerCase: true,
     });
 
-    validateString({
-      input: group,
-      errorMessage: 'Невалидна група!',
+    validateStrArray({
+      input: groups,
+      errorMessage: 'Невалидни групи',
       minLen: constants.MIN_GROUP_LEN,
       maxLen: constants.MAX_GROUP_LEN,
     });
@@ -38,7 +38,7 @@ class Student extends BaseModel {
     this.firstName = firstName;
     this.lastName = lastName;
     this.username = username;
-    this.group = group;
+    this.groups = groups;
     this.encoding = '';
     this.marks = [];
     this.checks = [];

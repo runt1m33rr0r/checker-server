@@ -104,13 +104,13 @@ class StudentData extends BaseData {
     );
   }
 
-  async createStudent(firstName, lastName, username, group) {
+  async createStudent(firstName, lastName, username, groups) {
     if (await this.getStudentByUsername(username)) {
       throw new Error('Вече има такъв ученик!');
     }
 
     const { Student } = this.models;
-    const studentModel = new Student(firstName, lastName, username, group);
+    const studentModel = new Student(firstName, lastName, username, groups);
     return this.createEntry(studentModel);
   }
 

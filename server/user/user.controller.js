@@ -59,8 +59,8 @@ const init = ({
     return SubjectData.addTeacherToSubjects(username, teacher.subjects);
   };
 
-  const registerStudent = async (firstName, lastName, username, groupName) => {
-    const group = await GroupData.getGroupByName(groupName);
+  const registerStudent = async (firstName, lastName, username, groupNames) => {
+    const group = await GroupData.getGroupByName(groupNames);
     if (group) {
       return StudentData.createStudent(firstName, lastName, username, group);
     }
@@ -125,6 +125,7 @@ const init = ({
           firstName,
           lastName,
           leadTeacher,
+          groups,
           group,
           subjects,
           userType,
@@ -146,7 +147,7 @@ const init = ({
         if (userType === roleTypes.Student) {
           roles.push(roleTypes.Student);
 
-          await registerStudent(firstName, lastName, username, group);
+          await registerStudent(firstName, lastName, username, groups);
           await UserData.createUser(username, roles, salt, hash);
 
           return res.json({

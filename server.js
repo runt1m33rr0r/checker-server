@@ -1,11 +1,12 @@
 /* eslint no-console: 0 */
 
-const https = require('https');
+const axios = require('axios');
 
 // keep heroku from putting our server to sleep
-setInterval(() => {
+setInterval(async () => {
   try {
-    https.get('https://school-system-server.herokuapp.com/');
+    await axios.get('https://school-system-server.herokuapp.com/');
+    console.log('get');
   } catch (e) {
     console.log(e.message);
   }

@@ -8,9 +8,7 @@ class SubjectData extends BaseData {
     const { Subject } = this.models;
 
     for (const subject of subjectsArray) {
-      const subjectCode = subject.code;
-      const subjectName = subject.name;
-      const { teachers } = subject;
+      const { teachers, subjectCode, subjectName } = subject;
 
       subjectModels.push(new Subject(subjectName, subjectCode, teachers));
       checks.push(this.getSubjectByCode(subjectCode));
