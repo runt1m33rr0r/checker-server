@@ -64,6 +64,27 @@ class GroupData extends BaseData {
 
     return this.collection.findOne({ name });
   }
+
+  async getGroupsByNames(names) {
+    if (!names || !Array.isArray(names)) {
+      throw new Error('Невалидни имена на групи!');
+    }
+
+    const validGroupNames = [];
+    const groupPromises = [];
+
+    names.forEach((name) => {
+      const promise = this.getGroupByName(name).then((result) => {
+        if (result) {
+          validGroupNames.push(result.name);
+        }
+      });
+      groupPromises.push(promise);
+    });
+
+    await Promise.all(groupPromises);
+    return validGroupNames;
+  }
 }
 
 module.exports = GroupData;

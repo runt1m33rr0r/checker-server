@@ -47,24 +47,28 @@ const init = ({
       }
     } else {
       const subjectCodes = await SubjectData.getSubjectsByCodes(subjects);
-      const teacher = await TeacherData.createTeacher(
-        firstName,
-        lastName,
-        username,
-        false,
-        '',
-        subjectCodes,
-      );
-      return SubjectData.addTeacherToSubjects(username, teacher.subjects);
+      if (subjectCodes.length > 0) {
+        const teacher = await TeacherData.createTeacher(
+          firstName,
+          lastName,
+          username,
+          false,
+          '',
+          subjectCodes,
+        );
+        return SubjectData.addTeacherToSubjects(username, teacher.subjects);
+      } else {
+        throw new Error('Невалидни предмети!');
+      }
     }
   };
 
   const registerStudent = async (firstName, lastName, username, groupNames) => {
-    const group = await GroupData.getGroupByName(groupNames);
-    if (group) {
-      return StudentData.createStudent(firstName, lastName, username, group.name);
+    const groups = await GroupData.getGroupsByNames(groupNames);
+    if (groups.length > 0) {
+      return StudentData.createStudent(firstName, lastName, username, groups);
     } else {
-      throw new Error('Няма такава група група!');
+      throw new Error('Невалидни групи!');
     }
   };
 
