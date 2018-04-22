@@ -55,6 +55,10 @@ class SubjectData extends BaseData {
   }
 
   async getSubjectsByCodes(codes) {
+    if (!codes || !Array.isArray(codes)) {
+      throw new Error('Невалидни предмети!');
+    }
+
     const validSubjectCodes = [];
     const subjectPromises = [];
 

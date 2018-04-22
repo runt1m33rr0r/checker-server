@@ -59,7 +59,7 @@ class GroupData extends BaseData {
 
   async getGroupByName(name) {
     if (!name) {
-      throw new Error('Невалидно име!');
+      throw new Error('Невалидно име на група!');
     }
 
     return this.collection.findOne({ name });

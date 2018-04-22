@@ -18,11 +18,11 @@ const validateString = ({
     throw new Error(errorMessage);
   }
 
-  if (minLen && input.length < minLen) {
+  if (minLen !== null && input.length < minLen) {
     throw new Error(errorMessage);
   }
 
-  if (maxLen && input.length > maxLen) {
+  if (maxLen !== null && input.length > maxLen) {
     throw new Error(errorMessage);
   }
 };
@@ -34,11 +34,11 @@ const validateNumber = ({
     throw new Error(errorMessage);
   }
 
-  if (min && input.length < min) {
+  if (min !== null && input.length < min) {
     throw new Error(errorMessage);
   }
 
-  if (max && input.length > max) {
+  if (max !== null && input.length > max) {
     throw new Error(errorMessage);
   }
 };

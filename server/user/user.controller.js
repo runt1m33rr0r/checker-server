@@ -37,35 +37,35 @@ const init = ({
           lastName,
           username,
           true,
-          group,
+          group.name,
           subjectCodes,
         );
 
-        await SubjectData.addTeacherToSubjects(username, teacher.subjects);
+        return SubjectData.addTeacherToSubjects(username, teacher.subjects);
+      } else {
+        throw new Error('Няма такава група група!');
       }
-
-      throw new Error('Невалидна група!');
+    } else {
+      const subjectCodes = await SubjectData.getSubjectsByCodes(subjects);
+      const teacher = await TeacherData.createTeacher(
+        firstName,
+        lastName,
+        username,
+        false,
+        '',
+        subjectCodes,
+      );
+      return SubjectData.addTeacherToSubjects(username, teacher.subjects);
     }
-
-    const subjectCodes = await SubjectData.getSubjectsByCodes(subjects);
-    const teacher = await TeacherData.createTeacher(
-      firstName,
-      lastName,
-      username,
-      false,
-      '',
-      subjectCodes,
-    );
-    return SubjectData.addTeacherToSubjects(username, teacher.subjects);
   };
 
   const registerStudent = async (firstName, lastName, username, groupNames) => {
     const group = await GroupData.getGroupByName(groupNames);
     if (group) {
-      return StudentData.createStudent(firstName, lastName, username, group);
+      return StudentData.createStudent(firstName, lastName, username, group.name);
+    } else {
+      throw new Error('Няма такава група група!');
     }
-
-    throw new Error('Невалидна група!');
   };
 
   return {
@@ -130,6 +130,7 @@ const init = ({
           subjects,
           userType,
         } = req.body;
+        console.log(req.body);
 
         const salt = encryption.getSalt();
         const hash = encryption.getHash(salt, password);
@@ -165,14 +166,7 @@ const init = ({
 
           roles.push(roleTypes.Teacher);
 
-          await registerTeacher({
-            firstName,
-            lastName,
-            username,
-            leadTeacher,
-            group,
-            subjects,
-          });
+          await registerTeacher(firstName, lastName, username, leadTeacher, group, subjects);
           await UserData.createUser(username, roles, salt, hash);
 
           return res.json({
@@ -197,7 +191,7 @@ const init = ({
           return res.json({ success: false, message: 'Невалиден потребител!' });
         }
 
-        if (!await UserData.checkPassword(password, user.salt, user.hashedPass, encryption)) {
+        if (!(await UserData.checkPassword(password, user.salt, user.hashedPass, encryption))) {
           return res.json({ success: false, message: 'Невалиден потребител!' });
         }
 

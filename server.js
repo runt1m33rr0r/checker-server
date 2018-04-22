@@ -6,7 +6,6 @@ const axios = require('axios');
 setInterval(async () => {
   try {
     await axios.get('https://school-system-server.herokuapp.com/');
-    console.log('get');
   } catch (e) {
     console.log(e.message);
   }
