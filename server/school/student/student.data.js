@@ -3,7 +3,7 @@ const axios = require('axios');
 
 class StudentData extends BaseData {
   async createEncoding(image) {
-    if (typeof photo !== 'string' || image.length < 1) {
+    if (typeof image !== 'string' || image.length < 1) {
       throw new Error('Невалидно изображение!');
     }
 
@@ -27,7 +27,7 @@ class StudentData extends BaseData {
 
   async verifyIdentity(username, image) {
     if (!image || typeof image !== 'string' || image.length < 1) {
-      throw new Error('Липсва изображение!');
+      throw new Error('Невалидно изображение!');
     }
 
     const student = await this.getStudentByUsername(username);
