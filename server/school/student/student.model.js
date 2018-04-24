@@ -40,9 +40,7 @@ class Student extends BaseModel {
     this.username = username;
     this.groups = groups;
     this.encoding = '';
-    this.marks = [];
     this.checks = [];
-    this.absences = [];
   }
 }
 

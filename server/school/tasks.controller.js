@@ -1,6 +1,6 @@
 const schedule = require('node-schedule');
 
-const init = ({ data: { StudentData, LessonData } }) => {
+const init = ({ data: { StudentData, LessonData, AbsenceData } }) => {
   const rule = new schedule.RecurrenceRule();
   rule.hour = 18;
 
@@ -25,7 +25,7 @@ const init = ({ data: { StudentData, LessonData } }) => {
       );
       const diff = (checkDate - lessonDate) / 1000 / 60;
 
-      if (check.day === lesson.timeslot.day && diff <= 10 && diff >= 0) {
+      if (check.day === lesson.timeslot.day && diff >= 0 && diff <= 10) {
         absent = false;
       } else {
         absent = true;
@@ -42,13 +42,15 @@ const init = ({ data: { StudentData, LessonData } }) => {
 
       for (const lesson of lessons) {
         if (wasAbsent(studentChecks, lesson)) {
-          const absence = StudentData.addAbsence(
-            student.username,
-            lesson.timeslot.day,
-            lesson.timeslot.fromHour,
-            lesson.timeslot.fromMinute,
-            lesson.subjectCode,
-          );
+          const absence = AbsenceData.createAbsence({
+            day: lesson.timeslot.day,
+            hour: lesson.timeslot.fromHour,
+            minute: lesson.timeslot.fromMinute,
+            subjectCode: lesson.subjectCode,
+            groupName: lesson.groupName,
+            studentUsername: student.username,
+            teacherUsername: lesson.teacherUsername,
+          });
           absences.push(absence);
         }
       }
@@ -64,22 +66,28 @@ const init = ({ data: { StudentData, LessonData } }) => {
   const checkAbsences = async () => {
     try {
       const students = await StudentData.getAll();
+      const checksPerformed = [];
 
       for (const student of students) {
-        const { checks, group } = student;
-        performChecks(group, checks, student);
+        const { checks, groups } = student;
+        for (const group of groups) {
+          checksPerformed.push(performChecks(group, checks, student));
+        }
       }
+
+      await Promise.all(checksPerformed);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // const job = schedule.scheduleJob('*/1 * * * *', () => {
-  //     checkAbscences();
+  // const job = schedule.scheduleJob('*/1 * * * *', async () => {
+  //   console.log('check');
+  //   await checkAbsences();
   // });
   /* eslint no-unused-vars: 0 */
-  const job = schedule.scheduleJob(rule, () => {
-    checkAbsences();
+  const job = schedule.scheduleJob(rule, async () => {
+    await checkAbsences();
   });
 };
 

@@ -129,24 +129,6 @@ class StudentData extends BaseData {
 
     return this.collection.findOne({ username });
   }
-
-  async addAbsence(username, day, hour, minute, subject) {
-    if (!username) {
-      throw new Error('Невалидно потребителско име!');
-    }
-
-    const { Absence } = this.models;
-    return this.collection.findOneAndUpdate(
-      {
-        username,
-      },
-      {
-        $push: {
-          absences: new Absence(day, hour, minute, subject),
-        },
-      },
-    );
-  }
 }
 
 module.exports = StudentData;
