@@ -3,6 +3,10 @@ const axios = require('axios');
 
 class StudentData extends BaseData {
   async createEncoding(image) {
+    if (typeof photo !== 'string' || image.length < 1) {
+      throw new Error('Невалидно изображение!');
+    }
+
     let res = {};
     try {
       res = await axios.post('http://localhost:4000/encode', { image });
@@ -22,7 +26,7 @@ class StudentData extends BaseData {
   }
 
   async verifyIdentity(username, image) {
-    if (!image) {
+    if (!image || typeof image !== 'string' || image.length < 1) {
       throw new Error('Липсва изображение!');
     }
 
@@ -42,8 +46,12 @@ class StudentData extends BaseData {
       throw new Error('Сървъра не работи!');
     }
 
-    if (res.data && typeof res.data.same === 'string') {
-      return res.data;
+    if (!res.data || typeof res.data.same !== 'string') {
+      throw new Error('Вътрешна грешка!');
+    }
+
+    if (res.data.same !== 'True') {
+      throw new Error('Лицето на снимката не е ваше!');
     }
 
     if (res.data && typeof res.data.message === 'string') {
