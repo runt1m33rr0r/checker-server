@@ -66,7 +66,11 @@ const init = ({
   const registerStudent = async (firstName, lastName, username, groupNames) => {
     const groups = await GroupData.getGroupsByNames(groupNames);
     if (groups.length > 0) {
-      return StudentData.createStudent(firstName, lastName, username, groups);
+      const promises = [StudentData.createStudent(firstName, lastName, username, groups)];
+      for (const group of groups) {
+        promises.push(GroupData.addStudentToGroup(group, username, firstName, lastName));
+      }
+      return Promise.all(promises);
     } else {
       throw new Error('Невалидни групи!');
     }

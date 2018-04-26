@@ -85,6 +85,20 @@ class GroupData extends BaseData {
     await Promise.all(groupPromises);
     return validGroupNames;
   }
+
+  async addStudentToGroup(groupName, username, firstName, lastName) {
+    const res = await this.collection.findOne({ name: groupName, 'students.username': username });
+    if (res) {
+      throw new Error('Вече има такъв ученик в групата!');
+    }
+
+    return this.collection.updateOne(
+      { name: groupName },
+      {
+        $push: { students: { username, firstName, lastName } },
+      },
+    );
+  }
 }
 
 module.exports = GroupData;
