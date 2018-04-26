@@ -45,13 +45,13 @@ class GroupData extends BaseData {
     const { Group } = this.models;
 
     for (const group of groupsArray) {
-      const { subjects, groupName } = group;
+      const { subjects, name } = group;
 
-      groupModels.push(new Group(groupName, subjects));
-      checks.push(this.getGroupByName(groupName));
+      groupModels.push(new Group(name, subjects));
+      checks.push(this.getGroupByName(name));
     }
 
-    if ((await Promise.all(checks)).length > 0) {
+    if ((await Promise.all(checks)).some(val => val)) {
       throw new Error('Вече има такава група!');
     }
     return this.createManyEntries(groupModels);

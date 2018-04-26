@@ -23,7 +23,7 @@ class TimeslotData extends BaseData {
       }));
     }
 
-    if ((await Promise.all(checks)).length > 0) {
+    if ((await Promise.all(checks)).some(val => val)) {
       throw new Error('Вече има такъв диапазон!');
     }
 

@@ -17,11 +17,6 @@ const init = ({ data: { SettingsData } }) => ({
   },
   async resetSetup(req, res) {
     try {
-      const settings = await SettingsData.getFirst();
-      if (!settings) {
-        return res.json({ success: false, message: 'Няма настройки!' });
-      }
-
       await SettingsData.updateSettings({ setupFinished: false });
       return res.json({ success: true, message: 'Настройките бяха обновени!' });
     } catch (error) {

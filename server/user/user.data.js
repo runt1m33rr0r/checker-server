@@ -32,11 +32,11 @@ class UserData extends BaseData {
   }
 
   async cleanTeachers() {
-    return this.deleteMany({ roles: { $in: ['Teacher'] } });
+    return this.deleteMany({ roles: { $in: ['Teacher'], $nin: ['Admin'] } });
   }
 
   async cleanStudents() {
-    return this.deleteMany({ roles: { $in: ['Student'] } });
+    return this.deleteMany({ roles: { $in: ['Student'], $nin: ['Admin'] } });
   }
 }
 

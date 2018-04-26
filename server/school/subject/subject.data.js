@@ -7,14 +7,14 @@ class SubjectData extends BaseData {
     const checks = [];
     const { Subject } = this.models;
 
-    for (const subject of subjectsArray) {
-      const { teachers, subjectCode, subjectName } = subject;
+    for (const subj of subjectsArray) {
+      const { code, name } = subj;
 
-      subjectModels.push(new Subject(subjectName, subjectCode, teachers));
-      checks.push(this.getSubjectByCode(subjectCode));
+      subjectModels.push(new Subject(name, code));
+      checks.push(this.getSubjectByCode(code));
     }
 
-    if ((await Promise.all(checks)).length > 0) {
+    if ((await Promise.all(checks)).some(val => val)) {
       throw new Error('Такива предмети вече съществуват!');
     }
     return this.createManyEntries(subjectModels);

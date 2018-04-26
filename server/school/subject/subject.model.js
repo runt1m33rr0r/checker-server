@@ -8,7 +8,7 @@ class Subject extends BaseModel {
 
     validateString({
       input: name,
-      errorMessage: 'Невалидно име!',
+      errorMessage: 'Невалидно име на предмет!',
       minLen: constants.MIN_NAME_LEN,
       maxLen: constants.MAX_NAME_LEN,
     });

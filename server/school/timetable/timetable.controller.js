@@ -159,6 +159,9 @@ const init = ({
         LessonData.clean(),
         TimeslotData.clean(),
         SubjectData.clean(),
+      ]);
+
+      await Promise.all([
         SubjectData.createSubjects(subjects),
         TimeslotData.createTimeslots(timeslots),
         GroupData.createGroups(groups),

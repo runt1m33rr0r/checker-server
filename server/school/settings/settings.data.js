@@ -7,9 +7,9 @@ class SettingsData extends BaseData {
     }
 
     const { setupFinished } = newSettings;
-    if (!await this.getFirst()) {
-      const { Setting } = this.models;
-      return this.createEntry(new Setting(setupFinished));
+    if (!(await this.getFirst())) {
+      const { Settings } = this.models;
+      return this.createEntry(new Settings(setupFinished));
     }
     return this.collection.findOneAndUpdate({}, { $set: { setupFinished } });
   }
