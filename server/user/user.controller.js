@@ -14,7 +14,7 @@ const init = ({
       const user = await UserData.getUserByUsername('admin');
       if (!user) {
         const salt = encryption.getSalt();
-        const hash = encryption.getHash(salt, '123456');
+        const hash = encryption.getHash(salt, 'adminpass987');
         const roles = [roleTypes.Normal, roleTypes.Teacher, roleTypes.Admin];
 
         await UserData.createUser('admin', roles, salt, hash);
@@ -138,7 +138,6 @@ const init = ({
           subjects,
           userType,
         } = req.body;
-        console.log(req.body);
 
         const salt = encryption.getSalt();
         const hash = encryption.getHash(salt, password);
