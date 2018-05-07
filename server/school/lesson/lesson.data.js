@@ -34,16 +34,22 @@ class LessonData extends BaseData {
     }
   }
 
-  async _checkFreeTimeslot(groupName, timeslot) {
+  async _checkFreeTimeslot(groupName, teacherUsername, timeslot) {
     validateString({ input: groupName, errorMessage: 'Липва име на група!' });
     validateObject({ input: timeslot, errorMessage: 'Липсва час!' });
 
-    const lesson = await this.collection.findOne({
+    const groupLesson = this.collection.findOne({
       groupName,
       ...this._getTimeslotQuery(timeslot),
     });
+    const teacherLesson = this.collection.findOne({
+      teacherUsername,
+      ...this._getTimeslotQuery(timeslot),
+    });
+    const lessons = [...(await Promise.all([groupLesson, teacherLesson]))];
 
-    if (lesson) {
+    // a group or a teacher can not have more than one lessons at a time
+    if (lessons.length > 0) {
       throw new Error('Това време е заето!');
     }
   }
@@ -55,7 +61,7 @@ class LessonData extends BaseData {
     } = lesson;
 
     await this._checkUniqueLesson(groupName, subjectCode, teacherUsername, timeslot);
-    await this._checkFreeTimeslot(groupName, timeslot);
+    await this._checkFreeTimeslot(groupName, teacherUsername, timeslot);
   }
 
   async createLessons(lessons) {
