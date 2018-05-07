@@ -96,9 +96,18 @@ class LessonData extends BaseData {
   }
 
   async getLessonsByGroupName(groupName) {
-    validateString({ input: groupName, errorMessage: 'Липва име на група!' });
+    validateString({ input: groupName, errorMessage: 'Невалидно име на група!' });
 
     return this.collection.find({ groupName }).toArray();
+  }
+
+  async getLessonsByGroupNames(groupNames) {
+    validateArray({ input: groupNames, errorMessage: 'Липсват имена на групи!' });
+    for (const group of groupNames) {
+      validateString({ input: group, errorMessage: 'Невалидно име на група!' });
+    }
+
+    return this.collection.find({ groupName: { $in: groupNames } }).toArray();
   }
 
   async getLessonsByTeacher(username) {

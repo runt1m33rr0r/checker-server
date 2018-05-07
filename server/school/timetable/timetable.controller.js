@@ -131,7 +131,7 @@ const init = ({
 
       if (req.query.mine === 'true' && req.roles.includes('Student')) {
         const student = await StudentData.getStudentByUsername(req.username);
-        const lessons = await LessonData.getLessonsByGroupName(student.group);
+        const lessons = await LessonData.getLessonsByGroupNames(student.groups);
         return res.json({ success: true, lessons, message: 'Данни получени успешно!' });
       }
 
