@@ -1,3 +1,5 @@
+const settings = require('../config/settings');
+
 module.exports = {
   MIN_HOUR: 0,
   MAX_HOUR: 23,
@@ -13,4 +15,5 @@ module.exports = {
   MAX_GROUP_LEN: 20,
   MIN_SUBJECT_LEN: 3,
   MAX_SUBJECT_LEN: 30,
+  RECOGNITION_SERVER: settings.recognitionServer,
 };

@@ -1,5 +1,7 @@
-const BaseData = require('../../base/base.data');
 const axios = require('axios');
+
+const BaseData = require('../../base/base.data');
+const { RECOGNITION_SERVER } = require('../../utils/constants');
 
 class StudentData extends BaseData {
   async createEncoding(image) {
@@ -9,7 +11,7 @@ class StudentData extends BaseData {
 
     let res = {};
     try {
-      res = await axios.post('http://localhost:4000/encode', { image });
+      res = await axios.post(`${RECOGNITION_SERVER}/encode`, { image });
     } catch (error) {
       throw new Error('Сървъра не работи!');
     }
@@ -41,7 +43,7 @@ class StudentData extends BaseData {
 
     let res = {};
     try {
-      res = axios.post('http://localhost:3000/verify', { image, encoding: student.encoding });
+      res = axios.post(`${RECOGNITION_SERVER}/verify`, { image, encoding: student.encoding });
     } catch (error) {
       throw new Error('Сървъра не работи!');
     }
