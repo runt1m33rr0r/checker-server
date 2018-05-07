@@ -9,6 +9,16 @@ class LessonData extends BaseData {
     validateObject({ input: timeslot, errorMessage: 'Липсва час!' });
   }
 
+  _getTimeslotQuery(timeslot) {
+    return {
+      'timeslot.fromHour': timeslot.fromHour,
+      'timeslot.fromMinute': timeslot.fromMinute,
+      'timeslot.toHour': timeslot.toHour,
+      'timeslot.toMinute': timeslot.toMinute,
+      'timeslot.day': timeslot.day,
+    };
+  }
+
   async _checkUniqueLesson(groupName, subjectCode, teacherUsername, timeslot) {
     this._validateLessonData(groupName, subjectCode, teacherUsername, timeslot);
 
@@ -16,7 +26,7 @@ class LessonData extends BaseData {
       groupName,
       subjectCode,
       teacherUsername,
-      timeslot,
+      ...this._getTimeslotQuery(timeslot),
     });
 
     if (lesson) {
@@ -30,7 +40,7 @@ class LessonData extends BaseData {
 
     const lesson = await this.collection.findOne({
       groupName,
-      timeslot,
+      ...this._getTimeslotQuery(timeslot),
     });
 
     if (lesson) {
@@ -106,7 +116,7 @@ class LessonData extends BaseData {
       groupName,
       subjectCode,
       teacherUsername,
-      timeslot,
+      ...this._getTimeslotQuery(timeslot),
     });
   }
 }
