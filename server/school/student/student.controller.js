@@ -37,7 +37,7 @@ const init = ({ data: { StudentData, LessonData } }) => ({
   },
   async check(req, res) {
     try {
-      const { username } = req.user;
+      const { username } = req;
       const photo = req.body.image;
 
       await StudentData.verifyIdentity(username, photo);

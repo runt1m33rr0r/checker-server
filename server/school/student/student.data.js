@@ -16,15 +16,11 @@ class StudentData extends BaseData {
       throw new Error('Сървъра не работи!');
     }
 
-    if (res.data && res.data.encoding) {
+    if (res.data.encoding) {
       return res.data.encoding;
     }
 
-    if (res.data && res.data.message) {
-      throw new Error('Не виждам лице на снимката!');
-    }
-
-    throw new Error('Вътрешна грешка!');
+    throw new Error('Не виждам лице на снимката!');
   }
 
   async verifyIdentity(username, image) {
@@ -43,23 +39,18 @@ class StudentData extends BaseData {
 
     let res = {};
     try {
-      res = axios.post(`${RECOGNITION_SERVER}/verify`, { image, encoding: student.encoding });
+      res = await axios.post(`${RECOGNITION_SERVER}/verify`, { image, encoding: student.encoding });
     } catch (error) {
       throw new Error('Сървъра не работи!');
     }
 
-    if (!res.data || typeof res.data.same !== 'string') {
-      throw new Error('Вътрешна грешка!');
+    if (!res.data.same) {
+      throw new Error('Не виждам лице на снимката!');
     }
 
     if (res.data.same !== 'True') {
       throw new Error('Лицето на снимката не е ваше!');
     }
-
-    if (res.data && typeof res.data.message === 'string') {
-      throw new Error('Не виждам лице на снимката!');
-    }
-    throw new Error('Вътрешна грешка!');
   }
 
   async saveEncoding(username, encoding) {
