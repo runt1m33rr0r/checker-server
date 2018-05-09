@@ -46,10 +46,10 @@ class LessonData extends BaseData {
       teacherUsername,
       ...this._getTimeslotQuery(timeslot),
     });
-    const lessons = [...(await Promise.all([groupLesson, teacherLesson]))];
+    const [groupRes, teacherRes] = await Promise.all([groupLesson, teacherLesson]);
 
     // a group or a teacher can not have more than one lessons at a time
-    if (lessons.length > 0) {
+    if (groupRes || teacherRes) {
       throw new Error('Това време е заето!');
     }
   }
