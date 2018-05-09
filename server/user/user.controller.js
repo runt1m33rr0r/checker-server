@@ -1,5 +1,6 @@
 const roleTypes = require('../utils/roletypes');
 const settings = require('../config/settings');
+const { validateStrArray, validateString } = require('../utils/validators');
 
 const TOKEN_EXPIRATION = '7d';
 
@@ -92,35 +93,6 @@ const init = ({
             profile: profile || {},
           });
         }
-      } catch (error) {
-        return res.json({ success: false, message: error.message });
-      }
-    },
-    async saveProfile(req, res) {
-      try {
-        const { roles } = req.user;
-
-        if (roles.includes('Student')) {
-          if (
-            !req.files ||
-            !Array.isArray(req.files.photo) ||
-            req.files.photo.length < 1 ||
-            !req.files.photo[0] ||
-            !req.files.photo[0].buffer
-          ) {
-            return res.json({ success: false, message: 'Невалидни данни!' });
-          }
-
-          const photo = req.files.photo[0].buffer;
-          const { username } = req.user;
-
-          const encoding = await StudentData.createEncoding(photo);
-          await StudentData.saveEncoding(username, encoding);
-          return res.json({ success: true, message: 'Настойките бяха успешно запазени!' });
-        }
-
-        // add other stuff later
-        return res.redirect('/');
       } catch (error) {
         return res.json({ success: false, message: error.message });
       }
@@ -218,7 +190,43 @@ const init = ({
           token,
         });
       } catch (error) {
-        return res.json({ success: false, message: 'Невалидни данни' });
+        return res.json({ success: false, message: error.message });
+      }
+    },
+    async changePassword(req, res) {
+      try {
+        const { password } = req.body;
+        validateString({
+          input: password,
+          minLen: 6,
+          maxLen: 30,
+          errorMessage: 'Невалидна парола!',
+        });
+
+        const { username, roles } = req;
+        const userError = 'Невалидни потребителски данни!';
+        validateString({ input: username, errorMessage: userError });
+        validateStrArray({
+          input: roles,
+          errorMessage: userError,
+          acceptableValues: Object.values(roleTypes),
+        });
+
+        const salt = encryption.getSalt();
+        const hash = encryption.getHash(salt, password);
+        const token = encryption.getToken(
+          {
+            roles,
+            username,
+          },
+          settings.secret,
+          TOKEN_EXPIRATION,
+        );
+
+        await UserData.changePassword(username, salt, hash);
+        return res.json({ success: false, token, message: 'Парола успешно променена!' });
+      } catch (error) {
+        return res.json({ success: false, message: error.message });
       }
     },
   };

@@ -3,7 +3,8 @@ const init = ({ app, controllers, middlewares }) => {
 
   app.post('/users/register', controllers.user.registerUser);
   app.post('/users/login', controllers.user.loginUser);
-  app.post('/users/profile/save', middlewares.user.isAuthenticated, controllers.user.saveProfile);
+
+  app.put('/users/password', middlewares.user.isAuthenticated, controllers.user.changePassword);
 };
 
 module.exports = { init };

@@ -1,4 +1,5 @@
 const BaseData = require('../base/base.data');
+const { validateString } = require('../utils/validators');
 
 class UserData extends BaseData {
   async createUser(username, roles, salt, hash) {
@@ -29,6 +30,15 @@ class UserData extends BaseData {
     const testHash = encryption.getHash(salt, password);
     const result = testHash === hash;
     return result;
+  }
+
+  async changePassword(username, salt, hashedPass) {
+    const errorMessage = 'Невалидни данни!';
+    validateString({ input: username, errorMessage });
+    validateString({ input: salt, errorMessage });
+    validateString({ input: hashedPass, errorMessage });
+
+    return this.collection.updateOne({ username }, { $set: { hashedPass, salt } });
   }
 
   async cleanTeachers() {
